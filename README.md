@@ -21,7 +21,7 @@ prob = coco_prob();
 % Turn of bifurcation detection (this won't work otherwise)
 prob = coco_set(prob, 'po', 'bifus', 'off');
 % Set up periodic orbit problem with appended variational problem
-prob = ode_isol2po(prob, '', previous_run_identifier_string, previous_solution_label, ...
+prob = ode_HB2po(prob, '', previous_run_identifier_string, previous_solution_label, ...
                    '-var', eye(3));
 % Hold the initial condition of solution to variational problem fixed
 % Read data and uidx indices
