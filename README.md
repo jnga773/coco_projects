@@ -14,7 +14,7 @@ This is an example of a heteroclinic E-to-P connection in the Lorenz system of e
 
 This is an example of using Lin's method using the `coll` toolbox to solve for the heteroclinic in a 3-dimensional system with three system parameters.
 
-This is also an example on how to compute Floquet bundles directly by first computing the monodromy matrix. The monodromy matrix is computer by setting up a variational problem in the `po` toolbox with the option
+This is also an example on how to compute **Floquet bundles** directly by first computing the **monodromy matrix**. The monodromy matrix is computed by setting up a variational problem in the `po` toolbox with
 ```matlab
 % Create COCO problem structure
 prob = coco_prob();
@@ -25,7 +25,7 @@ prob = ode_HB2po(prob, '', previous_run_identifier_string, previous_solution_lab
                  '-var', eye(3));
 % Hold the initial condition of solution to variational problem fixed
 % Read data and uidx indices
-[data, uidx] = coco_get_func_data(prob, 'hopf_po.po.orb.coll.var', 'data', 'uidx');
+[data, uidx] = coco_get_func_data(prob, 'po.orb.coll.var', 'data', 'uidx');
 % Add parameters for each component of the monodromy matrix
 prob = coco_add_pars(prob, 'pars', ...
                      uidx(data.coll_var.v0_idx,:), ...
@@ -45,7 +45,7 @@ This is an example of a homoclinic orbit, described by some model discused in a 
 
 This is an example of approximating homoclinic orbits in a 3-dimensional system as large-period periodic orbits using the `po` toolbox. We also use Lin's method using the `coll` toolbox to solve for the homoclinic orbit.
 
-**At the moment the two-parameter continuation via Lin's method doesn't follow the entire range. I still need to figure out what's wrong**
+<ins>**At the moment the two-parameter continuation via Lin's method doesn't follow the entire range. I still need to figure out what's wrong**</ins>
 
 ### homoclinic_strogatz
 This is an example of a homoclinic orbit, in a similar system to the Hopf normal form as found in Section 8.4 in *Nonlinear Dynamics and Chaos* by Steven H. Strogatz.
