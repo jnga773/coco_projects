@@ -22,7 +22,7 @@ prob = coco_prob();
 prob = coco_set(prob, 'po', 'bifus', 'off');
 % Set up periodic orbit problem with appended variational problem
 prob = ode_HB2po(prob, '', previous_run_identifier_string, previous_solution_label, ...
-                   '-var', eye(3));
+                 '-var', eye(3));
 % Hold the initial condition of solution to variational problem fixed
 % Read data and uidx indices
 [data, uidx] = coco_get_func_data(prob, 'hopf_po.po.orb.coll.var', 'data', 'uidx');
