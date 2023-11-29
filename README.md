@@ -3,11 +3,11 @@ Here are a bunch of different example problems and how to solve them using the [
 
 All of the code is extensively commented, with most of the defined functions having doc strings too.
 
-If you have any questions about this, please email me: [j.ngaha@aucland.ac.nz](mailto:j.ngaha@auckland.ac.nz).
-
 Here is a break down on the included examples.
 
 ## Lin's Method Examples
+
+Here are some example systems that make use of Lin's method to solve for homoclinic orbits and heteroclinic connections. If you have any questions about this, please email me: [j.ngaha@auckland.ac.nz](mailto:j.ngaha@auckland.ac.nz).
 
 ### EtoP_lorenz
 This is an example of a heteroclinic E-to-P connection in the Lorenz system of equations, as described in Section 10.2.2 in *Recipes for Continuation*.
