@@ -24,6 +24,8 @@ This is an example of a homoclinic orbit, described by some model discused in a 
 
 This is an example of approximating homoclinic orbits in a 3-dimensional system as large-period periodic orbits using the `po` toolbox. We also use Lin's method using the `coll` toolbox to solve for the homoclinic orbit.
 
+**At the moment the two-parameter continuation via Lin's method doesn't follow the entire range. I still need to figure out what's wrong**
+
 ### homoclinic_strogatz
 This is an example of a homoclinic orbit, in a similar system to the Hopf normal form as found in Section 8.4 in *Nonlinear Dynamics and Chaos* by Steven H. Strogatz.
 
