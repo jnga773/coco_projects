@@ -7,15 +7,12 @@
 % Current run name
 run_new = run_names.lins_method.continue_homoclinics;
 % Which run this continuation continues from
-% run_old = run_names.lins_method.close_eps2;
-run_old = run_names.lins_method.close_lingap;
+run_old = run_names.lins_method.close_eps2;
+% run_old = run_names.lins_method.close_lingap;
 
 % Label for previous run solution
-% label_old = coco_bd_labs(coco_bd_read(run_old), 'EP');
-% label_old = max(label_old);
-label_old = coco_bd_labs(coco_bd_read(run_old), 'Lin0');
-label_old = sort(label_old);
-label_old = label_old(1);
+label_old = coco_bd_labs(coco_bd_read(run_old), 'EPS2');
+% label_old = coco_bd_labs(coco_bd_read(run_old), 'Lin0');
 
 % Print to console
 fprintf("~~~ Lin's Method: Sixth Run (ode_coll2coll) ~~~ \n");
@@ -33,7 +30,10 @@ prob = coco_prob();
 % prob = coco_set(prob, 'coll', 'bifus', 'off');
 
 % Set NTST size
-prob = coco_set(prob, 'coll', 'NTST', 100);
+prob = coco_set(prob, 'coll', 'NTST', 25);
+
+% Set NAdpat
+prob = coco_set(prob, 'cont', 'NAdapt', 1);
 
 % Set step sizes
 % h = 1e-3;
@@ -68,8 +68,9 @@ lingap = chart.x(data.lingap_idx);
 prob = glue_lingap_conditions(prob, data_lins, lingap);
 
 % Run COCO
-bdtest = coco(prob, run_new, [], 1, {'p1', 'p2', 'T1', 'theta', 'eps2', 'seg_s'});
-% bdtest = coco(prob, run_new, [], 1, {'A', 'gamma', 'theta', 'seg_s'}, p_range);
+% bdtest = coco(prob, run_new, [], 1, {'p1', 'p2', 'T1', 'theta', 'eps2', 'seg_s'});
+
+bdtest = coco(prob, run_new, [], 1, {'p1', 'p2', 'eps1', 'eps2', 'theta', 'seg_u'});
 
 %-------------------------------------------------------------------------%
 %%                               Test Plot                               %%
@@ -82,7 +83,12 @@ label_plot = 73;
 %--------------%
 %     Plot     %
 %--------------%
-plot_homoclinic_manifold_run(run_new, label_plot, 17, data_bcs.label_approx, save_figure);
+plot_homoclinic_manifold_run(run_new, label_plot, data_bcs.label_approx, 19, save_figure);
+
+plot_temporal_solution_single(run_new, label_plot, 20, save_figure);
+plot_temporal_solutions(run_new, 19, save_figure);
+
+compare_homoclinic_bifurcations(run_names, save_figure);
 
 %--------------------------%
 %     Print to Console     %

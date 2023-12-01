@@ -25,6 +25,12 @@ fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
 % Construct instance of huxley continuation problem from initial data.
 prob = coco_prob();
 
+% Set NTST size
+prob = coco_set(prob, 'coll', 'NTST', 25);
+
+% Set NAdpat
+prob = coco_set(prob, 'cont', 'NAdapt', 1);
+
 % Set Continuation steps
 PtMX = 100;
 prob = coco_set(prob, 'cont', 'PtMX', PtMX);
@@ -61,12 +67,15 @@ coco(prob, run_new, [], 1, {'lingap', 'T1', 'T2', 'theta', 'p1', 'seg_u'});
 %-------------------------------------------------------------------------%
 % Find good label to plot
 label_plot = coco_bd_labs(coco_bd_read(run_new), 'Lin0');
+label_plot = sort(label_plot);
 label_plot = label_plot(1);
 
 %--------------%
 %     Plot     %
 %--------------%
-plot_homoclinic_manifold_run(run_new, label_plot, 16, data_bcs.label_approx, save_figure);
+plot_homoclinic_manifold_run(run_new, label_plot, data_bcs.label_approx, 16, save_figure);
+
+% plot_temporal_solution_single(run_new, label_plot, 15, save_figure);
 
 %--------------------------%
 %     Print to Console     %

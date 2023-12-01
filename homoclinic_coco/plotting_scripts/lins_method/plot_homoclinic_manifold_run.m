@@ -1,4 +1,4 @@
-function plot_homoclinic_manifold_run(run_in, label_in, fig_num_in, label_approx_in, save_figure)
+function plot_homoclinic_manifold_run(run_in, label_in, label_approx_in, fig_num_in, save_figure)
   %-------------------%
   %     Read Data     %
   %-------------------%

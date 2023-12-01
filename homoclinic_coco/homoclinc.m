@@ -8,12 +8,16 @@ clear all;
 addpath('./functions');
 % Add continuation scripts and functions to path
 addpath('./continuation_scripts/');
+
 % Add continuation scripts for approximate homoclinic scripts to path
 addpath('./continuation_scripts/homoclinic_approx/');
-addpath('./continuation_scripts/homoclinic_approx/plotting_scripts/')
+addpath('./plotting_scripts/homoclinic_approx/');
+
 % Add Lins method continuation scripts to path
 addpath('./continuation_scripts/lins_method/');
 addpath('./continuation_scripts/lins_method/problem_functions/');
+addpath('./plotting_scripts/lins_method/');
+
 % Add plotting scripts to path
 addpath('./plotting_scripts/');
 
@@ -188,11 +192,11 @@ lins_method_close_lingap;
 
 % Close distance eps1
 run_names.lins_method.close_eps1 = 'run10_close_eps1';
-% lins_method_close_eps1;
+lins_method_close_eps1;
 
 % Close distance eps2
 run_names.lins_method.close_eps2 = 'run11_close_eps2';
-% lins_method_close_eps2;
+lins_method_close_eps2;
 
 % Continue along family of homoclinics
 run_names.lins_method.continue_homoclinics = 'run12_continue_homoclinics';

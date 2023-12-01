@@ -11,7 +11,7 @@ run_old = run_names.lins_method.close_lingap;
 
 % Label for previous run solution
 label_old = coco_bd_labs(coco_bd_read(run_old), 'Lin0');
-label_old = label_old(1);
+label_old = label_old(2);
 
 % Print to console
 fprintf("~~~ Lin's Method: Fourth Run (ode_coll2coll) ~~~ \n");
@@ -25,8 +25,14 @@ fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
 % Construct instance of huxley continuation problem from initial data.
 prob = coco_prob();
 
+% Set NTST size
+prob = coco_set(prob, 'coll', 'NTST', 25);
+
+% Set NAdpat
+prob = coco_set(prob, 'cont', 'NAdapt', 1);
+
 % Set Continuation steps
-PtMX = 50;
+PtMX = 100;
 prob = coco_set(prob, 'cont', 'PtMX', PtMX);
 
 % Construct first instance of 'coll' toolbox for unstable manifold
@@ -55,31 +61,34 @@ lingap = chart.x(data.lingap_idx);
 prob = glue_lingap_conditions(prob, data_lins, lingap);
 
 % Add event for when eps1 gets small enough
-prob = coco_add_event(prob, 'EPS1', 'eps1', -1.04e-5);
+prob = coco_add_event(prob, 'EPS1', 'eps1', -1.0e-3);
 
 % Run COCO
-coco(prob, run_new, [], 1, {'eps1', 'T1', 'T2', 'theta', 'p1', 'seg_u'}, [eps1, -1e-5]);
+coco(prob, run_new, [], 1, {'eps1', 'T1', 'T2', 'theta', 'p1', 'seg_u'});
 
 %-------------------------------------------------------------------------%
 %%                                 Plot                                  %%
 %-------------------------------------------------------------------------%
 % Find good label to plot
-label_plot = coco_bd_labs(coco_bd_read(run_new), 'EP');
+label_plot = coco_bd_labs(coco_bd_read(run_new), 'EPS1');
 label_plot = max(label_plot);
 
 %--------------%
 %     Plot     %
 %--------------%
-plot_homoclinic_manifold_run(run_new, label_plot, 17, data_bcs.label_approx, save_figure);
+plot_homoclinic_manifold_run(run_new, label_plot, data_bcs.label_approx, 17, save_figure);
+
+% plot_temporal_solution_single(run_new, label_plot, 15, save_figure);
 
 %--------------------------%
 %     Print to Console     %
 %--------------------------%
 [sol1, ~] = coll_read_solution('unstable', run_new, label_plot);
 [sol2, ~] = coll_read_solution('stable', run_new, label_plot);
+[solx, ~] =   ep_read_solution('x0', run_new, label_plot);
 
 fprintf('Print Start and End Points to Console\n');
-fprintf('Equilibrium point       = (%.3f, %.3f, %.3f)\n', x0);
+fprintf('Equilibrium point       = (%.3f, %.3f, %.3f)\n', solx.x);
 fprintf('Unstable starting point = (%.3f, %.3f, %.3f)\n', sol1.xbp(1, :));
 fprintf('Unstable ending point   = (%.3f, %.3f, %.3f)\n', sol1.xbp(end, :));
 fprintf('Stable starting point   = (%.3f, %.3f, %.3f)\n', sol2.xbp(1, :));

@@ -22,7 +22,10 @@ prob = coco_prob();
 prob = coco_set(prob, 'coll', 'MXCL', false);
 
 % Set NTST size
-prob = coco_set(prob, 'coll', 'NTST', 100);
+prob = coco_set(prob, 'coll', 'NTST', 25);
+
+% Set NAdpat
+prob = coco_set(prob, 'cont', 'NAdapt', 1);
 
 % Set Continuation steps
 % PtMX = 100;
@@ -58,16 +61,20 @@ label_plot = label_plot(1);
 %--------------%
 %     Plot     %
 %--------------%
-plot_homoclinic_manifold_run(run_new, label_plot, 2, data_bcs.label_approx, save_figure);
+plot_homoclinic_manifold_run(run_new, label_plot, data_bcs.label_approx, 14, save_figure);
 % plot_homoclinic_manifold_run(run_new, 1, 14, run7, p0_L, save_figure);
+
+% plot_temporal_solution_single(run_new, label_plot, 15, save_figure);
 
 %--------------------------%
 %     Print to Console     %
 %--------------------------%
 [sol1, ~] = coll_read_solution('unstable', run_new, label_plot);
 [sol2, ~] = coll_read_solution('stable', run_new, label_plot);
+[solx, ~] = ep_read_solution('x0', run_new, label_plot);
 
 fprintf('Print Start and End Points to Console\n');
+fprintf('Equilibrium point       = (%.3f, %.3f, %.3f)\n', solx.x);
 fprintf('Unstable starting point = (%.3f, %.3f, %.3f)\n', sol1.xbp(1, :));
 fprintf('Unstable ending point   = (%.3f, %.3f, %.3f)\n', sol1.xbp(end, :));
 fprintf('Stable starting point   = (%.3f, %.3f, %.3f)\n', sol2.xbp(1, :));

@@ -27,6 +27,12 @@ prob = coco_prob();
 % Turn off MXCL?
 prob = coco_set(prob, 'coll', 'MXCL', false);
 
+% Set NTST size
+prob = coco_set(prob, 'coll', 'NTST', 25);
+
+% Set NAdpat
+prob = coco_set(prob, 'cont', 'NAdapt', 1);
+
 % Set Continuation steps
 PtMX = 100;
 prob = coco_set(prob, 'cont', 'PtMX', PtMX);
@@ -60,8 +66,10 @@ label_plot = label_plot(1);
 %--------------%
 %     Plot     %
 %--------------%
-plot_homoclinic_manifold_run(run_new, label_plot, 3, data_bcs.label_approx, save_figure);
+plot_homoclinic_manifold_run(run_new, label_plot, data_bcs.label_approx, 15, save_figure);
 % plot_homoclinic_manifold_run(run_new, 1, 14, run7, p0_L, save_figure);
+
+% plot_temporal_solution_single(run_new, label_plot, 15, save_figure);
 
 %--------------------------%
 %     Print to Console     %
