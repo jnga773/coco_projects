@@ -31,37 +31,9 @@ fprintf('Continuing from point %d in run: %s\n', label_old, run_old);
 %-------------------------------------%
 %     Read Data from Previous Run     %
 %-------------------------------------%
-
-% Read solution with maximum period
-[sol, data] = coll_read_solution('po.orb', run_old, label_old);
-
-% Evaluate vector field at basepoints
-f = marsden(sol.xbp', repmat(sol.p, [1, size(sol.xbp, 1)]));
-
-% Extract the discretisation points corresponding to the minimum value of
-% the norm of the vector field along the longest-period periodic orbit.
-% Find basepoint closest to equilibrium
-f_norm = sqrt(sum(f .* f, 1)); f_norm = f_norm';
-[~, idx] = min(f_norm);
-fprintf('\n');
-fprintf('idx = %d \n', idx);
-
-% Then insert a time segment that is a large multiple of the orbit
-% period immediately following the discretisation point.
-scale = 1000;
-T = sol.T;
-
-fprintf('Maximum Period from run ''%s'', T = %f \n', run_new, T);
-fprintf('Scaled period is T'' = %d x %f = %f \n', scale, T, scale * T);
-
-% Crank up period by factor scale
-t0 = [sol.tbp(1:idx,1);
-      T * (scale - 1) + sol.tbp(idx+1:end,1)];
-% t0 = sol.tbp;
-
-% Read state and parameters from solution
-x0 = sol.xbp;
-p0 = sol.p;
+% Find minimum point corresponding to equilibrium point, and insert
+% large time segment.
+po_data = insert_large_time_segment(run_old, label_old);
 
 %------------------------------------------%
 %     Continuation from Periodic Orbit     %
@@ -74,7 +46,7 @@ p0 = sol.p;
 % Initialize continuation problem structure with the same number of
 % intervals as in previous run.
 prob = coco_prob();
-prob = coco_set(prob, 'coll', 'NTST', data.coll.NTST);
+prob = coco_set(prob, 'coll', 'NTST', po_data.NTST);
 
 % Turn off bifucation detections
 prob = coco_set(prob, 'po', 'bifus', 'off');
@@ -85,11 +57,25 @@ NAdapt = 20;
 prob = coco_set(prob, 'cont', 'NAdapt', NAdapt);
 
 % Continue periodic orbit from initial solution
-prob = ode_isol2po(prob, '', func_list{:}, t0, x0, pnames, p0);
+prob = ode_isol2po(prob, 'homo', func_list{:}, ...
+                   po_data.t_sol, po_data.x_sol, pnames, po_data.p0);
+
+% Add instance of equilibrium point to find and follow the actual 
+% equilibrium point
+prob = ode_isol2ep(prob, 'x0', func_list{:}, ...
+                   po_data.x0, po_data.p0);
+
+% Glue parameters together
+[data1, uidx1] = coco_get_func_data(prob, 'homo.po.orb.coll', 'data', 'uidx');
+[data2, uidx2] = coco_get_func_data(prob, 'x0.ep', 'data', 'uidx');
+
+prob = coco_add_glue(prob, 'shared_parameters', ...
+                     uidx1(data1.coll_seg.maps.p_idx), uidx2(data2.ep_eqn.p_idx));
+
 
 % Assign 'p2' to the set of active continuation parameters and 'po.period'
 % to the set of inactive continuation parameters, thus ensuring that the
 % latter is fixed during root finding.
-prob = coco_xchg_pars(prob, 'p2', 'po.period');
+prob = coco_xchg_pars(prob, 'p2', 'homo.po.period');
 
-coco(prob, run_new, [], 0, {'p1', 'po.orb.coll.err_TF', 'po.period'});
+coco(prob, run_new, [], 0, {'p1', 'homo.po.orb.coll.err_TF', 'homo.po.period'});
