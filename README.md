@@ -58,6 +58,8 @@ Here is an outline of the method used to implement Lin's method.
    prob = glue_lingap_conditions(prob, data_lins, lingap);
    ```
 
+Example template code can be found in the `./template_lins_method_scripts/` directory. You will need to change the code in most of the files to work with your specific system. Lines you definitely need to check have an extra comment mentioning this.
+
 ### EtoP_lorenz
 This is an example of a heteroclinic E-to-P connection in the Lorenz system of equations, as described in Section 10.2.2 in *Recipes for Continuation*.
 
