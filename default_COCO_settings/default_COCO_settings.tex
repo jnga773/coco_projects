@@ -1,0 +1,189 @@
+% Set LaTeX compiler to LuaLaTeX
+% !TeX program = pdflatex
+% Set encoding of file to UTF-8
+% !TeX encoding = UTF-8
+
+%==============================================================================%
+%                                DOCUMENT CLASS                                %
+%==============================================================================%
+% Set document class to revtex and font size to 11pt.
+\documentclass[11pt]{article}
+
+%==============================================================================%
+%                                   PACKAGES                                   %
+%==============================================================================%
+%--------------------------------%
+%     MATH AND FONT PACKAGES     %
+%--------------------------------%
+% Math fonts
+\usepackage{amsfonts}
+
+%-------------------------%
+%     FIGURE PACKAGES     %
+%-------------------------%
+% Create figures with captions
+\usepackage{graphicx}
+% Introduce the force H, T, B figure locations
+\usepackage{float}
+% Convert .eps to .pdf
+\usepackage{epstopdf}
+
+%-----------------------------%
+%     FORMATTING PACKAGES     %
+%-----------------------------%
+% Full page
+\usepackage{fullpage}
+
+%------------------------%
+%     OTHER PACKAGES     %
+%------------------------%
+% Cool colours
+\usepackage{color}
+\usepackage[usenames, dvipsnames]{xcolor}
+
+%================================================================================%
+%                                 BEGIN DOCUMENT                                 %
+%================================================================================%
+\title{COCO - Toolbox Settings}
+\author{}
+\date{}
+
+\begin{document}
+
+% Create the title page thing
+\maketitle
+
+The following settings are for each of the toolboxes included in the base COCO software: \verb!atlas_1d!, \verb!ode!, \verb!ep!, \verb!po!, and \verb!coll!. 
+
+The options can be set with: \verb!prob = coco_set(prob, 'TOOLBOX_NAME', [SETTING], [VALUE])!
+
+%-----------------------%
+%          ode          %
+%-----------------------%
+\section*{\texttt{ode} -- Ordinary Differential Equations Toolbox}
+
+These are found by running \verb!ode_settings! in the Matlab console.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{l|l|l|l}
+    \textbf{Setting}  & \textbf{Description}                             & \textbf{Value Type} & \textbf{Default Value} \\[1ex] \hline
+    \verb!vectorized! & Enable/disable vectorised evaluation             & logical             & \verb!true!            \\[1ex]
+    \verb!autonomous! & Indicate whether the ODE is autonomous or not    & logical             & \verb!true!            \\[1ex]
+    \verb!hfac1!      & First-order finite-difference step size          & float               & \verb!1e-08!           \\[1ex]
+    \verb!hfac2!      & Second-order finite-difference step size         & float               & \verb!1e-04!         
+  \end{tabular}
+\end{table}
+
+%------------------------%
+%          coll          %
+%------------------------%
+\clearpage
+\section*{\texttt{coll} -- Trajectory Collocation Toolbox}
+
+These are found by running \verb!coll_settings! in the Matlab console.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{l|l|l|l}
+    \textbf{Setting} & \textbf{Description}                                                                                             & \textbf{Value Type} & \textbf{Default Value} \\[1ex] \hline
+    \verb!var!       & \begin{tabular}[c]{@{}l@{}}Enable/disable temporay storage of solution to\\ variational problem\end{tabular}     & logical             & \verb!false!           \\[1ex]
+    \verb!NTST!      & Number of mesh intervals                                                                                         & integer             & \verb!10!              \\[1ex]
+    \verb!NCOL!      & Number of collocation nodes                                                                                      & integer             & \verb!4!               \\[1ex]
+    \verb!SAD!       & Equidistribution weight for error estimator                                                                      & float               & \verb!0.95!            \\[1ex]
+    \verb!method!    & Choice of Banach iteration boundary condition                                                                    & string              & \verb!'3I'!            \\[1ex]
+    \verb!NBeta!     & \begin{tabular}[c]{@{}l@{}}Number of homotopy steps for initialisation of\\ fundamental solution\end{tabular}    & integer             & \verb!5!               \\[1ex]
+    \verb!NBItMX!    & Discretisation error tolerance                                                                                   & integer             & \verb!10!              \\[1ex]
+    \verb!TOL!       & Discretisation error tolerance                                                                                   & float               & \verb!1e-4!            \\[1ex]
+    \verb!MXCL!      & \begin{tabular}[c]{@{}l@{}}Enable/disable termination when discretisation\\ error exceeds tolerance\end{tabular} & logical             & \verb!true!            \\[1ex]
+    \verb!TOLINC!    & \begin{tabular}[c]{@{}l@{}}Upper bound on discretisation error in window\\ of adapation\end{tabular}             & float               & \verb!2e-5!            \\[1ex]
+    \verb!TOLDEC!    & \begin{tabular}[c]{@{}l@{}}Lower bound on discretisation error in window\\ of adapation\end{tabular}             & float               & \verb!5e-6!            \\[1ex]
+    \verb!NTSTMN!    & Minimum number of discretisation intervals                                                                       & integer             & \verb!5!               \\[1ex]
+    \verb!NTSTMX!    & Maximum number of discretisation intervals                                                                       & integer             & \verb!100!
+  \end{tabular}
+\end{table}
+
+%------------------------%
+%          cont          %
+%------------------------%
+\clearpage
+\section*{\texttt{cont} -- Base Continuation Toolbox}
+
+These are found by running \verb!atlas_1d_settings! in the Matlab console.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{l|l|l|l}
+    \textbf{Setting} & \textbf{Description}                                                                                               & \textbf{Value Type} & \textbf{Default Value} \\[1ex] \hline
+    \verb!PtMX!      & \begin{tabular}[c]{@{}l@{}}Maximum number of steps in either\\ direction along the solution manifold.\end{tabular} & integer             & \verb!100!             \\[1ex]
+    \verb!NAdapt!    & Adaption period for mesh grid?                                                                                     & integer             & \verb!0!               \\[1ex]
+    \verb!h0!        & Initial step size                                                                                                  & float               & \verb!0.1!             \\[1ex]
+    \verb!h_max!     & Maximum step size                                                                                                  & float               & \verb!0.5!             \\[1ex]
+    \verb!h_min!     & Minimum step size                                                                                                  & float               & \verb!0.01!            \\[1ex]
+    \verb!FP!        & Detect fold points                                                                                                 & logical             & \verb!true!            \\[1ex]
+    \verb!fpar!      & Active continuation parameter for fold detection                                                                   & string              & \verb!''!              \\[1ex]
+    \verb!BP!        & Detect branch points                                                                                               & logical             & \verb!true!            \\[1ex]
+    \verb!RMMX!      & Max number of remesh sweeps                                                                                        & integer             & \verb!10!              \\[1ex]
+    \verb!h_fac_max! & Maximum step size adaption factor                                                                                  & float               & \verb!2.0!             \\[1ex]
+    \verb!h_fac_min! & Minimum step size adaption factor                                                                                  & float               & \verb!0.5!             \\[1ex]
+    \verb!MaxRES!    & Maximum residual norm in prediction                                                                                & float               & \verb!0.1!             \\[1ex]
+    \verb!al_max!    & Max angle between consecutive tangents                                                                             & float               & \verb!7.0!             \\[1ex]
+    \verb!ga!        & Adaption security factor                                                                                           & float               & \verb!0.95!            \\[1ex]
+    \verb!bi_direct! & Go in both directions or not                                                                                       & logical             & \verb!true!            \\[1ex]
+    \verb!interp!    & cseg interpolation                                                                                                 & string              & \verb!'cubic'!         \\[1ex]
+    \verb!Valpha!    & Tolerance for ``vertical tangent''                                                                                 & float               & \verb!800.0!           \\[1ex]
+    \verb!NullItMX!  & Max number of nullspace corrections                                                                                & integer             & \verb!0!               \\[1ex]
+    \verb!norm!      & Norm for step size                                                                                                 & float               & \verb!2.0!             \\[1ex]
+    \verb!NPR!       & Frequency of screen outputs                                                                                        & integer             & \verb!10!              \\[1ex]
+    \verb!NSV!       & Frequency of storing solutions to disk (default to NPR)                                                            & integer             & \verb!10!              \\[1ex]
+    \verb!corrector! & Nonlinear corrector                                                                                                & string              & \verb!'nwtn'!          \\[1ex]
+    \verb!linsolve!  & Linear solver                                                                                                      & string              & \verb!'splu'!          \\[1ex]
+    \verb!atlas!     & Atlas algorithm suffix                                                                                             & string              & \verb!''!
+  \end{tabular}
+\end{table}
+
+%----------------------%
+%          po          %
+%----------------------%
+\clearpage
+\section*{\texttt{po} -- Periodic Orbit Toolbox}
+
+These are found by running \verb!po_settings! in the Matlab console.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{l|l|l|l}
+    \textbf{Setting} & \textbf{Description}                     & \textbf{Value Type} & \textbf{Default Value} \\[1ex] \hline
+    \verb!bifus!     & Enable/disable detection of bifurcations & logical             & \verb!true!            \\[1ex]
+    \verb!USTAB!     & Monitor number of unstable  eigenvalues  & logical             & \verb!true!            \\[1ex]
+    \verb!SN!        & Detect saddle-node bifurcations          & logical             & \verb!true!            \\[1ex]
+    \verb!PD!        & Detect period-doubling bifurcations      & logical             & \verb!true!            \\[1ex]
+    \verb!TR!        & Detect torus bifurcations                & logical             & \verb!true!            \\[1ex]
+    \verb!NSA!       & Detect neutral saddle points             & logical             & \verb!false!           
+  \end{tabular}
+\end{table}
+
+%----------------------%
+%          ep          %
+%----------------------%
+\section*{\texttt{ep} -- Equilibrium Point Toolbox}
+
+These are found by running \verb!ep_settings! in the Matlab console.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{l|l|l|l}
+    \textbf{Setting} & \textbf{Description}                     & \textbf{Value Type} & \textbf{Default Value} \\[1ex] \hline
+    \verb!bifus!     & Enable/disable detection of bifurcations & logical             & \verb!true!            \\[1ex]
+    \verb!USTAB!     & Monitor number of unstable  eigenvalues  & logical             & \verb!true!            \\[1ex]
+    \verb!SN!        & Detect saddle-node bifurcations          & logical             & \verb!true!            \\[1ex]
+    \verb!HB!        & Detect Hopf bifurcations                 & logical             & \verb!true!            \\[1ex]
+    \verb!BTP!       & Detect Bogdanov-Takens points            & logical             & \verb!true!            \\[1ex]
+    \verb!NSA!       & Detect neutral saddle points             & logical             & \verb!false!           
+  \end{tabular}
+\end{table}
+
+%================================================================================%
+%                                  END DOCUMENT                                  %
+%================================================================================%
+\end{document}
