@@ -10,7 +10,7 @@ Here is an outline of the method used to implement Lin's method.
    the data structure `data_bcs` in the script `lins_method_setup.m`.
 
 2. Construct instances of the `coll` toolbox for the unstable and stable manifolds, with
-   ```matlab
+   ```MATLAB
    % Create COCO problem structure
    prob = coco_prob();
    % Construct instance of unstable manifold, with conditions pre-defined in data_bcs
@@ -24,7 +24,7 @@ Here is an outline of the method used to implement Lin's method.
    ```
 
 3. Further continuations are built using the `ode_coll2coll` constructor:
-   ```matlab
+   ```MATLAB
    % Create COCO problem structure
    prob = coco_prob();
    % Reconstruct unstable manifold from previous solution
@@ -41,7 +41,7 @@ Here is an outline of the method used to implement Lin's method.
 4. When closing the Lin gap, we need to add the Lin gap conditions. The Lin gap vector and initial 
    distance are calculated with the `find_lingap_vector()` function, and saved to the `data_lins`
    data structure.
-   ```matlab
+   ```MATLAB
    prob = previous code...
    % Calculate the Lin gap vector, and initial distance.
    data_lins = find_lingap_vector(previous_run_string_identifier, previous_solution_label);
@@ -59,7 +59,7 @@ This is an example of a heteroclinic E-to-P connection in the Lorenz system of e
 This is an example of using Lin's method using the `coll` toolbox to solve for the heteroclinic in a 3-dimensional system with three system parameters.
 
 This is also an example on how to compute **Floquet bundles** directly by first computing the **monodromy matrix**. The monodromy matrix is computed by setting up a variational problem in the `po` toolbox with
-```matlab
+```MATLAB
 % Create COCO problem structure
 prob = coco_prob();
 % Turn of bifurcation detection (this won't work otherwise)

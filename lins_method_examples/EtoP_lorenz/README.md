@@ -17,7 +17,7 @@ The heteroclinic is solved using Lin's method in several steps:
 2. Continue family of periodic orbits emanating from the Hopf bifurcation
 
    A family of periodic orbtis is computed from the Hopf bifurcation using the `po` toolbox, with constructor `ode_HB2po`. As we will calculate an E-to-P connection, we need to calculate the stable Floquet vector of the periodic orbit. We do this by computing the **monodromy matrix** of the periodic orbit as a variational problem. This achieved with the following code:
-   ```matlab
+   ```MATLAB
    % Create COCO problem structure
    prob = coco_prob();
    % Turn of bifurcation detection (this won't work otherwise)
@@ -40,7 +40,7 @@ The heteroclinic is solved using Lin's method in several steps:
 3. Construct the problem
    
    The problem itself is constructed as two collocation segments in `./continuation_scripts/lins_method_unstable_manifold.m`, with two calls to the COCO constructor `ode_isol2coll`, and a periodic-orbit-to-periodic-orbit call with `ode_po2po`:
-   ```matlab
+   ```MATLAB
    % Create COCO problem structure
    prob = coco_prob();
    % Turn of bifurcation detection (this won't work otherwise)
