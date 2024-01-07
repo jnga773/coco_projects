@@ -53,7 +53,7 @@
 % Create the title page thing
 \maketitle
 
-The following settings are for each of the toolboxes included in the base COCO software: \verb!atlas_1d!, \verb!ode!, \verb!ep!, \verb!po!, and \verb!coll!. 
+The following settings are for each of the toolboxes included in the base COCO software: \verb!atlas_1d!, \verb!ode!, \verb!ep!, \verb!po!, and \verb!coll!.
 
 The options can be set with: \verb!prob = coco_set(prob, 'TOOLBOX_NAME', [SETTING], [VALUE])!
 
@@ -67,11 +67,11 @@ These are found by running \verb!ode_settings! in the Matlab console.
 \begin{table}[h]
   \centering
   \begin{tabular}{l|l|l|l}
-    \textbf{Setting}  & \textbf{Description}                             & \textbf{Value Type} & \textbf{Default Value} \\[1ex] \hline
-    \verb!vectorized! & Enable/disable vectorised evaluation             & logical             & \verb!true!            \\[1ex]
-    \verb!autonomous! & Indicate whether the ODE is autonomous or not    & logical             & \verb!true!            \\[1ex]
-    \verb!hfac1!      & First-order finite-difference step size          & float               & \verb!1e-08!           \\[1ex]
-    \verb!hfac2!      & Second-order finite-difference step size         & float               & \verb!1e-04!         
+    \textbf{Setting}  & \textbf{Description}                          & \textbf{Value Type} & \textbf{Default Value} \\[1ex] \hline
+    \verb!vectorized! & Enable/disable vectorised evaluation          & logical             & \verb!true!            \\[1ex]
+    \verb!autonomous! & Indicate whether the ODE is autonomous or not & logical             & \verb!true!            \\[1ex]
+    \verb!hfac1!      & First-order finite-difference step size       & float               & \verb!1e-08!           \\[1ex]
+    \verb!hfac2!      & Second-order finite-difference step size      & float               & \verb!1e-04!
   \end{tabular}
 \end{table}
 
@@ -86,20 +86,20 @@ These are found by running \verb!coll_settings! in the Matlab console.
 \begin{table}[h]
   \centering
   \begin{tabular}{l|l|l|l}
-    \textbf{Setting} & \textbf{Description}                                                                                             & \textbf{Value Type} & \textbf{Default Value} \\[1ex] \hline
-    \verb!var!       & \begin{tabular}[c]{@{}l@{}}Enable/disable temporay storage of solution to\\ variational problem\end{tabular}     & logical             & \verb!false!           \\[1ex]
-    \verb!NTST!      & Number of mesh intervals                                                                                         & integer             & \verb!10!              \\[1ex]
-    \verb!NCOL!      & Number of collocation nodes                                                                                      & integer             & \verb!4!               \\[1ex]
-    \verb!SAD!       & Equidistribution weight for error estimator                                                                      & float               & \verb!0.95!            \\[1ex]
-    \verb!method!    & Choice of Banach iteration boundary condition                                                                    & string              & \verb!'3I'!            \\[1ex]
-    \verb!NBeta!     & \begin{tabular}[c]{@{}l@{}}Number of homotopy steps for initialisation of\\ fundamental solution\end{tabular}    & integer             & \verb!5!               \\[1ex]
-    \verb!NBItMX!    & Discretisation error tolerance                                                                                   & integer             & \verb!10!              \\[1ex]
-    \verb!TOL!       & Discretisation error tolerance                                                                                   & float               & \verb!1e-4!            \\[1ex]
-    \verb!MXCL!      & \begin{tabular}[c]{@{}l@{}}Enable/disable termination when discretisation\\ error exceeds tolerance\end{tabular} & logical             & \verb!true!            \\[1ex]
-    \verb!TOLINC!    & \begin{tabular}[c]{@{}l@{}}Upper bound on discretisation error in window\\ of adapation\end{tabular}             & float               & \verb!2e-5!            \\[1ex]
-    \verb!TOLDEC!    & \begin{tabular}[c]{@{}l@{}}Lower bound on discretisation error in window\\ of adapation\end{tabular}             & float               & \verb!5e-6!            \\[1ex]
-    \verb!NTSTMN!    & Minimum number of discretisation intervals                                                                       & integer             & \verb!5!               \\[1ex]
-    \verb!NTSTMX!    & Maximum number of discretisation intervals                                                                       & integer             & \verb!100!
+    \textbf{Setting} & \textbf{Description}                                                                                                & \textbf{Value Type} & \textbf{Default Value} \\[1ex] \hline
+    \verb!var!       & \begin{tabular}[c]{@{}l@{}} Enable/disable temporary storage of solution to\\ variational problem \end{tabular}     & logical             & \verb!false!           \\[1ex]
+    \verb!NTST!      & Number of mesh intervals                                                                                            & integer             & \verb!10!              \\[1ex]
+    \verb!NCOL!      & Number of collocation nodes                                                                                         & integer             & \verb!4!               \\[1ex]
+    \verb!SAD!       & Equidistribution weight for error estimator                                                                         & float               & \verb!0.95!            \\[1ex]
+    \verb!method!    & Choice of Banach iteration boundary condition                                                                       & string              & \verb!'3I'!            \\[1ex]
+    \verb!NBeta!     & \begin{tabular}[c]{@{}l@{}} Number of homotopy steps for initialisation of \\ fundamental solution \end{tabular}    & integer             & \verb!5!               \\[1ex]
+    \verb!NBItMX!    & \begin{tabular}[c]{@{}l@{}} Maximum number of Banach iterations for fundamental \\ solution \end{tabular}           & integer             & \verb!10!              \\[1ex]
+    \verb!TOL!       & Discretisation error tolerance                                                                                      & float               & \verb!1e-4!            \\[1ex]
+    \verb!MXCL!      & \begin{tabular}[c]{@{}l@{}} Enable/disable termination when discretisation \\ error exceeds tolerance \end{tabular} & logical             & \verb!true!            \\[1ex]
+    \verb!TOLINC!    & \begin{tabular}[c]{@{}l@{}} Upper bound on discretisation error in window \\ of adaption \end{tabular}              & float               & \verb!2e-5!            \\[1ex]
+    \verb!TOLDEC!    & \begin{tabular}[c]{@{}l@{}} Lower bound on discretisation error in window \\ of adaption \end{tabular}              & float               & \verb!5e-6!            \\[1ex]
+    \verb!NTSTMN!    & Minimum number of discretisation intervals                                                                          & integer             & \verb!5!               \\[1ex]
+    \verb!NTSTMX!    & Maximum number of discretisation intervals                                                                          & integer             & \verb!100!
   \end{tabular}
 \end{table}
 
@@ -114,31 +114,31 @@ These are found by running \verb!atlas_1d_settings! in the Matlab console.
 \begin{table}[h]
   \centering
   \begin{tabular}{l|l|l|l}
-    \textbf{Setting} & \textbf{Description}                                                                                               & \textbf{Value Type} & \textbf{Default Value} \\[1ex] \hline
-    \verb!PtMX!      & \begin{tabular}[c]{@{}l@{}}Maximum number of steps in either\\ direction along the solution manifold.\end{tabular} & integer             & \verb!100!             \\[1ex]
-    \verb!NAdapt!    & Adaption period for mesh grid?                                                                                     & integer             & \verb!0!               \\[1ex]
-    \verb!h0!        & Initial step size                                                                                                  & float               & \verb!0.1!             \\[1ex]
-    \verb!h_max!     & Maximum step size                                                                                                  & float               & \verb!0.5!             \\[1ex]
-    \verb!h_min!     & Minimum step size                                                                                                  & float               & \verb!0.01!            \\[1ex]
-    \verb!FP!        & Detect fold points                                                                                                 & logical             & \verb!true!            \\[1ex]
-    \verb!fpar!      & Active continuation parameter for fold detection                                                                   & string              & \verb!''!              \\[1ex]
-    \verb!BP!        & Detect branch points                                                                                               & logical             & \verb!true!            \\[1ex]
-    \verb!RMMX!      & Max number of remesh sweeps                                                                                        & integer             & \verb!10!              \\[1ex]
-    \verb!h_fac_max! & Maximum step size adaption factor                                                                                  & float               & \verb!2.0!             \\[1ex]
-    \verb!h_fac_min! & Minimum step size adaption factor                                                                                  & float               & \verb!0.5!             \\[1ex]
-    \verb!MaxRES!    & Maximum residual norm in prediction                                                                                & float               & \verb!0.1!             \\[1ex]
-    \verb!al_max!    & Max angle between consecutive tangents                                                                             & float               & \verb!7.0!             \\[1ex]
-    \verb!ga!        & Adaption security factor                                                                                           & float               & \verb!0.95!            \\[1ex]
-    \verb!bi_direct! & Go in both directions or not                                                                                       & logical             & \verb!true!            \\[1ex]
-    \verb!interp!    & cseg interpolation                                                                                                 & string              & \verb!'cubic'!         \\[1ex]
-    \verb!Valpha!    & Tolerance for ``vertical tangent''                                                                                 & float               & \verb!800.0!           \\[1ex]
-    \verb!NullItMX!  & Max number of nullspace corrections                                                                                & integer             & \verb!0!               \\[1ex]
-    \verb!norm!      & Norm for step size                                                                                                 & float               & \verb!2.0!             \\[1ex]
-    \verb!NPR!       & Frequency of screen outputs                                                                                        & integer             & \verb!10!              \\[1ex]
-    \verb!NSV!       & Frequency of storing solutions to disk (default to NPR)                                                            & integer             & \verb!10!              \\[1ex]
-    \verb!corrector! & Nonlinear corrector                                                                                                & string              & \verb!'nwtn'!          \\[1ex]
-    \verb!linsolve!  & Linear solver                                                                                                      & string              & \verb!'splu'!          \\[1ex]
-    \verb!atlas!     & Atlas algorithm suffix                                                                                             & string              & \verb!''!
+    \textbf{Setting} & \textbf{Description}                                                                                                 & \textbf{Value Type} & \textbf{Default Value} \\[1ex] \hline
+    \verb!PtMX!      & \begin{tabular}[c]{@{}l@{}} Maximum number of steps in either \\ direction along the solution manifold \end{tabular} & integer             & \verb!100!             \\[1ex]
+    \verb!NAdapt!    & Adaption period for mesh grid?                                                                                       & integer             & \verb!0!               \\[1ex]
+    \verb!h0!        & Initial step size                                                                                                    & float               & \verb!0.1!             \\[1ex]
+    \verb!h_max!     & Maximum step size                                                                                                    & float               & \verb!0.5!             \\[1ex]
+    \verb!h_min!     & Minimum step size                                                                                                    & float               & \verb!0.01!            \\[1ex]
+    \verb!FP!        & Detect fold points                                                                                                   & logical             & \verb!true!            \\[1ex]
+    \verb!fpar!      & Active continuation parameter for fold detection                                                                     & string              & \verb!''!              \\[1ex]
+    \verb!BP!        & Detect branch points                                                                                                 & logical             & \verb!true!            \\[1ex]
+    \verb!RMMX!      & Max number of remesh sweeps                                                                                          & integer             & \verb!10!              \\[1ex]
+    \verb!h_fac_max! & Maximum step size adaption factor                                                                                    & float               & \verb!2.0!             \\[1ex]
+    \verb!h_fac_min! & Minimum step size adaption factor                                                                                    & float               & \verb!0.5!             \\[1ex]
+    \verb!MaxRES!    & Maximum residual norm in prediction                                                                                  & float               & \verb!0.1!             \\[1ex]
+    \verb!al_max!    & Max angle between consecutive tangents                                                                               & float               & \verb!7.0!             \\[1ex]
+    \verb!ga!        & Adaption security factor                                                                                             & float               & \verb!0.95!            \\[1ex]
+    \verb!bi_direct! & Go in both directions or not                                                                                         & logical             & \verb!true!            \\[1ex]
+    \verb!interp!    & cseg interpolation                                                                                                   & string              & \verb!'cubic'!         \\[1ex]
+    \verb!Valpha!    & Tolerance for ``vertical tangent''                                                                                   & float               & \verb!800.0!           \\[1ex]
+    \verb!NullItMX!  & Max number of nullspace corrections                                                                                  & integer             & \verb!0!               \\[1ex]
+    \verb!norm!      & Norm for step size                                                                                                   & float               & \verb!2.0!             \\[1ex]
+    \verb!NPR!       & Frequency of screen outputs                                                                                          & integer             & \verb!10!              \\[1ex]
+    \verb!NSV!       & Frequency of storing solutions to disk (default to NPR)                                                              & integer             & \verb!10!              \\[1ex]
+    \verb!corrector! & Nonlinear corrector                                                                                                  & string              & \verb!'nwtn'!          \\[1ex]
+    \verb!linsolve!  & Linear solver                                                                                                        & string              & \verb!'splu'!          \\[1ex]
+    \verb!atlas!     & Atlas algorithm suffix                                                                                               & string              & \verb!''!
   \end{tabular}
 \end{table}
 
@@ -159,7 +159,7 @@ These are found by running \verb!po_settings! in the Matlab console.
     \verb!SN!        & Detect saddle-node bifurcations          & logical             & \verb!true!            \\[1ex]
     \verb!PD!        & Detect period-doubling bifurcations      & logical             & \verb!true!            \\[1ex]
     \verb!TR!        & Detect torus bifurcations                & logical             & \verb!true!            \\[1ex]
-    \verb!NSA!       & Detect neutral saddle points             & logical             & \verb!false!           
+    \verb!NSA!       & Detect neutral saddle points             & logical             & \verb!false!
   \end{tabular}
 \end{table}
 
@@ -179,7 +179,7 @@ These are found by running \verb!ep_settings! in the Matlab console.
     \verb!SN!        & Detect saddle-node bifurcations          & logical             & \verb!true!            \\[1ex]
     \verb!HB!        & Detect Hopf bifurcations                 & logical             & \verb!true!            \\[1ex]
     \verb!BTP!       & Detect Bogdanov-Takens points            & logical             & \verb!true!            \\[1ex]
-    \verb!NSA!       & Detect neutral saddle points             & logical             & \verb!false!           
+    \verb!NSA!       & Detect neutral saddle points             & logical             & \verb!false!
   \end{tabular}
 \end{table}
 
