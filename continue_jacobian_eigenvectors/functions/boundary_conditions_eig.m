@@ -27,17 +27,21 @@ function [data_in, y_out] = boundary_conditions_eig(prob_in, data_in, u_in)
   % data_in : structure
   %     Not actually output here but you need to have it for COCO.
 
+  % State space and parameter vector dimensions
+  xdim = data_in.xdim;
+  pdim = data_in.pdim;
+
   %--------------------------%
   %     Input Parameters     %
   %--------------------------%
   % Equilibrium point
-  x0_ss      = u_in(1:2);
+  x0_ss      = u_in(1 : xdim);
   % System parameters
-  parameters = u_in(3);
+  parameters = u_in((xdim + 1):(xdim + pdim));
   % Eigenvector
-  eig_vec    = u_in(4:5);
+  eig_vec    = u_in((xdim + pdim + 1):end-1);
   % Eigenvalue
-  eig_val    = u_in(6);
+  eig_val    = u_in(end);
 
   %----------------------------%
   %     Calculate Jacobian     %
