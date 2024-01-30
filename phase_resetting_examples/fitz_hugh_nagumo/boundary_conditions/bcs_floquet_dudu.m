@@ -1,12 +1,7 @@
-function [data_in, y_out] = bcs_floquet(prob_in, data_in, u_in)
-  % [data_in, y_out] = bcs_floquet(prob_in, data_in, u_in)
+function [data_in, H_out] = bcs_floquet_dudu(prob_in, data_in, u_in)
+  % [data_in, H_out] = bcs_floquet_dudu(prob_in, data_in, u_in)
   %
-  % Boundary conditions for the Floquet multipliers with the adjoint equation
-  %                  d/dt w = -J^{T} w    .
-  % The boundary conditions we require are the eigenvalue equations and that
-  % the norm of w is equal to 1:
-  %                   w(1) = \mu_{f} w(0) ,                         (1)
-  %                norm(w) = w_norm       .                         (2)
+  % Hessian of the boundary conditions of the Floquet adjoint problem.
   %
   % Input
   % ----------
@@ -24,8 +19,8 @@ function [data_in, y_out] = bcs_floquet(prob_in, data_in, u_in)
   %
   % Output
   % ----------
-  % y_out : array of vectors
-  %     An array containing to the two boundary conditions.
+  % H_out : matrix of floats
+  %     The Hessian w.r.t. u-vector components of the boundary conditions.
   % data_in : structure
   %     Function data structure to give dimensions of parameter and state
   %     space.
@@ -48,17 +43,19 @@ function [data_in, y_out] = bcs_floquet(prob_in, data_in, u_in)
   % Norm of w
   w_norm = u_in(end);
 
-  %--------------------------%
-  %     Calculate Things     %
-  %--------------------------%
-  % Adjoint boundary conditions
-  bcs_adjt_1 = w1 - (mu_s * w0);
-  bcs_adjt_2 = (w0' * w0) - w_norm;
-
   %----------------%
   %     Output     %
   %----------------%
-  y_out = [bcs_adjt_1;
-           bcs_adjt_2];
+  % The Hessian
+  H_out = zeros(3, 6, 6);
+
+  H_out(1, 1, 5) = -1;
+  H_out(1, 5, 1) = -1;
+
+  H_out(2, 2, 5) = -1;
+  H_out(2, 5, 2) = -1;
+
+  H_out(3, 1, 1) = 2;
+  H_out(3, 2, 2) = 2;
 
 end

@@ -14,9 +14,13 @@ addpath('./boundary_conditions/');
 addpath('./continuation_scripts/');
 addpath('./plotting_scripts/');
 
+% Symbolic functions
+addpath('./functions/symbolic/');
+addpath('./boundary_conditions/symbolic/');
+
 % Figure saving switch
-% save_figure = true;
-save_figure = false;
+save_figure = true;
+% save_figure = false;
 
 %--------------------%
 %     COCO Setup     %
@@ -38,8 +42,12 @@ x0 = [0.2729; 0.5339];
 pdim = length(p0);
 xdim = length(x0);
 
-% List of functions
-func_list = {@fhn, @fhn_DFDX, @fhn_DFDP};
+%------------------------%
+%     Function Lists     %
+%------------------------%
+% List of vector field functions
+% func_list = {@fhn, @fhn_DFDX, @fhn_DFDP};
+[~, func_list] = symbolic_fhm();
 
 %-------------------------------------------------------------------------%
 %%                         Initial Continuation                          %%
@@ -50,6 +58,10 @@ func_list = {@fhn, @fhn_DFDX, @fhn_DFDP};
 
 % Add continuation scripts to path
 addpath('./continuation_scripts/initial_periodic_orbit/');
+
+% List of periodic orbit boundary condition functions
+bcs_funcs.bcs_PO_list  = symbolic_bcs_PO();
+bcs_funcs.bcs_adj_list = symbolic_bcs_floquet();
 
 %-------------------------------------%
 %%     Compute Equilibrium Point     %%
@@ -159,6 +171,39 @@ floquet_wnorm;
 % Add continuation scripts to path
 addpath('./continuation_scripts/phase_reset/');
 
+%------------------------%
+%     Function Lists     %
+%------------------------%
+% HARDCODED: Function lists
+% seg1_list = {@func_seg1, [], []};
+% seg2_list = {@func_seg2, [], []};
+% seg3_list = {@func_seg3, [], []};
+% seg4_list = {@func_seg4, [], []};
+
+% HARDCODED: Boundary conditions
+% bcs_funcs.bcs_seg1_seg2_list = {@bcs_PR_seg1_seg2};
+% bcs_funcs.bcs_seg1_seg2_list = {@bcs_PR_seg1_seg2, @bcs_PR_seg1_seg2_du};
+% bcs_funcs.bcs_seg1_seg2_list = {@bcs_PR_seg1_seg2, @bcs_PR_seg1_seg2_du, @bcs_PR_seg1_seg2_dudu};
+
+% bcs_funcs.bcs_seg3_list      = {@bcs_PR_seg3};
+% bcs_funcs.bcs_seg3_list      = {@bcs_PR_seg3, @bcs_PR_seg3_du};
+% bcs_funcs.bcs_seg3_list      = {@bcs_PR_seg3, @bcs_PR_seg3_du, @bcs_PR_seg3_dudu};
+
+bcs_funcs.bcs_seg4_list      = {@bcs_PR_seg4};
+% bcs_funcs.bcs_seg4_list      = {@bcs_PR_seg4, @bcs_PR_seg4_du};
+% bcs_funcs.bcs_seg4_list      = {@bcs_PR_seg4, @bcs_PR_seg4_du, @bcs_PR_seg4_dudu};
+
+% SYMBOLIC: Function Lists
+seg1_list = symbolic_func_seg1();
+seg2_list = symbolic_func_seg2();
+seg3_list = symbolic_func_seg3();
+seg4_list = symbolic_func_seg4();
+
+% SYMBOLIC: Boundary conditions
+bcs_funcs.bcs_seg1_seg2_list = symbolic_bcs_PR_seg1_seg2();
+bcs_funcs.bcs_seg3_list      = symbolic_bcs_PR_seg3();
+% bcs_funcs.bcs_seg4_list      = symbolic_bcs_PR_seg4();
+
 %-------------------------------------------------------%
 %%     First Continuation: theta_new and theta_old     %%
 %-------------------------------------------------------%
@@ -177,5 +222,5 @@ phase_reset_1;
 run_names.phase_response_curve_2 = 'run09_phase_response_curve_2';
 
 % Run continuation script
-phase_reset_isochron_test;
-% phase_reset_isochron_all;
+% phase_reset_isochron_test;
+phase_reset_isochron_all;

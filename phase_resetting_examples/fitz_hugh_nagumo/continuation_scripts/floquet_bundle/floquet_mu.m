@@ -30,6 +30,10 @@ fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
 %--------------------------%
 data_adjoint = calc_initial_solution_adjoint_problem(run_old, label_old);
 
+% Function list
+% func_list = {@floquet_adjoint, [], []};
+func_list_adj = symbolic_floquet_adjoint();
+
 %------------------------------------%
 %     Setup Floquet Continuation     %
 %------------------------------------%
@@ -42,12 +46,12 @@ prob = coco_set(prob, 'cont', 'PtMX', 1500);
 prob = coco_set(prob, 'coll', 'NTST', 50);
 
 % Add segment as initial solution
-prob = ode_isol2coll(prob, 'adjoint', @floquet_adjoint, ...
+prob = ode_isol2coll(prob, 'adjoint', func_list_adj{:}, ...
                      data_adjoint.t0, data_adjoint.x0, ...
                      data_adjoint.pnames, data_adjoint.p0);
 
 % Apply boundary conditions
-prob = apply_floquet_boundary_conditions(prob);
+prob = apply_floquet_boundary_conditions(prob, bcs_funcs);
 
 % Run COCO
 coco(prob, run_new, [], 1, {'mu_s', 'w_norm'} , [0.0, 1.1]);

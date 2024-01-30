@@ -1,6 +1,6 @@
 % % Add this function with the following code:
 % % Add boundary conditions for segments 1 and 2
-% prob = coco_add_func(prob, 'bcs_PR_seg1_seg2', @bcs_PR_seg1_seg2, data1, 'zero', 'uidx', ...
+% prob = coco_add_func(prob, 'bcs_PR_seg1_seg2', @bcs_PR_seg1_seg2, data_in, 'zero', 'uidx', ...
 %                      [uidx1(maps1.x0_idx);
 %                       uidx2(maps2.x0_idx);
 %                       uidx1(maps1.x1_idx);
@@ -47,9 +47,12 @@ function [data_in, y_out] = bcs_PR_seg1_seg2(prob_in, data_in, u_in)
   %     Function data structure to give dimensions of parameter and state
   %     space.
 
+  % (defined in calc_PR_initial_conditions.m)
   % Original vector space dimensions
-  xdim = data_in.xdim;
-  pdim = data_in.pdim;
+  xdim   = data_in.xdim;
+  pdim   = data_in.pdim;
+  % Parameter maps
+  p_maps = data_in.p_maps;
 
   %---------------%
   %     Input     %
@@ -85,27 +88,32 @@ function [data_in, y_out] = bcs_PR_seg1_seg2(prob_in, data_in, u_in)
 
   % Phase resetting parameters
   % Integer for period
-  k             = parameters(pdim+1);
+  % k             = parameters(p_maps.k);
   % Stable Floquet eigenvalue
-  mu_s          = parameters(pdim+2);
-  % Phase where perturbation starts
-  theta_old     = parameters(pdim+3);
-  % Phase where segment comes back to \Gamma
-  theta_new     = parameters(pdim+4);
-  % Angle of perturbation
-  theta_perturb = parameters(pdim+5);
+  mu_s          = parameters(p_maps.mu_s);
   % Distance from pertured segment to \Gamma
-  eta           = parameters(pdim+6);
+  % eta           = parameters(p_maps.eta);
+  % Phase where perturbation starts
+  % theta_old     = parameters(p_maps.theta_old);
+  % Phase where segment comes back to \Gamma
+  % theta_new     = parameters(p_maps.theta_new);
+  % Angle of perturbation
+  % theta_perturb = parameters(p_maps.theta_perturb);
   % Size of perturbation
-  A             = parameters(pdim+7);
+  % A             = parameters(p_maps.A);
 
   %--------------------------%
   %     Calculate Things     %
   %--------------------------%
+  % Identity matrix
+  ones_matrix = eye(xdim);
+  % First component unit vector
+  e1 = ones_matrix(1, :);
+
   % Boundary Conditions - Segments 1 and 2
   bcs_seg12_1   = x0_seg1 - x1_seg2;
   bcs_seg12_2   = x1_seg1 - x0_seg2;
-  bcs_seg12_3   = [1, 0] * fhn(x0_seg1, p_system);
+  bcs_seg12_3   = e1 * fhn(x0_seg1, p_system);
 
   % Adjoint Boundary Conditions - Segments 1 and 2
   a_bcs_seg12_1 = w0_seg1 - w1_seg2;

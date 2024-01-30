@@ -49,7 +49,7 @@ prob = coco_set(prob, 'cont', 'PtMX', 200);
 NTST(1) = 50;
 NTST(2) = 20;
 NTST(3) = 20;
-NTST(4) = 50 * data_PR.p0_data.k;
+NTST(4) = 50 * data_PR.p0_initial.k;
 
 %------------------------------------%
 %     Create Trajectory Segments     %
@@ -59,26 +59,26 @@ NTST(4) = 50 * data_PR.p0_data.k;
 %             point (gamma_0) to the point where the perturbed trajectory 
 %             comes close to the periodic orbit (at theta_new).
 prob = coco_set(prob, 'coll', 'NTST', NTST(1));
-prob = ode_isol2coll(prob, 'seg1', @func_seg1, ...
+prob = ode_isol2coll(prob, 'seg1', seg1_list{:}, ...
                      data_PR.t_seg1, data_PR.x_seg1, data_PR.p0);
 
 % Segment 2 - Trajectory segment of the periodic from the end of Segment 1
 %             (at theta_new) back to the zero-phase point (gamma_0).
 prob = coco_set(prob, 'coll', 'NTST', NTST(2));
-prob = ode_isol2coll(prob, 'seg2', @func_seg2, ...
+prob = ode_isol2coll(prob, 'seg2', seg2_list{:}, ...
                      data_PR.t_seg2, data_PR.x_seg2, data_PR.p0);
 
 % Segment 3 - Trajectory segment of the periodic orbit from the zero-phase
 %             point (gamma_0) to the point at which the perturbation is
 %             applied (theta_old).
 prob = coco_set(prob, 'coll', 'NTST', NTST(3));
-prob = ode_isol2coll(prob, 'seg3', @func_seg3, ...
+prob = ode_isol2coll(prob, 'seg3', seg3_list{:}, ...
                      data_PR.t_seg3, data_PR.x_seg3, data_PR.p0);   
 
 % Segment 4 - Trajectory segment of the perturbed trajectory, from
 %             theta_old to theta_new.
 prob = coco_set(prob, 'coll', 'NTST', NTST(4));
-prob = ode_isol2coll(prob, 'seg4', @func_seg4, ...
+prob = ode_isol2coll(prob, 'seg4', seg4_list{:}, ...
                      data_PR.t_seg4, data_PR.x_seg4, data_PR.p0);       
                      
 %----------------------------%
@@ -95,7 +95,7 @@ prob = ode_isol2ep(prob, 'singularity', @fhn, ...
 % Apply all boundary conditions, glue parameters together, and
 % all that other good COCO stuff. Looking the function file
 % if you need to know more ;)
-prob = glue_PR_conditions(prob, data_PR);
+prob = glue_PR_conditions(prob, data_PR, bcs_funcs);
 
 %-------------------------%
 %     Add COCO Events     %

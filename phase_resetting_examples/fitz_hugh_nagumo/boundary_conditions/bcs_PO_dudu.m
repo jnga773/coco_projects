@@ -1,11 +1,7 @@
-function [data_in, y_out] = bcs_PO(prob_in, data_in, u_in)
-  % [data_in, y_out] = bcs_PO(prob_in, data_in, u_in)
+function [data_in, H_out] = bcs_PO_dudu(prob_in, data_in, u_in)
+  % [data_in, H_out] = bcs_PO_dudu(prob_in, data_in, u_in)
   % 
-  % Boundary conditions for a periodic orbit,
-  %                           x(1) - x(0) = 0 ,
-  % in the 'coll' toolbox with the zero phase condition where:
-  %                         e . F(x(0)) = 0,
-  % that is, the first component of the vector field at t=0 is zero.
+  % Hessian of the periodic orbit boundary conditions.
   %
   % Input
   % ----------
@@ -22,8 +18,8 @@ function [data_in, y_out] = bcs_PO(prob_in, data_in, u_in)
   %
   % Output
   % ----------
-  % y_out : array of vectors
-  %     An array containing to the two boundary conditions.
+  % H_out : matrix of floats
+  %     The Hessian w.r.t. u-vector components of the boundary conditions.
   % data_in : structure
   %     Function data structure to give dimensions of parameter and state
   %     space.
@@ -42,23 +38,38 @@ function [data_in, y_out] = bcs_PO(prob_in, data_in, u_in)
   % Parameters
   parameters = u_in(2*xdim+1 : end);
 
-  %--------------------------%
-  %     Calculate Things     %
-  %--------------------------%
-  % Identity matrix
-  ones_matrix = eye(xdim);
-  % First component unit vector
-  e1 = ones_matrix(1, :);
-
-  % Periodic boundary conditions
-  bcs1 = x0 - x1;
-  % First component of the vector field is zero (phase condition)
-  bcs2 = e1 * fhn(x0, parameters(1:pdim));
+  % Actual parameters
+  c = parameters(1);
+  a = parameters(2);
+  b = parameters(3);
+  z = parameters(4);
 
   %----------------%
   %     Output     %
   %----------------%
-  y_out = [bcs1;
-           bcs2];
+  % The Hessian
+  H_out = zeros(3, 8, 8);
+
+  H_out(3, 1, 1) = -3 * c * x0(1);
+  H_out(3, 1, 5) = 1 - (3 / 2) * (x0(1) ^ 2);
+
+  H_out(3, 2, 5) = 1;
+
+  H_out(3, 5, 1) = 1 - (x0(1) ^ 2);
+  H_out(3, 5, 2) = 1;
+  H_out(3, 5, 8) = 1;
+
+  H_out(3, 8, 5) = 1;
+
+  % H_out(3, 1, 1) = -3 * c * x0(1);
+  % H_out(3, 5, 1) = 1 - (3 / 2) * (x0(1) ^ 2);
+
+  % H_out(3, 5, 2) = 1;
+
+  % H_out(3, 1, 5) = 1 - (x0(1) ^ 2);
+  % H_out(3, 2, 5) = 1;
+  % H_out(3, 8, 5) = 1;
+
+  % H_out(3, 5, 8) = 1;
 
 end

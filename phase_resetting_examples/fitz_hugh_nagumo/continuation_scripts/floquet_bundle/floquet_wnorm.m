@@ -34,7 +34,7 @@ prob = coco_prob();
 prob = ode_BP2coll(prob, 'adjoint', run_old, label_old);
 
 % Apply boundary conditions
-prob = apply_floquet_boundary_conditions(prob);
+prob = apply_floquet_boundary_conditions(prob, bcs_funcs);
 
 % Run COCO
 coco(prob, run_new, [], 1, {'w_norm', 'mu_s'} , [0, 1.0]);

@@ -4,8 +4,8 @@
 %                      [uidx1(maps1.x0_idx(1:2));
 %                       uidx3(maps3.x1_idx)]);
 
-function [data_in, y_out] = bcs_PR_seg3(prob_in, data_in, u_in)
-  % [data_in, y_out] = bcs_PR_seg3(prob_in, data_in, u_in)
+function bcs_coco_out = symbolic_bcs_PR_seg3()
+  % bcs_coco_out = bcs_PR_seg3()
   %
   % Boundary conditions for segment three of the phase reset
   % segments:
@@ -25,23 +25,23 @@ function [data_in, y_out] = bcs_PR_seg3(prob_in, data_in, u_in)
   %
   % Output
   % ----------
-  % y_out : array of vectors
-  %     An array containing the boundary conditions.
-  % data_in : structure
-  %     Function data structure to give dimensions of parameter and state
-  %     space.
-
-  % (defined in calc_PR_initial_conditions.m)
-  % Original vector space dimensions
-  xdim = data_in.xdim;
+  % bcs_coco_out : cell of function handles
+  %     List of CoCo-ified symbolic functions for the boundary conditions
+  %     Jacobian, and Hessian.
 
   %---------------%
   %     Input     %
   %---------------%
+  % State space variables
+  syms x1 x2 x3 x4
+
   % Segment 1 - x(0)
-  x0_seg1 = u_in(1 : xdim);
+  x0_seg1 = [x1; x2];
   % Segment 3 - x(1)
-  x1_seg3 = u_in(xdim+1 : end);
+  x1_seg3 = [x3; x4];
+
+  % Combined vector
+  uvec = [x0_seg1; x1_seg3];
 
   %--------------------------%
   %     Calculate Things     %
@@ -49,9 +49,23 @@ function [data_in, y_out] = bcs_PR_seg3(prob_in, data_in, u_in)
   % Boundary Conditions - Segment 3
   bcs_seg3 = x1_seg3 - x0_seg1;
 
+  % Boundary condition vector
+  bcs = bcs_seg3;
+
+  % CoCo-compatible encoding
+  filename_out = './boundary_conditions/symbolic/F_bcs_seg3';
+  bcs_coco = sco_sym2funcs(bcs, {uvec}, {'u'}, 'filename', filename_out);
+
+  % Function to "CoCo-ify" function outputs: [data_in, y_out] = f(prob_in, data_in, u_in)
+  cocoify = @(func_in) @(prob_in, data_in, u_in) deal(data_in, func_in(u_in));
+
   %----------------%
   %     Output     %
   %----------------%
-  y_out = bcs_seg3;
+  % List of functions
+  func_list = {cocoify(bcs_coco('')), cocoify(bcs_coco('u')), cocoify(bcs_coco({'u', 'u'}))};
+
+  % Output
+  bcs_coco_out = func_list;
 
 end

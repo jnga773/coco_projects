@@ -68,15 +68,15 @@ for solution = label_old
   % Apply all boundary conditions, glue parameters together, and
   % all that other good COCO stuff. Looking the function file
   % if you need to know more ;)
-  prob = glue_PR_conditions(prob, data_PR);
+  prob = glue_PR_conditions(prob, data_PR, bcs_funcs);
 
   % Extract indices and mappings
   [data1, uidx1]   = coco_get_func_data(prob, 'seg1.coll', 'data', 'uidx');
   maps1 = data1.coll_seg.maps;
 
   % Add zero function for isochron theta boundary conditions
-  prob = coco_add_func(prob , 'Delta', @bcs_isochron, data1, ...
-                       'zero','uidx', uidx1(maps1.p_idx([7, 8])));
+  prob = coco_add_func(prob , 'Delta', @bcs_isochron, data_PR, ...
+                       'zero','uidx', uidx1(maps1.p_idx));
 
   %--------------------------%
   %     Run Continuation     %

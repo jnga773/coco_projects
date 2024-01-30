@@ -1,4 +1,4 @@
-function prob_out = glue_PR_conditions(prob_in, data_in)
+function prob_out = glue_PR_conditions(prob_in, data_in, bcs_funcs_in)
   % prob_out = glue_PR_conditions(prob_in)
   %
   % Applies the various boundary conditions, adds monitor functions
@@ -25,12 +25,14 @@ function prob_out = glue_PR_conditions(prob_in, data_in)
   % Set the COCO problem
   prob = prob_in;
 
-  % Original dimensions of vector field
-  xdim          = data_in.xdim;
-  pdim          = data_in.pdim;
+  % (defined in calc_PR_initial_conditions.m)
+  % Original vector field dimensions
+  xdim            = data_in.xdim;
+  pdim            = data_in.pdim;
   % Create data structure for original vector field dimensions
-  dim_data.xdim = xdim;
-  dim_data.pdim = pdim;
+  dim_data.xdim   = xdim;
+  dim_data.pdim   = pdim;
+  dim_data.p_maps = data_in.p_maps;
 
   %-------------------------------%
   %     Continuation Settings     %
@@ -78,8 +80,13 @@ function prob_out = glue_PR_conditions(prob_in, data_in)
   %---------------------------------%
   %     Add Boundary Conditions     %
   %---------------------------------%
+  % Boundary condition function list
+  bcs_seg1_seg2_list = bcs_funcs_in.bcs_seg1_seg2_list;
+  bcs_seg3_list      = bcs_funcs_in.bcs_seg3_list;
+  bcs_seg4_list      = bcs_funcs_in.bcs_seg4_list;
+
   % Add boundary conditions for segments 1 and 2
-  prob = coco_add_func(prob, 'bcs_PR_seg1_seg2', @bcs_PR_seg1_seg2, dim_data, 'zero', 'uidx', ...
+  prob = coco_add_func(prob, 'bcs_PR_seg1_seg2', bcs_seg1_seg2_list{:}, dim_data, 'zero', 'uidx', ...
                        [uidx1(maps1.x0_idx);
                         uidx2(maps2.x0_idx);
                         uidx1(maps1.x1_idx);
@@ -87,12 +94,12 @@ function prob_out = glue_PR_conditions(prob_in, data_in)
                         uidx1(maps1.p_idx)]);
 
   % Add boundary conditions for segment 3
-  prob = coco_add_func(prob, 'bcs_PR_seg3', @bcs_PR_seg3, dim_data, 'zero', 'uidx', ...
+  prob = coco_add_func(prob, 'bcs_PR_seg3', bcs_seg3_list{:}, dim_data, 'zero', 'uidx', ...
                        [uidx1(maps1.x0_idx(1:xdim));
                         uidx3(maps3.x1_idx)]);
 
   % Add boundary conditions for segment 4
-  prob = coco_add_func(prob, 'bcs_PR_seg4', @bcs_PR_seg4, dim_data, 'zero', 'uidx', ...
+  prob = coco_add_func(prob, 'bcs_PR_seg4', bcs_seg4_list{:}, dim_data, 'zero', 'uidx', ...
                        [uidx2(maps2.x0_idx);
                         uidx3(maps3.x0_idx);
                         uidx4(maps4.x0_idx);

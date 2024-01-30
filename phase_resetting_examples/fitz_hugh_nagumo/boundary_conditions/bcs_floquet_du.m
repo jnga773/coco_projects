@@ -1,12 +1,8 @@
-function [data_in, y_out] = bcs_floquet(prob_in, data_in, u_in)
-  % [data_in, y_out] = bcs_floquet(prob_in, data_in, u_in)
+function [data_in, J_out] = bcs_floquet_du(prob_in, data_in, u_in)
+  % [data_in, y_out] = bcs_floquet_du(prob_in, data_in, u_in)
   %
-  % Boundary conditions for the Floquet multipliers with the adjoint equation
-  %                  d/dt w = -J^{T} w    .
-  % The boundary conditions we require are the eigenvalue equations and that
-  % the norm of w is equal to 1:
-  %                   w(1) = \mu_{f} w(0) ,                         (1)
-  %                norm(w) = w_norm       .                         (2)
+  % Jacobian of the boundary conditions of the Floquet adjoint
+  % problem.
   %
   % Input
   % ----------
@@ -24,8 +20,8 @@ function [data_in, y_out] = bcs_floquet(prob_in, data_in, u_in)
   %
   % Output
   % ----------
-  % y_out : array of vectors
-  %     An array containing to the two boundary conditions.
+  % J_out : matrix of floats
+  %     The Jacobian w.r.t. u-vector components of the boundary conditions.
   % data_in : structure
   %     Function data structure to give dimensions of parameter and state
   %     space.
@@ -48,17 +44,22 @@ function [data_in, y_out] = bcs_floquet(prob_in, data_in, u_in)
   % Norm of w
   w_norm = u_in(end);
 
-  %--------------------------%
-  %     Calculate Things     %
-  %--------------------------%
-  % Adjoint boundary conditions
-  bcs_adjt_1 = w1 - (mu_s * w0);
-  bcs_adjt_2 = (w0' * w0) - w_norm;
-
   %----------------%
   %     Output     %
   %----------------%
-  y_out = [bcs_adjt_1;
-           bcs_adjt_2];
+  % The Jacobian
+  J_out = zeros(3, 6);
+
+  J_out(1, 1) = -mu_s;
+  J_out(1, 3) = 1;
+  J_out(1, 5) = -w0(1);
+
+  J_out(2, 2) = -mu_s;
+  J_out(2, 4) = 1;
+  J_out(2, 5) = -w0(2);
+
+  J_out(3, 1) = 2 * w0(1);
+  J_out(3, 2) = 2 * w0(2);
+  J_out(3, 6) = -1;
 
 end

@@ -1,4 +1,4 @@
-function [data_in, y_out] = bcs_isochron(prob_in, data_in, u_in)
+function [data_in, y_out] = symbolic_bcs_isochron(prob_in, data_in, u_in)
   % [data_in, y_out] = bcs_isochron(prob_in, data_in, u_in)
   %
   % Boundary conditions for the isochron, that is:

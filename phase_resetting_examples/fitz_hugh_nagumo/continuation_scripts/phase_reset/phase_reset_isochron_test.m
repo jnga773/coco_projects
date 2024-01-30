@@ -38,7 +38,7 @@ prob = coco_set(prob, 'cont', 'h_max', 1.5);
 prob = coco_set(prob, 'cont', 'NAdapt', 1);
 
 % Set number of steps
-prob = coco_set(prob, 'cont', 'PtMX', 800);
+prob = coco_set(prob, 'cont', 'PtMX', 100);
 
 %------------------------------------------%
 %     Continue from Previous Solutions     %
@@ -60,15 +60,15 @@ prob = ode_ep2ep(prob, 'singularity', run_old, label_old);
 % Apply all boundary conditions, glue parameters together, and
 % all that other good COCO stuff. Looking the function file
 % if you need to know more ;)
-prob = glue_PR_conditions(prob, data_PR);
+prob = glue_PR_conditions(prob, data_PR, bcs_funcs);
 
 % Extract indices and mappings
 [data1, uidx1]   = coco_get_func_data(prob, 'seg1.coll', 'data', 'uidx');
 maps1 = data1.coll_seg.maps;
 
 % Add zero function for isochron theta boundary conditions
-prob = coco_add_func(prob , 'Delta', @bcs_isochron, data1, ...
-                     'zero','uidx', uidx1(maps1.p_idx([7, 8])));
+prob = coco_add_func(prob , 'Delta', @bcs_isochron, data_PR, ...
+                     'zero','uidx', uidx1(maps1.p_idx));
 
 %--------------------------%
 %     Run Continuation     %
@@ -79,7 +79,9 @@ prange = {[-2, 2], [-2, 2], [0.0, 1.01], [-1e-3, 1e-3], [0.9, 1.1]};
 bdtest = coco(prob, run_new, [], 1, {'d_x', 'd_y', 'theta_new', 'eta', 'mu_s'}, prange);
 
 % prange = {[-2, 2], [-2*pi, 2*pi], [], [-1e-3, 1e-3], [0.9, 1.1]};
-% bdtest = coco(prob, run_new, [], 1, {'A', 'theta_perturb', 'theta_new', 'eta', 'mu_s'}, prange);
+% prange = {[], [], [], [-1e-3, 1e-3], [0.9, 1.1]};
+% bdtest = coco(prob, run_new, [], 1, {'theta_perturb', 'A', 'theta_old', 'eta', 'mu_s'}, prange);
+% bdtest = coco(prob, run_new, [], 1, {'theta_perturb', 'A', 'theta_old', 'eta', 'mu_s'});
 
 % prange = {[-2, 2], [-2*pi, 2*pi], [], [-1e-3, 1e-3]};
-% bdtest = coco(prob, run_new, [], 1, {'A', 'theta_perturb', 'theta_new', 'eta', 'mu_s'}, prange);
+% bdtest = coco(prob, run_new, [], 1, {'theta_perturb', 'A', 'theta_new', 'eta', 'mu_s'});

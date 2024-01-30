@@ -48,60 +48,82 @@ function data_out = calc_PR_initial_conditions(run_in, label_in)
   mu_s        = p_read(end-1);
   mu_s_name   = pnames_read{end-1};
 
-  %--------------------------%
-  %     Calculate Things     %
-  %--------------------------%
+  %---------------------------%
+  %     Parameter Indices     %
+  %---------------------------%
+  % This p_maps data structure will be used in each boundary condition
+  % function to ensure the correct parameters are being used.
+
+  % Save the index mapping of each parameter
+  p_maps.k             = pdim + 1;
+  p_maps.mu_s          = pdim + 2;
+  p_maps.eta           = pdim + 3; 
+  p_maps.theta_old     = pdim + 4;
+  p_maps.theta_new     = pdim + 5;
+  p_maps.theta_perturb = pdim + 6;
+  p_maps.A             = pdim + 7;
+  p_maps.d_x           = pdim + 8;
+  p_maps.d_y           = pdim + 9;
+
+  %----------------------------%
+  %     Initial Parameters     %
+  %----------------------------%
   % Initial parameters
   % System parameters
-  p0_data.system        = p_system;
+  p0_initial.system        = p_system;
   % Integer for period
-  p0_data.k             = 16;
+  p0_initial.k             = 16;
   % Stable Floquet eigenvalue (should be = 1)
-  p0_data.mu_s          = mu_s;
-  % \theta_old (where perturbation starts)
-  p0_data.theta_old     = 1.0;
-  % \theta_new (where segment comes back to \Gamma)
-  p0_data.theta_new     = 1.0;
-  % Angle at which perturbation is applied?
-  p0_data.theta_perturb = 0.0;
+  p0_initial.mu_s          = mu_s;
   % Distance from perturbed segment to \Gamma
-  p0_data.eta           = 0.0;
+  p0_initial.eta           = 0.0;
+  % \theta_old (where perturbation starts)
+  p0_initial.theta_old     = 1.0;
+  % \theta_new (where segment comes back to \Gamma)
+  p0_initial.theta_new     = 1.0;
+  % Angle at which perturbation is applied?
+  p0_initial.theta_perturb = 0.0;
   % Size of perturbation
-  p0_data.A             = 0.0;
+  p0_initial.A             = 0.0;
   % Initial displacement vector
-  p0_data.d_x           = 0.0;
-  p0_data.d_y           = 0.0;
+  p0_initial.d_x           = p0_initial.A * cos(p0_initial.theta_perturb);
+  p0_initial.d_y           = p0_initial.A * sin(p0_initial.theta_perturb);
 
   % Initial parameter array
-  p0_out = [p0_data.system;
-            p0_data.k;
-            p0_data.mu_s;
-            p0_data.theta_old;
-            p0_data.theta_new;
-            p0_data.theta_perturb;
-            p0_data.eta;
-            p0_data.A];
-  p0_out = [p0_out; p0_data.d_x; p0_data.d_y];
+  p0_out = zeros(pdim+9, 1);
+  % Put parameters in order
+  p0_out(1:pdim)               = p0_initial.system;
+  p0_out(p_maps.k)             = p0_initial.k;
+  p0_out(p_maps.eta)           = p0_initial.eta;
+  p0_out(p_maps.theta_old)     = p0_initial.theta_old;
+  p0_out(p_maps.theta_new)     = p0_initial.theta_new;
+  p0_out(p_maps.theta_perturb) = p0_initial.theta_perturb;
+  p0_out(p_maps.A)             = p0_initial.A;
+  p0_out(p_maps.d_x)           = p0_initial.d_x;
+  p0_out(p_maps.d_y)           = p0_initial.d_y;
 
+  %-------------------------%
+  %     Parameter Names     %
+  %-------------------------%
   % Parameter names
-  pnames_PR = {pnames_system{1:pdim}};
+  pnames_PR                       = {pnames_system{1:pdim}};
   % Integer for period
-  pnames_PR{pdim+1} = 'k';
+  pnames_PR{p_maps.k}             = 'k';
   % Stable Floquet eigenvalue (should be = 1)
-  pnames_PR{pdim+2} = mu_s_name;
-  % \theta_old (where perturbation starts)
-  pnames_PR{pdim+3} = 'theta_old';
-  % \theta_new (where segment comes back to \Gamma)
-  pnames_PR{pdim+4} = 'theta_new';
-  % Angle at which perturbation is applied?
-  pnames_PR{pdim+5} = 'theta_perturb';
+  pnames_PR{p_maps.mu_s}          = mu_s_name;
   % Distance from perturbed segment to \Gamma
-  pnames_PR{pdim+6} = 'eta';
+  pnames_PR{p_maps.eta}           = 'eta';
+  % \theta_old (where perturbation starts)
+  pnames_PR{p_maps.theta_old}     = 'theta_old';
+  % \theta_new (where segment comes back to \Gamma)
+  pnames_PR{p_maps.theta_new}     = 'theta_new';
+  % Angle at which perturbation is applied?
+  pnames_PR{p_maps.theta_perturb} = 'theta_perturb';
   % Size of perturbation
-  pnames_PR{pdim+7} = 'A';
+  pnames_PR{p_maps.A}             = 'A';
   % Displacement vector components
-  pnames_PR{pdim+8} = 'd_x';
-  pnames_PR{pdim+9} = 'd_y'; 
+  pnames_PR{p_maps.d_x}           = 'd_x';
+  pnames_PR{p_maps.d_y}           = 'd_y';
 
   %------------------------------------%
   %     Segment Initial Conditions     %
@@ -125,15 +147,15 @@ function data_out = calc_PR_initial_conditions(run_in, label_in)
   x_seg4 = gamma_read;
 
   % Otherwise, keep appending periodic solutions
-  if p0_data.k > 1
+  if p0_initial.k > 1
     % Cycle through k integers
-    for j = 1 : p0_data.k-1
+    for j = 1 : p0_initial.k-1
       % Append another period of time data
       t_seg4 = [tbp    ; T + t_seg4(2:end)];
       x_seg4 = [gamma_read; x_seg4(2:end, :)];
     end
     % Normalise time data by integer
-    t_seg4 = t_seg4 / p0_data.k;
+    t_seg4 = t_seg4 / p0_initial.k;
   end
 
   %----------------%
@@ -146,7 +168,8 @@ function data_out = calc_PR_initial_conditions(run_in, label_in)
   % Parameters
   data_out.p0      = p0_out;
   data_out.pnames  = pnames_PR;
-  data_out.p0_data = p0_data;
+  data_out.p0_initial = p0_initial;
+  data_out.p_maps  = p_maps;
 
   % Initial time solutions for each segment
   data_out.t_seg1  = t_seg1;
