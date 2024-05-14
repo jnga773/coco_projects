@@ -57,6 +57,24 @@ The following settings are for each of the toolboxes included in the base COCO s
 
 The options can be set with: \verb!prob = coco_set(prob, 'TOOLBOX_NAME', [SETTING], [VALUE])!
 
+%------------------------%
+%          corr          %
+%------------------------%
+\section*{\texttt{corr} -- Correction Algorithm}
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{l|l|l|l}
+    \textbf{Setting} & \textbf{Description}                                                                                                                       & \textbf{Value Type} & \textbf{Default Value} \\[1ex] \hline
+    \verb!ItMX!      & Maximum number of Newton iterations                                                                                                        & integer             & \verb!10!            \\[1ex]
+    \verb!SubItMX!   & Maximum number of damping steps.                                                                                                           & integer             & \verb!4!            \\[1ex]
+    \verb!TOL!       & \begin{tabular}[c]{@{}l@{}} Convergence criterion on the norm of the \\ Newton correction \end{tabular}                                    & float               & \verb!1e-06!           \\[1ex]
+    \verb!ResTOL!    & Convergence criterion on the norm of the residuum                                                                                          & float               & \verb!1e-06!           \\[1ex]
+    \verb!LogLevel!  & \begin{tabular}[c]{@{}l@{}}  Controls the amount of diagnostic output on screen. \\ When set to zero, no output is produced. \end{tabular} & integer             & \verb!1!
+  \end{tabular}
+\end{table}
+
+
 %-----------------------%
 %          ode          %
 %-----------------------%
