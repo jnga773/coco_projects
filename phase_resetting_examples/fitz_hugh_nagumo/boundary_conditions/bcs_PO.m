@@ -42,6 +42,9 @@ function [data_in, y_out] = bcs_PO(prob_in, data_in, u_in)
   % Parameters
   parameters = u_in(2*xdim+1 : end);
 
+  % System parameters
+  p_system = parameters(1:pdim);
+
   %--------------------------%
   %     Calculate Things     %
   %--------------------------%
@@ -53,7 +56,7 @@ function [data_in, y_out] = bcs_PO(prob_in, data_in, u_in)
   % Periodic boundary conditions
   bcs1 = x0 - x1;
   % First component of the vector field is zero (phase condition)
-  bcs2 = e1 * fhn(x0, parameters(1:pdim));
+  bcs2 = e1 * fhn(x0, p_system);
 
   %----------------%
   %     Output     %

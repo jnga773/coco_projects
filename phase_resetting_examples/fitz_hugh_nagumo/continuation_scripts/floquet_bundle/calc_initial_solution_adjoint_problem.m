@@ -16,8 +16,13 @@ function data_out = calc_initial_solution_adjoint_problem(run_in, label_in)
   % State solution
   xbp = sol.xbp;
 
+  % Period
+  T   = sol.T;
+
   % Temporal data
   tbp = sol.tbp;
+  % Normalise tbp
+  tbp = tbp / T;
 
   % Initial parameter space
   p_OG = sol.p;
@@ -29,12 +34,13 @@ function data_out = calc_initial_solution_adjoint_problem(run_in, label_in)
   w_norm = 0.0;
 
   % Extend the parameter space
-  p_out = [p_OG; mu_s; w_norm];
+  p_out = [p_OG; mu_s; w_norm; T];
 
   % Extend the parameter names
   pnames_out = pnames_OG;
   pnames_out{pdim+1} = 'mu_s';
   pnames_out{pdim+2} = 'w_norm';
+  pnames_out{pdim+3} = 'T';
 
   %----------------%
   %     Output     %

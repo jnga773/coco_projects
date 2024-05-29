@@ -24,6 +24,9 @@ function y_out = func_seg4(x_in, p_in)
   % Original vector field dimensions (CHANGE THESE)
   xdim = 2;
   pdim = 4;
+  % Original vector field function
+  field      = @fhn;
+  field_DFDX = @fhn_DFDX;
 
   %--------------------------%
   %     Input Parameters     %
@@ -35,35 +38,24 @@ function y_out = func_seg4(x_in, p_in)
   p_system     = p_in(1:pdim, :);
 
   % Phase resetting parameters
+  % Period of the segment
+  T             = p_in(pdim+1, :);
   % Integer for period
-  k             = p_in(pdim+1, :);
-  % Stable Floquet eigenvalue
-  % mu_s          = p_in(pdim+2, :);
-  % Distance from pertured segment to \Gamma
-  % eta           = p_in(pdim+3, :);
-  % Phase where perturbation starts
-  % theta_old     = p_in(pdim+4, :);
-  % Phase where segment comes back to \Gamma
-  % theta_new     = p_in(pdim+5, :);
-  % Angle of perturbation
-  % theta_perturb = p_in(pdim+6, :);
-  % Size of perturbation
-  % A             = p_in(pdim+7, :);
+  k             = p_in(pdim+2, :);
 
   %--------------------------%
   %     Calculate Things     %
   %--------------------------%  
   % Calculate vector field
-  vec_field = fhn(x_vec, p_system);
+  vec_field = field(x_vec, p_system);
   
   % Save to array
-  vec_eqn = k .* vec_field;
+  vec_eqn = k .* T .* vec_field;
 
   %----------------%
   %     Output     %
   %----------------%
   % Vector field
-  y_out(1, :) = vec_eqn(1, :);
-  y_out(2, :) = vec_eqn(2, :);
+  y_out(1:xdim, :) = vec_eqn(:, :);
 
 end

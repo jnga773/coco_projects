@@ -19,7 +19,7 @@ label_old = coco_bd_labs(coco_bd_read(run_old), 'BP');
 label_old = label_old(1);
 
 % Print to console
-fprintf("~~~ Third Run (ode_BP2bvp) ~~~ \n");
+fprintf("~~~ Floquet Bundle: Second Run (floquet_wnorm.m) ~~~ \n");
 fprintf('Calculate Floquet bundle (w_norm) \n');
 fprintf('Run name: %s \n', run_new);
 fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
@@ -30,11 +30,17 @@ fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
 % Set up the COCO problem
 prob = coco_prob();
 
+% Set number of PtMX steps
+prob = coco_set(prob, 'cont', 'PtMX', 250);
+
 % Continue coll from previous branching point
 prob = ode_BP2coll(prob, 'adjoint', run_old, label_old);
 
 % Apply boundary conditions
 prob = apply_floquet_boundary_conditions(prob, bcs_funcs);
 
+% Add event when w_norm = 1
+prob = coco_add_event(prob, 'NORM1', 'w_norm', 1.0);
+
 % Run COCO
-coco(prob, run_new, [], 1, {'w_norm', 'mu_s'} , [0, 1.0]);
+coco(prob, run_new, [], 1, {'w_norm', 'mu_s', 'T'}, [0.0, 1.1]);

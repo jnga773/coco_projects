@@ -37,16 +37,19 @@ function [data_in, y_out] = bcs_floquet(prob_in, data_in, u_in)
   %     Input     %
   %---------------%
   % Initial perpendicular vector
-  w0 = u_in(1 : xdim);
+  w0     = u_in(1 : xdim);
 
   % Final perpendicular vector
-  w1 = u_in(xdim+1 : 2 * xdim);
+  w1     = u_in(xdim+1 : 2 * xdim);
 
   % Eigenvector
-  mu_s = u_in(end-1);
+  mu_s   = u_in(end-2);
   
   % Norm of w
-  w_norm = u_in(end);
+  w_norm = u_in(end-1);
+
+  % Period
+  T      = u_in(end);
 
   %--------------------------%
   %     Calculate Things     %

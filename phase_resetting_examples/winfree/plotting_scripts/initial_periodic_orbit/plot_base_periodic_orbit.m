@@ -4,19 +4,23 @@ function plot_base_periodic_orbit(ax_in)
   %-------------------%
   %     Read Data     %
   %-------------------%
-  % Read solution
-  sol_PO = coll_read_solution('initial_PO', 'run02_initial_periodic_orbit', 1);
-
-  % State space solution
-  xbp_PO = sol_PO.xbp;
-
+  % Load data matrix
+  load('./data/initial_PO.mat');
+  
   %--------------%
   %     Plot     %
   %--------------%
   % Colour order
   colours = colororder();
 
+  % Plot periodic orbit solution
   plot(ax_in, xbp_PO(:, 1), xbp_PO(:, 2), LineStyle='-', Color=[0.0, 0.0, 0.0, 0.3], ...
        LineWidth=4.0, DisplayName='$\Gamma$');
+
+  % Plot equilibrium points: x_{0}
+  plot(ax_in, x0(1), x0(2), ...
+       LineStyle='none', ...
+       Marker='o', MarkerFaceColor='r', MarkerSize=10, ...
+       MarkerEdgeColor='r', DisplayName='$\vec{x}_{\ast}$');
 
 end

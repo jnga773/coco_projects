@@ -47,6 +47,9 @@ function [data_in, y_out] = bcs_PR_seg4(prob_in, data_in, u_in)
   % Parameter maps
   p_maps = data_in.p_maps;
 
+  % Isochron check
+  isochron_check = data_in.isochron_check;
+
   %---------------%
   %     Input     %
   %---------------%
@@ -66,35 +69,31 @@ function [data_in, y_out] = bcs_PR_seg4(prob_in, data_in, u_in)
   %---------------------------%
   % Parameters
   parameters = u_in(5*xdim+1 : end);
-
-  % System parameters
-  % p_system     = parameters(1 : pdim);
-
-  % Phase resetting parameters
-  % Integer for period
-  % k             = parameters(p_maps.k);
-  % Stable Floquet eigenvalue
-  % mu_s          = parameters(p_maps.mu_s);
+  
   % Distance from pertured segment to \Gamma
   eta           = parameters(p_maps.eta);
-  % Phase where perturbation starts
-  % theta_old     = parameters(p_maps.theta_old);
-  % Phase where segment comes back to \Gamma
-  % theta_new     = parameters(p_maps.theta_new);
   % Angle of perturbation
   theta_perturb = parameters(p_maps.theta_perturb);
   % Size of perturbation
-  A             = parameters(p_maps.A);
+  A_perturb     = parameters(p_maps.A_perturb);
 
   %--------------------------%
   %     Calculate Things     %
   %--------------------------%
-  % Displacement vector
-  % d_vec = [A * cos(theta_perturb); A * sin(theta_perturb)];
-  d_vec = [parameters(p_maps.d_x); parameters(p_maps.d_y)];
+  if isochron_check == true
+    % Calculating isochrons doesn't work with varying A_perturb and
+    % theta_perturb for some unknown reason.
+    % Displacement vector
+    d_vec = [parameters(p_maps.d_x); parameters(p_maps.d_y)];
+
+  else
+    % Displacement vector
+    d_vec = [cos(theta_perturb); sin(theta_perturb)];
+    d_vec = A_perturb * d_vec;
+
+  end
 
   % Boundary Conditions - Segment 4
-  % bcs_seg4_1    = x0_seg4 - x0_seg3 - (A * d_vec);
   bcs_seg4_1    = x0_seg4 - x0_seg3 - d_vec;
   bcs_seg4_2    = dot(x1_seg4 - x0_seg2, w0_seg2);
   bcs_seg4_3    = norm(x1_seg4 - x0_seg2) - eta;

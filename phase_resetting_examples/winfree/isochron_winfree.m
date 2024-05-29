@@ -165,28 +165,28 @@ addpath('./plotting_scripts/isochrons/');
 %     Functions Lists     %
 %-------------------------%
 % Phase Reset Segment 1: Functions
-% funcs.seg1 = {@func_seg1};
-funcs.seg1 = func_seg1_symbolic();
+funcs.seg1 = {@func_seg1};
+% funcs.seg1 = func_seg1_symbolic();
 
 % Phase Reset: Segment 2
-% funcs.seg2 = {@func_seg2};
-funcs.seg2 = func_seg2_symbolic();
+funcs.seg2 = {@func_seg2};
+% funcs.seg2 = func_seg2_symbolic();
 
 % Phase Reset: Segment 3
-% funcs.seg3 = {@func_seg3};
-funcs.seg3 = func_seg3_symbolic();
+funcs.seg3 = {@func_seg3};
+% funcs.seg3 = func_seg3_symbolic();
 
 % Phase Reset: Segment 4
-% funcs.seg4 = {@func_seg4};
-funcs.seg4 = func_seg4_symbolic();
+funcs.seg4 = {@func_seg4};
+% funcs.seg4 = func_seg4_symbolic();
 
 % Boundary conditions: Segments 1 and 2
-% bcs_funcs.bcs_seg1_seg2 = {@bcs_PR_seg1_seg2};
-bcs_funcs.bcs_seg1_seg2 = bcs_PR_seg1_seg2_symbolic();
+bcs_funcs.bcs_seg1_seg2 = {@bcs_PR_seg1_seg2};
+% bcs_funcs.bcs_seg1_seg2 = bcs_PR_seg1_seg2_symbolic();
 
 % Boundary conditions: Segment 3
-% bcs_funcs.bcs_seg3 = {@bcs_PR_seg3};
-bcs_funcs.bcs_seg3 = bcs_PR_seg3_symbolic();
+bcs_funcs.bcs_seg3 = {@bcs_PR_seg3};
+% bcs_funcs.bcs_seg3 = bcs_PR_seg3_symbolic();
 
 % Boundary conditions: Segment 4
 bcs_funcs.bcs_seg4 = {@bcs_PR_seg4};

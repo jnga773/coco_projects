@@ -22,8 +22,14 @@ addpath('./boundary_conditions/symbolic/');
 save_figure = true;
 % save_figure = false;
 
+%-----------------------------------------------------------------------%
+%%             FITZ-HUGH-NAGUMO (Phase Resetting Isochrons)            %%
+%-----------------------------------------------------------------------%
+% Doing an exmaple from this paper "A Continuation Approach to Calculating
+% Phase Resetting Curves" by Langfield et al.
+
 %--------------------%
-%     COCO Setup     %
+%     Parameters     %
 %--------------------%
 % Parameters
 c = 2.5;
@@ -31,6 +37,9 @@ a = 0.7;
 b = 0.8;
 z = -0.4;
 
+%--------------------%
+%     COCO Setup     %
+%--------------------%
 p0 = [c; a; b; z];
 pnames = {'c'; 'a'; 'b'; 'z'};
 
@@ -42,12 +51,20 @@ x0 = [0.2729; 0.5339];
 pdim = length(p0);
 xdim = length(x0);
 
-%------------------------%
-%     Function Lists     %
-%------------------------%
-% List of vector field functions
-% func_list = {@fhn, @fhn_DFDX, @fhn_DFDP};
-[~, func_list] = symbolic_fhm();
+%-------------------------%
+%     Functions Lists     %
+%-------------------------%
+% Vector field: Functions
+% funcs.field = {@fhn, @fhn_DFDX, @fhn_DFDP};
+funcs.field = fhn_symbolic();
+
+% Boundary conditions: Periodic orbit
+% bcs_funcs.bcs_PO = {@bcs_PO};
+bcs_funcs.bcs_PO = bcs_PO_symbolic();
+
+% Boundary conditions: Period
+% bcs_funcs.bcs_T = {@bcs_T};
+bcs_funcs.bcs_T = bcs_T_symbolic();
 
 %-------------------------------------------------------------------------%
 %%                         Initial Continuation                          %%
@@ -58,10 +75,7 @@ xdim = length(x0);
 
 % Add continuation scripts to path
 addpath('./continuation_scripts/initial_periodic_orbit/');
-
-% List of periodic orbit boundary condition functions
-bcs_funcs.bcs_PO_list  = symbolic_bcs_PO();
-bcs_funcs.bcs_adj_list = symbolic_bcs_floquet();
+addpath('./plotting_scripts/initial_periodic_orbit/');
 
 %-------------------------------------%
 %%     Compute Equilibrium Point     %%
@@ -82,22 +96,22 @@ initial_equilibrium_point;
 % the 'z' parameter to z = -0.8
 
 % Run name
-run_names.hopf_move_z = 'run02_move_z';
+run_names.follow_hopf_z = 'run02_follow_hopf_z';
 
 % Run continuation script
-hopf_move_z;
+follow_hopf_z;
 
 %-----------------------------------------%
 %%     Continue New Initial Solution     %%
 %-----------------------------------------%
 % Reading from the previous solution where z = -0.8, we continue a new 
-% solution and vary 'z' and 'c'.
+% solution until c = 1.0
 
 % Run name
-run_names.hopf_new_solution = 'run03_hopf_new_solution';
+run_names.follow_hopf_c = 'run03_follow_hopf_c';
 
 % Run continuation
-hopf_new_solution;
+follow_hopf_c;
 
 %----------------------------------%
 %%     Hopf to Periodic Orbit     %%
@@ -132,6 +146,17 @@ initial_periodic_orbit;
 % Add continuation scripts to path
 addpath('./continuation_scripts/floquet_bundle/');
 
+%-------------------------%
+%     Functions Lists     %
+%-------------------------%
+% Adjoint equations: Functions (for floquet_mu and floquet_wnorm)
+% funcs.floquet = {@floquet_adjoint};
+funcs.floquet = floquet_adjoint_symbolic();
+
+% Boundary conditions: Floquet multipliers
+% bcs_funcs.bcs_floquet = {@bcs_floquet};
+bcs_funcs.bcs_floquet = bcs_floquet_symbolic();
+
 %------------------------------------------------%
 %%     Continue the Eigenvalue Until mu_s=1     %%
 %------------------------------------------------%
@@ -162,6 +187,70 @@ run_names.compute_floquet_2 = 'run07_compute_floquet_bundle_2_w';
 % Run continuation script
 floquet_wnorm;
 
+%-----------------------------------------------------------------------%
+%%                 Phase Response - Compute Isochrons                  %%
+%-----------------------------------------------------------------------%
+% We set up the phase resetting problem by creating four segments of the
+% periodic orbit, with boundary conditions described in a paper somewhere.
+
+% Add continuation scripts to path
+addpath('./continuation_scripts/isochrons/');
+addpath('./plotting_scripts/isochrons/');
+
+%-------------------------%
+%     Functions Lists     %
+%-------------------------%
+% Phase Reset Segment 1: Functions
+funcs.seg1 = {@func_seg1};
+% funcs.seg1 = func_seg1_symbolic();
+
+% Phase Reset: Segment 2
+funcs.seg2 = {@func_seg2};
+% funcs.seg2 = func_seg2_symbolic();
+
+% Phase Reset: Segment 3
+funcs.seg3 = {@func_seg3};
+% funcs.seg3 = func_seg3_symbolic();
+
+% Phase Reset: Segment 4
+funcs.seg4 = {@func_seg4};
+% funcs.seg4 = func_seg4_symbolic();
+
+% Boundary conditions: Segments 1 and 2
+bcs_funcs.bcs_seg1_seg2 = {@bcs_PR_seg1_seg2};
+% bcs_funcs.bcs_seg1_seg2 = bcs_PR_seg1_seg2_symbolic();
+
+% Boundary conditions: Segment 3
+bcs_funcs.bcs_seg3 = {@bcs_PR_seg3};
+% bcs_funcs.bcs_seg3 = bcs_PR_seg3_symbolic();
+
+% Boundary conditions: Segment 4
+bcs_funcs.bcs_seg4 = {@bcs_PR_seg4};
+% bcs_funcs.bcs_seg4 = bcs_PR_seg4_symbolic();
+
+%------------------------------------------------%
+%%     Continue Along the Periodic Orbit     %%
+%------------------------------------------------%
+% We compute the first phase resetting curve.
+% Run name
+run_names.isochron_initial = 'run07_isochron_initial';
+
+% Run continuation script
+isochron_initial;
+
+%------------------------%
+%%     Compute PTC      %%
+%------------------------%
+% % Run name
+% run_names.isochron_test = 'run08_isochron_test';
+% % Run continuation script
+% isochron_test;
+
+% Run name
+run_names.isochron_multi = 'run08_isochron_multi';
+% Run continuation script
+isochron_multi;
+
 %-------------------------------------------------------------------------%
 %%                   Phase Response Curve Calculation                    %%
 %-------------------------------------------------------------------------%
@@ -170,57 +259,31 @@ floquet_wnorm;
 
 % Add continuation scripts to path
 addpath('./continuation_scripts/phase_reset/');
+addpath('./plotting_scripts/phase_reset/');
 
-%------------------------%
-%     Function Lists     %
-%------------------------%
-% HARDCODED: Function lists
-% seg1_list = {@func_seg1, [], []};
-% seg2_list = {@func_seg2, [], []};
-% seg3_list = {@func_seg3, [], []};
-% seg4_list = {@func_seg4, [], []};
-
-% HARDCODED: Boundary conditions
-% bcs_funcs.bcs_seg1_seg2_list = {@bcs_PR_seg1_seg2};
-% bcs_funcs.bcs_seg1_seg2_list = {@bcs_PR_seg1_seg2, @bcs_PR_seg1_seg2_du};
-% bcs_funcs.bcs_seg1_seg2_list = {@bcs_PR_seg1_seg2, @bcs_PR_seg1_seg2_du, @bcs_PR_seg1_seg2_dudu};
-
-% bcs_funcs.bcs_seg3_list      = {@bcs_PR_seg3};
-% bcs_funcs.bcs_seg3_list      = {@bcs_PR_seg3, @bcs_PR_seg3_du};
-% bcs_funcs.bcs_seg3_list      = {@bcs_PR_seg3, @bcs_PR_seg3_du, @bcs_PR_seg3_dudu};
-
-bcs_funcs.bcs_seg4_list      = {@bcs_PR_seg4};
-% bcs_funcs.bcs_seg4_list      = {@bcs_PR_seg4, @bcs_PR_seg4_du};
-% bcs_funcs.bcs_seg4_list      = {@bcs_PR_seg4, @bcs_PR_seg4_du, @bcs_PR_seg4_dudu};
-
-% SYMBOLIC: Function Lists
-seg1_list = symbolic_func_seg1();
-seg2_list = symbolic_func_seg2();
-seg3_list = symbolic_func_seg3();
-seg4_list = symbolic_func_seg4();
-
-% SYMBOLIC: Boundary conditions
-bcs_funcs.bcs_seg1_seg2_list = symbolic_bcs_PR_seg1_seg2();
-bcs_funcs.bcs_seg3_list      = symbolic_bcs_PR_seg3();
-% bcs_funcs.bcs_seg4_list      = symbolic_bcs_PR_seg4();
-
-%-------------------------------------------------------%
-%%     First Continuation: theta_new and theta_old     %%
-%-------------------------------------------------------%
+%------------------------------------------------------%
+%%     First Continuation: Perturbation Amplitude     %%
+%------------------------------------------------------%
 % We compute the first phase resetting curve.
 
 % Run name
-run_names.phase_response_curve_1 = 'run08_phase_response_curve_1';
+run_names.phase_reset_perturbation = 'run07_PTC_perturbation';
 
 % Run continuation script
-phase_reset_1;
+phase_reset_1_perturbation;
 
-%-------------------------------%
-%%     Compute Isochrons:      %%
-%-------------------------------%
+%------------------------%
+%%     Compute PTC      %%
+%------------------------%
 % Run name
-run_names.phase_response_curve_2 = 'run09_phase_response_curve_2';
+run_names.PTC_single = 'run06_PTC_single';
 
 % Run continuation script
-% phase_reset_isochron_test;
-phase_reset_isochron_all;
+PTC_single;
+
+% Run name
+% run_names.PTC_multi = 'run06_PTC_scan';
+
+% Run continuation script
+% PTCS_scan;
+

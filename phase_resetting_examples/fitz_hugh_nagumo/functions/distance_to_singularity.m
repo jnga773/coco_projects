@@ -26,8 +26,9 @@ function [data_in, y_out] = distance_to_singularity(prob_in, data_in, u_in)
   %     Function data structure to give dimensions of parameter and state
   %     space.
 
-  % Original dimensions of vector space
-  xdim = data_in.xdim;
+  % (defined in calc_PR_initial_conditions.m)
+  % Original vector space dimensions
+  xdim   = data_in.xdim;
   
   %---------------%
   %     Input     %
@@ -36,7 +37,7 @@ function [data_in, y_out] = distance_to_singularity(prob_in, data_in, u_in)
   x0_seg4 = u_in(1 : xdim);
 
   % Equilibrium point
-  x_ep    = u_in(xdim : end);
+  x_ep    = u_in(xdim+1 : end);
 
   %--------------------------%
   %     Calculate Things     %
@@ -44,18 +45,10 @@ function [data_in, y_out] = distance_to_singularity(prob_in, data_in, u_in)
   % Displacement from equilibrium point
   x_distance = x0_seg4(1) - x_ep(1);
   y_distance = x0_seg4(2) - x_ep(2);
-
-  % Actual displacement
-  displacement = sqrt( (x_distance ^ 2) + (y_distance ^ 2));
-
-  % Angle of displacement from x-axis
-  angle = atan2(y_distance, x_distance) / (2 * pi);
   
   %----------------%
   %     Output     %
   %----------------%
-  y_out = [displacement;
-           angle;
-           x_distance];
+  y_out = [x_distance; y_distance];
   
 end

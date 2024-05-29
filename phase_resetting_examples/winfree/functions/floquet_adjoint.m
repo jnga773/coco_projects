@@ -4,11 +4,11 @@ function y_out = floquet_adjoint(u_in, p_in)
   % Adjoint function to calculate the Floquet bundle I guess?
   
   % Original vector field dimensions (CHANGE THESE)
-  xdim = 3;
-  pdim = 4;
+  xdim = 2;
+  pdim = 2;
   % Original vector field function
-  field      = @yamada;
-  field_DFDX = @yamada_DFDX;
+  field      = @winfree;
+  field_DFDX = @winfree_DFDX;
 
   %---------------%
   %     Input     %
@@ -42,7 +42,6 @@ function y_out = floquet_adjoint(u_in, p_in)
   J = field_DFDX(x, p_system);
 
   % Vector field equations
-  % vec_eqn = vec_field;
   vec_eqn = T .* vec_field;
 
   % Length of u_in
@@ -58,7 +57,6 @@ function y_out = floquet_adjoint(u_in, p_in)
     J_transpose = transpose(J(:, :, i));
 
     % Adjoint equation
-    % adj_eqn(:, i) = -J_transpose * w(:, i);
     adj_eqn(:, i) = -T(i) * J_transpose * w(:, i);
 
   end
