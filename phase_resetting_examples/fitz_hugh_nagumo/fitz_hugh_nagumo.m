@@ -44,8 +44,8 @@ p0 = [c; a; b; z];
 pnames = {'c'; 'a'; 'b'; 'z'};
 
 % Initial state vector
-% x0 = [0.9066; -0.2582];
-x0 = [0.2729; 0.5339];
+x0 = [0.9066; -0.2582];
+% x0 = [0.2729; 0.5339];
 
 % State dimensions
 pdim = length(p0);
@@ -96,22 +96,10 @@ initial_equilibrium_point;
 % the 'z' parameter to z = -0.8
 
 % Run name
-run_names.follow_hopf_z = 'run02_follow_hopf_z';
+run_names.follow_hopf = 'run02_follow_hopf';
 
 % Run continuation script
-follow_hopf_z;
-
-%-----------------------------------------%
-%%     Continue New Initial Solution     %%
-%-----------------------------------------%
-% Reading from the previous solution where z = -0.8, we continue a new 
-% solution until c = 1.0
-
-% Run name
-run_names.follow_hopf_c = 'run03_follow_hopf_c';
-
-% Run continuation
-follow_hopf_c;
+follow_hopf;
 
 %----------------------------------%
 %%     Hopf to Periodic Orbit     %%

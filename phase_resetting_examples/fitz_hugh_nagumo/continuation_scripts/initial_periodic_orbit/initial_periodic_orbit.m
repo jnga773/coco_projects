@@ -16,9 +16,6 @@ run_old = run_names.hopf_to_PO;
 label_old = coco_bd_labs(coco_bd_read(run_old), 'PO_PT');
 label_old = label_old(1);
 
-% label_old = coco_bd_labs(coco_bd_read(run_old), 'EP');
-% label_old = max(label_old);
-
 % Print to console
 fprintf("~~~ Initial Periodic Orbit: Sixth Run (initial_periodic_orbit.m) ~~~ \n");
 fprintf('Find new periodic orbit \n');

@@ -10,11 +10,12 @@
 % Current run name
 run_new = run_names.hopf_to_PO;
 % Which run this continuation continues from
-run_old = run_names.follow_hopf_c;
+run_old = run_names.follow_hopf_z;
 
 % Continuation point
-label_old = sort(coco_bd_labs(coco_bd_read(run_old), 'HB'));
-label_old = label_old(2);
+% label_old = sort(coco_bd_labs(coco_bd_read(run_old), 'HB'));
+% label_old = label_old(3);
+label_old = coco_bd_labs(coco_bd_read(run_old), 'H_PT');
 
 % Print to console
 fprintf("~~~ Initial Periodic Orbit: fourth Run (hopf_to_PO.m) ~~~ \n");
