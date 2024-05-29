@@ -28,28 +28,40 @@ function [data_in, y_out] = bcs_PO(prob_in, data_in, u_in)
   %     Function data structure to give dimensions of parameter and state
   %     space.
 
-  % Dimension of state space vector
+  % Original vector field dimensions
   xdim = data_in.xdim;
+  pdim = data_in.pdim;
 
   %---------------%
   %     Input     %
   %---------------%
   % Initial point of the periodic orbit
-  x0         = u_in(1:2);
+  x0         = u_in(1 : xdim);
   % Final point of the periodic orbit
-  x1         = u_in(3:4);
+  x1         = u_in(xdim+1 : 2*xdim);
   % Parameters
-  parameters = u_in(5:6);
+  parameters = u_in(2*xdim+1 : end);
+
+  % System parameters
+  p_system = parameters(1:pdim);
+
+  %--------------------------%
+  %     Calculate Things     %
+  %--------------------------%
+  % Identity matrix
+  ones_matrix = eye(xdim);
+  % First component unit vector
+  e1 = ones_matrix(1, :);
+
+  % Periodic boundary conditions
+  bcs1 = x0 - x1;
+  % First component of the vector field is zero (phase condition)
+  bcs2 = e1 * winfree(x0, p_system);
 
   %----------------%
   %     Output     %
   %----------------%
-  % Periodic boundary conditions
-  bcs1 = x0 - x1;
-  % First component of the vector field is zero (phase condition)
-  bcs2 = [1, 0] * winfree(x0, parameters);
-
-  % Output
-  y_out = [bcs1; bcs2];
+  y_out = [bcs1;
+           bcs2];
 
 end

@@ -21,47 +21,46 @@ function y_out = func_seg1(x_in, p_in)
   %     and the corresponding adjoint equation for the perpendicular
   %     vector.
 
+  % Original vector field dimensions (CHANGE THESE)
+  xdim = 2;
+  pdim = 2;
+  % Original vector field function
+  field      = @winfree;
+  field_DFDX = @winfree_DFDX;
+
   %--------------------------%
   %     Input Parameters     %
   %--------------------------%
   % State space variables
-  x_vec        = x_in(1:2, :);
+  x_vec        = x_in(1:xdim, :);
 
   % Perpendicular vectors
-  w_vec        = x_in(3:4, :);
+  w_vec        = x_in(xdim+1:2*xdim, :);
 
   % System parameters
-  p_system     = p_in(1:2, :);
+  p_system     = p_in(1:pdim, :);
 
   % Phase resetting parameters
+  % Period of the segment
+  T             = p_in(pdim+1, :);
   % Integer for period
-  % k             = p_in(3, :);
+  % k             = p_in(pdim+2, :);
   k             = 1;
-  % Stable Floquet eigenvalue
-  mu_s          = p_in(4, :);
-  % Phase where perturbation starts
-  theta_old     = p_in(5, :);
   % Phase where segment comes back to \Gamma
-  theta_new     = p_in(6, :);
-  % Angle of perturbation
-  theta_perturb = p_in(7, :);
-  % Distance from pertured segment to \Gamma
-  eta           = p_in(8, :);
-  % Size of perturbation
-  A             = p_in(9, :);
+  theta_new     = p_in(pdim+6, :);
 
   %--------------------------%
   %     Calculate Things     %
   %--------------------------%
   % Calculate vector field
-  vec_field = winfree(x_vec, p_system);
+  vec_field = field(x_vec, p_system);
   
   % Save to array
-  vec_eqn = k .* theta_new .* vec_field;
+  vec_eqn = k .* T .* theta_new .* vec_field;
 
   % Calculate adjoint equations
   % Jacobian at the zero-phase point
-  J = winfree_DFDX(x_vec, p_system);
+  J = field_DFDX(x_vec, p_system);
 
   % Cycle through each variable in x1 and calculate
   % adjoint equation components
@@ -73,17 +72,17 @@ function y_out = func_seg1(x_in, p_in)
     temp(:, :, i) = -theta_new(i) * J_transpose(:, :, i);
 
     % Save to array
-    adj_eqn(:, :, i) = temp(:, :, i) * w_vec(:, i);    
+    adj_eqn(:, :, i) = T(i) * temp(:, :, i) * w_vec(:, i);
   end
 
   %----------------%
   %     Output     %
   %----------------%
-  % Output field
-  y_out(1, :) = vec_eqn(1, :);
-  y_out(2, :) = vec_eqn(2, :);
-  
-  y_out(3, :) = adj_eqn(1, :);
-  y_out(4, :) = adj_eqn(2, :);
+  % Vector field
+  y_out(1:xdim, :) = vec_eqn(:, :);
+
+
+  % Adjoint equation
+  y_out(xdim+1:2*xdim, :) = adj_eqn(:, :);
 
 end

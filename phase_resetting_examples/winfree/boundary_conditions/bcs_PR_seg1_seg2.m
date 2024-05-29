@@ -1,6 +1,6 @@
 % % Add this function with the following code:
 % % Add boundary conditions for segments 1 and 2
-% prob = coco_add_func(prob, 'bcs_PR_seg1_seg2', @bcs_PR_seg1_seg2, data1, 'zero', 'uidx', ...
+% prob = coco_add_func(prob, 'bcs_PR_seg1_seg2', @bcs_PR_seg1_seg2, data_in, 'zero', 'uidx', ...
 %                      [uidx1(maps1.x0_idx);
 %                       uidx2(maps2.x0_idx);
 %                       uidx1(maps1.x1_idx);
@@ -47,63 +47,61 @@ function [data_in, y_out] = bcs_PR_seg1_seg2(prob_in, data_in, u_in)
   %     Function data structure to give dimensions of parameter and state
   %     space.
 
-  % % State space dimensions
-  % xdim = data_in.xdim;
-  % % Original state space dimension
-  % xdim_OG = xdim / 2;
+  % (defined in calc_PR_initial_conditions.m)
+  % Original vector space dimensions
+  xdim   = data_in.xdim;
+  pdim   = data_in.pdim;
+  % Parameter maps
+  p_maps = data_in.p_maps;
 
   %---------------%
   %     Input     %
   %---------------%
   % Segment 1 - x(0)
-  x0_seg1       = u_in(1:2);
+  x0_seg1       = u_in(1 : xdim);
   % Segment 1 - w(0)
-  w0_seg1       = u_in(3:4);
+  w0_seg1       = u_in(xdim+1 : 2*xdim);
 
   % Segment 2 - x(0)
-  x0_seg2       = u_in(5:6);
+  x0_seg2       = u_in(2*xdim+1 : 3*xdim);
   % Segment 2 - w(0)
-  w0_seg2       = u_in(7:8);
+  w0_seg2       = u_in(3*xdim+1 : 4*xdim);
   
   % Segment 1 - x(1)
-  x1_seg1       = u_in(9:10);
+  x1_seg1       = u_in(4*xdim+1 : 5*xdim);
   % Segment 1 - w(1)
-  w1_seg1       = u_in(11:12);
+  w1_seg1       = u_in(5*xdim+1 : 6*xdim);
 
   % Segment 2 - x(1)
-  x1_seg2       = u_in(13:14);
+  x1_seg2       = u_in(6*xdim+1 : 7*xdim);
   % Segment 2 - w(1)
-  w1_seg2       = u_in(15:16);
-  
+  w1_seg2       = u_in(7*xdim+1 : 8*xdim);
+
+  %---------------------------%
+  %     Input: Parameters     %
+  %---------------------------%  
   % Parameters
-  parameters    = u_in(17:end);
+  parameters    = u_in(8*xdim+1 : end);
 
   % System parameters
-  p_system     = parameters(1:2);
+  p_system     = parameters(1 : pdim);
 
   % Phase resetting parameters
-  % Integer for period
-  k             = parameters(3);
   % Stable Floquet eigenvalue
-  mu_s          = parameters(4);
-  % Phase where perturbation starts
-  theta_old     = parameters(5);
-  % Phase where segment comes back to \Gamma
-  theta_new     = parameters(6);
-  % Angle of perturbation
-  theta_perturb = parameters(7);
-  % Distance from pertured segment to \Gamma
-  eta           = parameters(8);
-  % Size of perturbation
-  A             = parameters(9);
+  mu_s          = parameters(p_maps.mu_s);
 
   %--------------------------%
   %     Calculate Things     %
   %--------------------------%
+  % Identity matrix
+  ones_matrix = eye(xdim);
+  % First component unit vector
+  e1 = ones_matrix(1, :);
+
   % Boundary Conditions - Segments 1 and 2
   bcs_seg12_1   = x0_seg1 - x1_seg2;
   bcs_seg12_2   = x1_seg1 - x0_seg2;
-  bcs_seg12_3   = [1, 0] * winfree(x0_seg1, p_system);
+  bcs_seg12_3   = e1 * winfree(x0_seg1, p_system);
 
   % Adjoint Boundary Conditions - Segments 1 and 2
   a_bcs_seg12_1 = w0_seg1 - w1_seg2;
@@ -113,10 +111,10 @@ function [data_in, y_out] = bcs_PR_seg1_seg2(prob_in, data_in, u_in)
   %----------------%
   %     Output     %
   %----------------%
-  y_out = [bcs_seg12_1;
+  y_out = [bcs_seg12_1;     % Vector field
            bcs_seg12_2;
            bcs_seg12_3;
-           a_bcs_seg12_1;
+           a_bcs_seg12_1;   % Adjoint equations
            a_bcs_seg12_2;
            a_bcs_seg12_3];
 

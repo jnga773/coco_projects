@@ -24,13 +24,31 @@ function [data_in, y_out] = bcs_isochron(prob_in, data_in, u_in)
   %     Function data structure to give dimensions of parameter and state
   %     space.
 
+  % (defined in calc_PR_initial_conditions.m)
+  % Parameter maps
+  p_maps = data_in.p_maps;
+
   %---------------%
   %     Input     %
   %---------------%
-  % \theta_old
-  theta_old = u_in(1);
-  % \theta_new
-  theta_new = u_in(2);
+  % System parameters
+  % p_system     = u_in(1 : pdim);
+
+  % Phase resetting u_in
+  % Integer for period
+  % k             = u_in(p_maps.k);
+  % Stable Floquet eigenvalue
+  % mu_s          = u_in(p_maps.mu_s);
+  % Distance from pertured segment to \Gamma
+  % eta           = u_in(p_maps.eta);
+  % Phase where perturbation starts
+  theta_old     = u_in(p_maps.theta_old);
+  % Phase where segment comes back to \Gamma
+  theta_new     = u_in(p_maps.theta_new);
+  % Angle of perturbation
+  % theta_perturb = u_in(p_maps.theta_perturb);
+  % Size of perturbation
+  % A             = u_in(p_maps.A);
 
   %----------------%
   %     Output     %

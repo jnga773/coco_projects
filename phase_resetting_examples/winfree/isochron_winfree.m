@@ -3,6 +3,7 @@ close('all');
 
 % Clear workspace
 clear;
+clc;
 
 % Add equation/functions to path
 addpath('./functions/');
@@ -10,13 +11,17 @@ addpath('./boundary_conditions/');
 addpath('./continuation_scripts/');
 addpath('./plotting_scripts/');
 
-% Save figures switch
-% save_figure = true;
-save_figure = false;
+% Symbolic functions
+addpath('./functions/symbolic/');
+addpath('./boundary_conditions/symbolic/');
 
-%-------------------------------------------------------------------------%
-%%               WINFREE MODEL (Phase Resetting Isochrons)               %%
-%-------------------------------------------------------------------------%
+% Save figures switch
+save_figure = true;
+% save_figure = false;
+
+%-----------------------------------------------------------------------%
+%%              WINFREE MODEL (Phase Resetting Isochrons)              %%
+%-----------------------------------------------------------------------%
 % Doing an exmaple from this paper "A Continuation Approach to Calculating
 % Phase Resetting Curves" by Langfield et al.
 
@@ -30,10 +35,6 @@ omega = -0.5;
 %--------------------%
 %     COCO Setup     %
 %--------------------%
-% Set up the list of functions and parameters
-% func_list = {@winfree, [], []};
-func_list = {@winfree, @winfree_DFDX, @winfree_DFDP};
-
 % Parameter names
 pnames = {'a', 'omega'};
 
@@ -41,42 +42,83 @@ pnames = {'a', 'omega'};
 p0 = [a; omega];
 
 % Initial state values
-x0 = [1; 0];
+x0 = [0; 0];
 
 % % Parameter ranges
-% a_range = [0.0, 0.25];
-% omega_range = [5.0, 11.0];
-% p_range = [A_range, gamma_range];
+a_range = [-2.0, 2.0];
+omega_range = [-5.0, 5.0];
 
-%-------------------------------------------------------------------------%
-%%                         Initial Continuation                          %%
-%-------------------------------------------------------------------------%
+% State dimensions
+pdim = length(p0);
+xdim = length(x0);
+
+%-----------------------------------------------------------------------%
+%%                           Function Lists                            %%
+%-----------------------------------------------------------------------%
+%-------------------------%
+%     Functions Lists     %
+%-------------------------%
+% Vector field: Functions
+% funcs.field = {@winfree, @winfree_DFDX, @winfree_DFDP};
+% funcs.field = {@winfree, @winfree_DFDX};
+funcs.field = winfree_symbolic();
+
+% Boundary conditions: Periodic orbit
+% bcs_funcs.bcs_PO = {@bcs_PO};
+bcs_funcs.bcs_PO = bcs_PO_symbolic();
+
+% Boundary conditions: Period
+% bcs_funcs.bcs_T = {@bcs_T};
+bcs_funcs.bcs_T = bcs_T_symbolic();
+
+%-----------------------------------------------------------------------%
+%%                        Initial Continuation                         %%
+%-----------------------------------------------------------------------%
 % We set up the continuation problem by first continuing the equilibrium
 % point x0. The equilibrium point undergoes a Hopf bifurcation, from which
 % a family of periodic orbits originate.
 
 % Add continuation scripts to path
 addpath('./continuation_scripts/initial_periodic_orbit/');
+addpath('./plotting_scripts/initial_periodic_orbit/');
 
-%--------------------------------%
-%%     Initial Continuation     %%
-%--------------------------------%
+%--------------------------------------------%
+%%     Initial Continuation: PO Toolbox     %%
+%--------------------------------------------%
 % Find initial equilibrium points along line \gamma = 0.08
-run_names.initial_PO = 'run01_initial_periodic_orbit_PO';
+run_names.initial_periodic_orbit_PO = 'run01_initial_periodic_orbit_PO';
+
+% Run continution script
 initial_periodic_orbit_PO;
 
+%----------------------------------------------%
+%%     Initial Continuation: COLL Toolbox     %%
+%----------------------------------------------%
 % Second test run
-run_names.initial_coll = 'run02_initial_periodic_orbit_coll';
+run_names.initial_periodic_orbit = 'run02_initial_periodic_orbit';
+
+% Run continution script
 initial_periodic_orbit;
 
-%-------------------------------------------------------------------------%
-%%               Compute Floquet Bundle at Zero Phase Point              %%
-%-------------------------------------------------------------------------%
+%-----------------------------------------------------------------------%
+%%              Compute Floquet Bundle at Zero Phase Point             %%
+%-----------------------------------------------------------------------%
 % Here we compute the stable Floquet bundle of the periodic orbit, as well
 % as the perpendicular vector, w.
 
 % Add continuation scripts to path
-addpath('./continuation_scripts/compute_floquet_bundle/');
+addpath('./continuation_scripts/floquet_bundle/');
+
+%-------------------------%
+%     Functions Lists     %
+%-------------------------%
+% Adjoint equations: Functions (for floquet_mu and floquet_wnorm)
+% funcs.floquet = {@floquet_adjoint};
+funcs.floquet = floquet_adjoint_symbolic();
+
+% Boundary conditions: Floquet multipliers
+% bcs_funcs.bcs_floquet = {@bcs_floquet};
+bcs_funcs.bcs_floquet = bcs_floquet_symbolic();
 
 %----------------------------------------------------------------%
 %%     Compute Floquet Bundle at Zero Phase Point (with mu)     %%
@@ -89,9 +131,10 @@ addpath('./continuation_scripts/compute_floquet_bundle/');
 % mu_f = 1.
 
 % Run name
-run_names.compute_floquet_1 = 'run02_compute_floquet_bundle_1_mu';
+run_names.compute_floquet_1 = 'run03_floquet_mu';
+
 % Run continuation script
-compute_floquet_at_zero_phase_mu;
+floquet_mu;
 
 %--------------------------------------------------------------------%
 %%     Compute Floquet Bundle at Zero Phase Point (with w_norm)     %%
@@ -102,9 +145,75 @@ compute_floquet_at_zero_phase_mu;
 % vector.
 
 % Run name
-run_names.compute_floquet_2 = 'run03_compute_floquet_bundle_2_w';
+run_names.compute_floquet_2 = 'run04_floquet_wnorm';
+
 % Run continuation script
-compute_floquet_at_zero_phase_w;
+floquet_wnorm;
+
+%-----------------------------------------------------------------------%
+%%                 Phase Response - Compute Isochrons                  %%
+%-----------------------------------------------------------------------%
+% We set up the phase resetting problem by creating four segments of the
+% periodic orbit, with boundary conditions described in a paper somewhere.
+% We then calculate the isochrons of the system.
+
+% Add continuation scripts to path
+addpath('./continuation_scripts/isochrons/');
+addpath('./plotting_scripts/isochrons/');
+
+%-------------------------%
+%     Functions Lists     %
+%-------------------------%
+% Phase Reset Segment 1: Functions
+% funcs.seg1 = {@func_seg1};
+funcs.seg1 = func_seg1_symbolic();
+
+% Phase Reset: Segment 2
+% funcs.seg2 = {@func_seg2};
+funcs.seg2 = func_seg2_symbolic();
+
+% Phase Reset: Segment 3
+% funcs.seg3 = {@func_seg3};
+funcs.seg3 = func_seg3_symbolic();
+
+% Phase Reset: Segment 4
+% funcs.seg4 = {@func_seg4};
+funcs.seg4 = func_seg4_symbolic();
+
+% Boundary conditions: Segments 1 and 2
+% bcs_funcs.bcs_seg1_seg2 = {@bcs_PR_seg1_seg2};
+bcs_funcs.bcs_seg1_seg2 = bcs_PR_seg1_seg2_symbolic();
+
+% Boundary conditions: Segment 3
+% bcs_funcs.bcs_seg3 = {@bcs_PR_seg3};
+bcs_funcs.bcs_seg3 = bcs_PR_seg3_symbolic();
+
+% Boundary conditions: Segment 4
+bcs_funcs.bcs_seg4 = {@bcs_PR_seg4};
+% bcs_funcs.bcs_seg4 = bcs_PR_seg4_symbolic();
+
+%------------------------------------------------%
+%%     Continue Along the Periodic Orbit     %%
+%------------------------------------------------%
+% We compute the first phase resetting curve.
+% Run name
+run_names.isochron_initial = 'run07_isochron_initial';
+
+% Run continuation script
+isochron_initial;
+
+%------------------------%
+%%     Compute PTC      %%
+%------------------------%
+% % Run name
+% run_names.isochron_test = 'run08_isochron_test';
+% % Run continuation script
+% isochron_test;
+
+% Run name
+run_names.isochron_multi = 'run08_isochron_multi';
+% Run continuation script
+isochron_multi;
 
 %-------------------------------------------------------------------------%
 %%                   Phase Response Curve Calculation                    %%
@@ -112,22 +221,33 @@ compute_floquet_at_zero_phase_w;
 % We set up the phase resetting problem by creating four segments of the
 % periodic orbit, with boundary conditions described in a paper somewhere.
 
-%--------------------------------------------%
-%%     First Phase Restting Computation     %%
-%--------------------------------------------%
-% We compute the first phase resetting curve by freeing A and theta_new.
+% Add continuation scripts to path
+addpath('./continuation_scripts/phase_reset/');
+addpath('./plotting_scripts/phase_reset/');
+
+%------------------------------------------------------%
+%%     First Continuation: Perturbation Amplitude     %%
+%------------------------------------------------------%
+% We compute the first phase resetting curve.
 
 % Run name
-run_names.phase_response_curve_1 = 'run04_phase_response_curve_1';
-% Run continuation script
-phase_reset_1;
+run_names.phase_reset_perturbation = 'run07_PTC_perturbation';
 
-%--------------------------------------------%
-%%     First Phase Restting Computation     %%
-%--------------------------------------------%
-% We compute the first phase resetting curve by freeing theta_old and theta_new.
+% Run continuation script
+phase_reset_1_perturbation;
+
+%------------------------%
+%%     Compute PTC      %%
+%------------------------%
+% Run name
+run_names.PTC_single = 'run06_PTC_single';
+
+% Run continuation script
+PTC_single;
 
 % Run name
-run_names.phase_response_curve_2 = 'run05_phase_response_curve_2';
+% run_names.PTC_multi = 'run06_PTC_scan';
+
 % Run continuation script
-phase_reset_2;
+% PTCS_scan;
+

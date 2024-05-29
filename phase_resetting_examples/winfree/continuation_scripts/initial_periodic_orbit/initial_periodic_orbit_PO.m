@@ -5,10 +5,10 @@
 %     Run Name     %
 %------------------%
 % Current run name
-run_new = run_names.initial_PO;
+run_new = run_names.initial_periodic_orbit_PO;
 
 % Print to console
-fprintf('~~~ First Run (ode_isol2po) ~~~\n');
+fprintf("~~~ Initial Periodic Orbit: First Run (initial_periodic_orbit_PO.m) ~~~ \n");
 fprintf('Solve for initial solution of periodic orbits with PO toolbox\n');
 fprintf('Run name: %s\n', run_new);
 
@@ -25,11 +25,10 @@ prob = coco_prob();
 
 % % The value of 10 for 'NAdapt' implied that the trajectory discretisation
 % % is changed adaptively ten times before the solution is accepted.
-prob = coco_set(prob, 'coll', 'NTST', 25);
-% prob = coco_set(prob, 'cont', 'NAdapt', 10);
+prob = coco_set(prob, 'coll', 'NTST', 30);
 
-% Turn off bifurcation detections
-prob = coco_set(prob, 'po', 'bifus', 'off');
+% Set adaptive t mesh
+prob = coco_set(prob, 'cont', 'NAdapt', 1);
 
 % Turn off MXCL?
 prob = coco_set(prob, 'coll', 'MXCL', false);
@@ -39,67 +38,30 @@ PtMX = 100;
 prob = coco_set(prob, 'cont', 'PtMX', PtMX);
 
 % Continue periodic orbit from initial solution
-% prob = ode_isol2po(prob, 'winfree', func_list{:}, ...
-%                    data_isol.t, data_isol.x, pnames, data_isol.p);
-prob = ode_isol2po(prob, 'winfree_PO', func_list{:}, ...
-                   data_isol.t, data_isol.x, pnames, data_isol.p, ...
-                   '-var', eye(2));
+prob = ode_isol2po(prob, '', funcs.field{:}, ...
+                   data_isol.t, data_isol.x, pnames, data_isol.p);
 
-% Set variational problem to true
-prob = coco_set(prob, 'po', 'var', true);
+% Add segment for EP continuations
+prob = ode_isol2ep(prob, 'x0', funcs.field{1}, ...
+                   [0.0; 0.0], data_isol.p);
 
-% Hold the initial condition of solution to variational problem fixed
-% Read data and uidx indices
-[data, uidx] = coco_get_func_data(prob, 'winfree_PO.po.orb.coll.var', 'data', 'uidx');
-% Add parameters for each component of the monodromy matrix
-prob = coco_add_pars(prob, 'pars_var', ...
-                     uidx(data.coll_var.v0_idx,:), ...
-                     {'s1', 's2', ...
-                      's3', 's4'});
+% Glue parameters
+prob = glue_parameters(prob);
 
+% Set saved solution
+prob = coco_add_event(prob, 'PO_PT', 'a', 0.0);
+
+% Run continuation
 coco(prob, run_new, [], 1, {'a', 'omega'}, [-2.0, 2.0]);
 
 %-------------------------------------------------------------------------%
 %%                             Testing Stuff                             %%
 %-------------------------------------------------------------------------%
-%--------------------------------%
-%     Read Data and Solution     %
-%--------------------------------%
-% Find good label to plot
-label_plot = 1;
+% Label for solution plot
+label_plot = coco_bd_labs(coco_bd_read(run_new), 'PO_PT');
+label_plot = label_plot(1);
 
-% % Read one of the solutions
-chart = coco_read_solution('winfree_PO.po.orb.coll.var', run_new, label_plot, 'chart');
-data  = coco_read_solution('winfree_PO.po.orb.coll', run_new, label_plot, 'data');
-
-% Create monodrony matrix
-M1 = chart.x(data.coll_var.v1_idx);
-
-fprintf('~~~ Monodromy Matrix ~~~\n');
-fprintf('(%.7f, %.7f)\n', M1(1, :));
-fprintf('(%.7f, %.7f)\n', M1(2, :));
-
-%------------------------------------------------%
-%     Calculate Eigenvalues and Eigenvectors     %
-%------------------------------------------------%
-% Calculate eigenvalues and eigenvectors
-[eigvecs, eigvals] = eig(M1);
-
-% Eigen 1
-vec1 = eigvecs(:, 1);
-val1 = eigvals(1, 1);
-fprintf('vec1  = (%f, %f) \n', vec1);
-fprintf('val1  = %f \n\n', val1);
-
-% Eigen 2
-vec2 = eigvecs(:, 2);
-val2 = eigvals(2, 2);
-fprintf('vec2  = (%f, %f) \n', vec2);
-fprintf('val2  = %f \n\n', val2);
-
-%-------------------%
-%     Test Plot     %
-%-------------------%
+% Test plot
 % plot_test_PO(run_new, label_plot);
 
 %-------------------------------------------------------------------------%
@@ -143,5 +105,43 @@ function data_out = calculate_initial_PO(param_in)
   data_out.t = t_PO;
   data_out.x = x_PO;
   data_out.p = p0_PO;
+
+end
+
+function prob_out = glue_parameters(prob_in)
+  % prob_out = glue_parameter(prob_in)
+  %
+  % Glue the parameters of the EP segments and PO segment together 
+  % (as they're all the same anyway)
+
+  %---------------%
+  %     Input     %
+  %---------------%
+  % Input continuation problem structure
+  prob = prob_in;
+
+  %-------------------%
+  %     Read Data     %
+  %-------------------%
+  % Read index data periodic orbit segment
+  [data, uidx] = coco_get_func_data(prob, 'po.orb.coll', 'data', 'uidx');
+
+  % Read index data equilibrium points
+  [data1, uidx1] = coco_get_func_data(prob, 'x0.ep', 'data', 'uidx');
+
+  % Index mapping
+  maps = data.coll_seg.maps;
+  % maps_var = data_var.coll_var;
+  maps1 = data1.ep_eqn;
+
+  %-------------------------%
+  %     Glue Parameters     %
+  %-------------------------%
+  prob = coco_add_glue(prob, 'glue_p1', uidx(maps.p_idx), uidx1(maps1.p_idx));
+
+  %----------------%
+  %     Output     %
+  %----------------%
+  prob_out = prob;
 
 end

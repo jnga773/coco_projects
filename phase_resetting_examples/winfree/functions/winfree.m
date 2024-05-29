@@ -26,7 +26,7 @@ function y_out = winfree(x_in, p_in)
   %----------------%
   % The system of equations
 
-  % y_out = zeros(3, 1);
+  % y_out = zeros(2, 1);
   y_out(1, :) = first_bit .* (x .* (sqrt_xy - a) + (w .* y)) + y;
   y_out(2, :) = first_bit .* (y .* (sqrt_xy - a) - (w .* x)) - x;
 
