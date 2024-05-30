@@ -10,7 +10,7 @@
 % Current run name
 run_new = run_names.hopf_to_PO;
 % Which run this continuation continues from
-run_old = run_names.follow_hopf_z;
+run_old = run_names.follow_hopf;
 
 % Continuation point
 % label_old = sort(coco_bd_labs(coco_bd_read(run_old), 'HB'));

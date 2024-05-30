@@ -17,7 +17,7 @@ function F_coco_out = func_seg4_symbolic()
 
   % System parameters
   syms c a b z
-  pvec = [c; a; b; z];
+  p_sys = [c; a; b; z];
 
   % Phase resetting parameters
   syms T k mu_s eta
