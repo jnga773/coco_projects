@@ -1,20 +1,21 @@
-% Clear plots
-close all;
+%=========================================================================%
+%%               Predator-Prey Model from Strogatz Book                  %%
+%=========================================================================%
+% We compute a stationery point continuation for a predator-prey model, 
+% given by the equations:
+%                        x' = y,
+%                        y' = mu y + x - x^2 + xy ,
+% where x and y are the state variables, and \mu is the system parameter.
+% In this continuation we add the eigenvalues and eigenvectors of the
+% Jacobian evaluated at the stationery point to the continuation
+% problem.
 
 % Clear workspace
 clear;
+clc;
 
 % Add system equation functions (and other functions) to path
 addpath('./functions');
-
-%-------------------------------------------------------------------------%
-%%               Predator-Prey Model from Strogatz Book                  %%
-%-------------------------------------------------------------------------%
-% We compute a family of periodic orbits emanating from a Hopf bifurcation
-% point of the dynamical system
-%
-% x' = y,
-% y' = mu y + x - x^2 + xy .
 
 %--------------------%
 %     Parameters     %
@@ -25,18 +26,27 @@ pnames = 'mu';
 % Initial values for parameters
 mu = -0.8645;
 
+%-----------------------%
+%     Problem Setup     %
+%-----------------------%
 % Parameter vector
 p0 = mu;
-
-% Range for parameter sweeps
-p_range = [-2.0; 2.0];
 
 % Equilibria points
 x0 = [0; 0];
 
-% List of functions
-% func_list = {@func, [], []};
-func_list = {@func, @func_DFDX, @func_DFDP};
+% Range for parameter sweeps
+p_range = [-2.0; 2.0];
+
+%-------------------------%
+%     Functions Lists     %
+%-------------------------%
+% Vector field: Functions
+% funcs.field = {@func, [], []};
+funcs.field = {@func, @func_DFDX, @func_DFDP};
+
+% Boundary conditions: Eigenvalue
+bcs_funcs.bcs_eig = {@bcs_eig};
 
 %-------------------------------------------------------------------------%
 %%         Setup Equilibrium Point Continuation with Eigenvectors        %%
@@ -65,7 +75,7 @@ lam2 = eigval(2, 2);
 prob = coco_prob();
 
 % Create construction of equilibrium continuation
-prob = ode_isol2ep(prob, 'x0', func_list{:}, x0, pnames, p0);
+prob = ode_isol2ep(prob, 'x0', funcs.field{:}, x0, pnames, p0);
 
 % Extract toolbox data and indices for the equilibrium point
 [data, uidx] = coco_get_func_data(prob, 'x0.ep', 'data', 'uidx');
@@ -77,7 +87,7 @@ maps = data.ep_eqn;
 %     Boundary Conditions: Eigen-1     %
 %--------------------------------------%
 % Append boundary conditions to continue the unstable eigenvalues and eigenvectors
-prob = coco_add_func(prob, 'bcs_eig1', @boundary_conditions_eig, data, ...
+prob = coco_add_func(prob, 'bcs_eig1', bcs_funcs.bcs_eig{:}, data, ...
                      'zero', 'uidx', ...
                      [uidx(maps.x_idx); ...
                       uidx(maps.p_idx)], ...
@@ -88,20 +98,20 @@ prob = coco_add_func(prob, 'bcs_eig1', @boundary_conditions_eig, data, ...
 uidx_eigu = coco_get_func_data(prob, 'bcs_eig1', 'uidx');
 
 % Grab eigenvector and value indices from u-vector
-vu_idx = [numel(uidx_eigu) - 2; numel(uidx_eigu) - 1];
-lu_idx = numel(uidx_eigu);
+vu_idx = uidx_eigu(end-2 : end-1);
+lu_idx = uidx_eigu(end);
 
 % Define active parameters for unstable eigenvector and eigenvalue
 prob = coco_add_pars(prob, 'par_eig1', ...
-                     [uidx_eigu(vu_idx); uidx_eigu(lu_idx)], ...
+                     [vu_idx; lu_idx], ...
                      {'vec1_1', 'vec1_2', 'lam1'}, ...
                      'active');
 
 %--------------------------------------%
-%     Boundary Conditions: Eigen-1     %
+%     Boundary Conditions: Eigen-2     %
 %--------------------------------------%
 % Append boundary conditions to continue the unstable eigenvalues and eigenvectors
-prob = coco_add_func(prob, 'bcs_eig2', @boundary_conditions_eig, data, ...
+prob = coco_add_func(prob, 'bcs_eig2', bcs_funcs.bcs_eig{:}, data, ...
                      'zero', 'uidx', ...
                      [uidx(maps.x_idx); ...
                       uidx(maps.p_idx)], ...
@@ -112,18 +122,18 @@ prob = coco_add_func(prob, 'bcs_eig2', @boundary_conditions_eig, data, ...
 uidx_eigs = coco_get_func_data(prob, 'bcs_eig2', 'uidx');
 
 % Grab eigenvector and value indices from u-vector
-vs_idx = [numel(uidx_eigs) - 2; numel(uidx_eigs) - 1];
-ls_idx = numel(uidx_eigs);
+vs_idx = uidx_eigs(end-2 : end-1);
+ls_idx = uidx_eigs(end);
 
 % Define active parameters for unstable eigenvector and eigenvalue
 prob = coco_add_pars(prob, 'par_eig2', ...
-                     [uidx_eigs(vs_idx); uidx_eigs(ls_idx)], ...
+                     [vs_idx; ls_idx], ...
                      {'vec2_1', 'vec2_2', 'lam2'}, ...
                      'active');
 
-%--------------------------------%
-%     Parameter Continuation     %
-%--------------------------------%
+%------------------%
+%     Run CoCo     %
+%------------------%
 % The unstable eigenvalue and eigenvector components will be columns
 % 'lu', 'vu_1', and 'vu_2' in the bd array.
 % The stable eigenvalue and eigenvector components will be columns

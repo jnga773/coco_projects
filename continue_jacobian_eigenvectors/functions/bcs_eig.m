@@ -1,5 +1,5 @@
-function [data_in, y_out] = boundary_conditions_eig(prob_in, data_in, u_in)
-  % [data_in, y_out] = boundary_conditions_eig(prob_in, data_in, u_in)
+function [data_in, y_out] = bcs(prob_in, data_in, u_in)
+  % [data_in, y_out] = bcs(prob_in, data_in, u_in)
   % 
   % COCO compatible encoding for the boundary conditions of the eigenvalues and
   % eigenvectors of the monodromy matrix. Ensures they are eigenvectors and
@@ -15,10 +15,10 @@ function [data_in, y_out] = boundary_conditions_eig(prob_in, data_in, u_in)
   % u_in : array (floats?)
   %     Total u-vector of the continuation problem. This function
   %     only utilises the following (as imposed by coco_add_func):
-  %          * u_in(1:2) - Equilibrium point
-  %          * u_in(3)   - System parameters
-  %          * u_in(4:5) - The eigenvector
-  %          * u_in(6)   - The eigenvalue
+  %           u_in(1 : xdim)            - Equilibrium point
+  %           u_in(xdim+1 : xdim+pdim)  - System parameters
+  %           u_in(xdim+pdim+1 : end-1) - The eigenvector
+  %           u_in(end)                 - The eigenvalue
   %
   % Output
   % ----------
@@ -30,6 +30,8 @@ function [data_in, y_out] = boundary_conditions_eig(prob_in, data_in, u_in)
   % State space and parameter vector dimensions
   xdim = data_in.xdim;
   pdim = data_in.pdim;
+  % Jacobian function handle
+  DFDX = data_in.dfdxhan;
 
   %--------------------------%
   %     Input Parameters     %
@@ -43,15 +45,11 @@ function [data_in, y_out] = boundary_conditions_eig(prob_in, data_in, u_in)
   % Eigenvalue
   eig_val    = u_in(end);
 
-  %----------------------------%
-  %     Calculate Jacobian     %
-  %----------------------------%
-  % Calculate Jacobian matrix
-  J = func_DFDX(x0_ss, parameters);
-
   %---------------------------------------%
   %     Calculate Boundary Conditions     %
   %---------------------------------------%
+  % Calculate Jacobian matrix
+  J = DFDX(x0_ss, parameters);
   % Eigenvalue equations
   eig_eqn = (J * eig_vec) - (eig_val * eig_vec);
 
