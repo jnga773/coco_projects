@@ -8,6 +8,7 @@ function plot_base_diagram(ax_in, p0_in, varargin)
   [vu_in, vs_in] = find_jacobian_eigenvectors([0; 0], p0_in);
   vs = sign(vs_in(1)) * vs_in;
   vu = sign(vu_in(1)) * vu_in;
+  % [vu, vs] = unstable_stable_eigenvectors(p0_in);
 
   % ode45 parameters
   opts = odeset('RelTol', 1.0e-6, 'AbsTol', 1.0e-6, 'NormControl', 'on');

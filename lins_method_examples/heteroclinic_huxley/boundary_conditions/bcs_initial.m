@@ -1,5 +1,5 @@
-function [data_in, y_out] = boundary_conditions_initial(prob_in, data_in, u_in)
-  % [data_in, y_out] = boundary_conditions_initial(prob_in, data_in, u_in)
+function [data_in, y_out] = bcs_initial(prob_in, data_in, u_in)
+  % [data_in, y_out] = bcs_initial(prob_in, data_in, u_in)
   %
   % COCO compatible encoding for the "initial" boundary conditions of the two
   % trajectory segments. 
@@ -23,10 +23,11 @@ function [data_in, y_out] = boundary_conditions_initial(prob_in, data_in, u_in)
   % u_in : array (floats?)
   %     Total u-vector of the continuation problem. This function
   %     only utilises the following (as imposed by coco_add_func):
-  %          * u_in(1:2) - The initial point of the unstable manifold (x0_unstable),
-  %          * u_in(3:4) - The final point of the stable manifold (x1_stable),
-  %          * u_in(5:6) - The system parameters (parameters),
-  %          * u_in(7:8) - The epsilon spacings (eps).
+  %          * u_in(1:3)   - The initial point of the unstable manifold (x0_unstable),
+  %          * u_in(4:6)   - The final point of the stable manifold (x1_stable),
+  %          * u_in(7:9)   - The end point of the periodic orbit (x_ss),
+  %          * u_in(10:11) - The system parameters (parameters),
+  %          * u_in(12:14) - The epsilon spacings and theta angle (eps).
   %
   % Output
   % ----------
@@ -35,37 +36,42 @@ function [data_in, y_out] = boundary_conditions_initial(prob_in, data_in, u_in)
   % data_in : structure
   %     Not actually output here but you need to have it for COCO.
 
+  % State- and parameter-space dimensions
+  xdim = data_in.xdim;
+  pdim = data_in.pdim;
+
   %--------------------------%
   %     Input Parameters     %
   %--------------------------%
   % Initial vector of the unstable manifold
-  x0_unstable = u_in(1:2);
+  x0_unstable = u_in(1 : xdim);
 
   % Final vector of the stable manifold
-  x1_stable   = u_in(3:4);
+  x1_stable   = u_in(xdim+1 : 2*xdim);
+
+  % Equilibrium point
+  x0_u        = u_in(2*xdim+1 : 3*xdim);
+  x0_s        = u_in(3*xdim+1 : 4*xdim);
 
   % System parameters
-  parameters = u_in(5:6);
+  parameters = u_in(4*xdim+1 : 4*xdim+pdim);
 
   % Epsilon spacings and angle
-  eps = u_in(7:8);
+  eps = u_in(end-1 : end);
   eps1 = eps(1); eps2 = eps(2);
 
   %---------------------------------------%
   %     Calculate Boundary Conditions     %
   %---------------------------------------%
-  % Input equilibria points from data_in
-  unstable_equilib_pt = data_in.unstable_equilib_pt;
-  stable_equilib_pt   = data_in.stable_equilib_pt;
-
-  % Calculate unstable and stable eigenvectors
+  % Find the equilibrium point and unstable and stable eigenvectors of the
+  % Jacobian matrix.
   [vu, vs] = unstable_stable_eigenvectors(parameters);
 
   % Unstable boundary condition
-  x_init_u  = unstable_equilib_pt + (eps1 * vu);
+  x_init_u = x0_u + (eps1 * vu);
 
   % Stable boundary condition
-  x_final_s = stable_equilib_pt   + (eps2 * vs);
+  x_final_s = x0_s + (eps2 * vs);
 
   %----------------%
   %     Output     %

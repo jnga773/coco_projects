@@ -1,4 +1,4 @@
-function plot_run_i(run_in, label_in, fig_num_in, p0_in, save_figure)
+function plot_run_i(run_in, label_in, fig_num_in, save_figure)
   % PLOT_RUN_I: Plots the solution calculating in run [run_in] for label
   % [label_in].
 
@@ -9,6 +9,9 @@ function plot_run_i(run_in, label_in, fig_num_in, p0_in, save_figure)
   % Read solution of current run
   [sol1, ~] = coll_read_solution('unstable', run_in, label_in);
   [sol2, ~] = coll_read_solution('stable', run_in, label_in);
+
+  % Parameters
+  p0_in = sol1.p;
 
   % x-solution
   x_sol1 = sol1.xbp;
@@ -26,8 +29,6 @@ function plot_run_i(run_in, label_in, fig_num_in, p0_in, save_figure)
   hold(ax, 'on');
 
   % Plot COCO solutions
-  % labs = [1, 5, 2, 4, 3, 3];
-  % coco_plot_sol(run_in, label_in, 'huxley', 1:2, 'x', 'x');
   plot(ax, x_sol1(:, 1), x_sol1(:, 2), LineStyle='-', ...
        Marker='.', MarkerSize=15, DisplayName='Unstable Manifold');
   plot(ax, x_sol2(:, 1), x_sol2(:, 2), LineStyle='-', ...
