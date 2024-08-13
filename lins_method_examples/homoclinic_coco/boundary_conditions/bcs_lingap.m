@@ -1,5 +1,5 @@
-function [data_in, y_out] = boundary_conditions_lingap(prob_in, data_in, u_in)
-  % [data_in, y_out] = boundary_conditions_lingap(prob_in, data_in, u_in)
+function [data_in, y_out] = bcs_lingap(prob_in, data_in, u_in)
+  % [data_in, y_out] = bcs_lingap(prob_in, data_in, u_in)
 
   % COCO compatible encoding for the boundary conditions of the Lin condition,
   %           x_s(0) = x_u(T1) + \delta v_gap,
@@ -28,17 +28,21 @@ function [data_in, y_out] = boundary_conditions_lingap(prob_in, data_in, u_in)
   % data_in : structure
   %     Not actually output here but you need to have it for COCO.
 
+  % State- and parameter-space dimensions
+  xdim = data_in.xdim;
+  pdim = data_in.pdim;
+
   %--------------------------%
   %     Input Parameters     %
   %--------------------------%
   % Final point of the unstable trajectory
-  x1_unstable = u_in(1:3);
+  x1_unstable = u_in(1 : xdim);
 
   % Initial point of the stable trajectory
-  x0_stable = u_in(4:6);
+  x0_stable = u_in(xdim+1 : 2*xdim);
 
   % Lin-gap parameter
-  lingap = u_in(7);
+  lingap = u_in(end);
 
   % Lin-gap vector
   vgap = data_in.vgap';

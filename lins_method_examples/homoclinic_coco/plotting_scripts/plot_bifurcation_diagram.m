@@ -5,17 +5,17 @@
   %     Read Data     %
   %-------------------%
   % Read COCO data matrices
-  bd_hopf        = coco_bd_read(run_names_in.hopf_bifurcations);
-  bd_saddle      = coco_bd_read(run_names_in.saddle_nodes);
-  bd_homo_approx = coco_bd_read(run_names_in.approx_homo.continue_homoclinics);
+  % bd_hopf        = coco_bd_read(run_names_in.hopf_bifurcations);
+  % bd_saddle      = coco_bd_read(run_names_in.saddle_nodes);
+  bd_homo_approx = coco_bd_read(run_names_in.continue_approx_homoclinics);
   bd_homo        = coco_bd_read(run_names_in.lins_method.continue_homoclinics);
 
-  % Hopf bifurcation line (H)
-  p1_hopf        = coco_bd_col(bd_hopf, 'p1');
-  p2_hopf        = coco_bd_col(bd_hopf, 'p2');
-  % Saddle-Node bifurcation line (A_S)
-  p1_saddle      = coco_bd_col(bd_saddle, 'p1');
-  p2_saddle      = coco_bd_col(bd_saddle, 'p2');
+  % % Hopf bifurcation line (H)
+  % p1_hopf        = coco_bd_col(bd_hopf, 'p1');
+  % p2_hopf        = coco_bd_col(bd_hopf, 'p2');
+  % % Saddle-Node bifurcation line (A_S)
+  % p1_saddle      = coco_bd_col(bd_saddle, 'p1');
+  % p2_saddle      = coco_bd_col(bd_saddle, 'p2');
   % Approximate homoclinic line
   p1_homo_approx = coco_bd_col(bd_homo_approx, 'p1');
   p2_homo_approx = coco_bd_col(bd_homo_approx, 'p2');
@@ -34,19 +34,11 @@
   
   hold(ax, 'on');
 
-  %{
-  Plot using the COCO method coco_plot_bd
-  % Plot COCO solution: bifurcation diagrams
-  thm = struct('ustab', '', 'xlab', 'p_1', 'ylab', 'p_2');
-  thm.lspec = {'k', 'LineWidth', 1, 'Marker', '.', 'MarkerSize', 8};
-  coco_plot_bd(thm, run4, 'p1', 'p2')
-  %}
-
   % Plot regular method
-  % Hopf Line
-  plot(ax, p1_hopf, p2_hopf, LineStyle="-", DisplayName='Hopf');
-  % Saddle Node
-  plot(ax, p1_saddle, p2_saddle, LineStyle='-', DisplayName='Saddle-Node');
+  % % Hopf Line
+  % plot(ax, p1_hopf, p2_hopf, LineStyle="-", DisplayName='Hopf');
+  % % Saddle Node
+  % plot(ax, p1_saddle, p2_saddle, LineStyle='-', DisplayName='Saddle-Node');
   % Approximate Homoclinic Line
   plot(ax, p1_homo_approx, p2_homo_approx, LineStyle='-', DisplayName='Homoclinic (Approximate)');
   % Lin's method homoclinic line

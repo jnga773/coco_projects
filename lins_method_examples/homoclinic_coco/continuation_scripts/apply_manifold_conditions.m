@@ -1,5 +1,5 @@
-function prob_out = glue_conditions(prob_in, data_in, epsilon_in)
-  % prob_out = glue_conditions(prob_in, data_in, vec_floquet_in, lam_floquet_in, epsilon_in)
+function prob_out = apply_manifold_conditions(prob_in, data_in, bcs_funcs_in, epsilon_in)
+  % prob_out = apply_manifold_conditions(prob_in, data_in, vec_floquet_in, lam_floquet_in, epsilon_in)
   %
   % Encoding of the initial and final boundary conditions of the two trajectory segments.
   % 
@@ -23,6 +23,8 @@ function prob_out = glue_conditions(prob_in, data_in, epsilon_in)
   %     Continuation problem structure.
   % data_in : structure
   %     Problem data structure containing boundary condition information.
+  % bcs_funcs_in : structure
+  %     Data structure containing lists of boundary condition functions.
   % epsilon_in : array (floats)
   %     Array of separations at end points from orbit and equilibrium.
   %
@@ -30,6 +32,13 @@ function prob_out = glue_conditions(prob_in, data_in, epsilon_in)
   % ----------
   % prob_out : COCO problem structure
   %     Continuation problem structure.
+
+  %---------------%
+  %     Input     %
+  %---------------%
+  % List of functions
+  bcs_initial = bcs_funcs_in.bcs_initial;
+  bcs_final   = bcs_funcs_in.bcs_final;
 
   % Set the COCO problem
   prob = prob_in;
@@ -56,14 +65,19 @@ function prob_out = glue_conditions(prob_in, data_in, epsilon_in)
   % Both segments have the same system parameters, so glue them together
   prob = coco_add_glue(prob, 'shared', ...
                        uidx_u(maps_u.p_idx), uidx_s(maps_s.p_idx));
+  % Glue equilibrium point segment parameters too
   prob = coco_add_glue(prob, 'shared_ep', ...
                        uidx_u(maps_u.p_idx), uidx_0(maps_0.p_idx));
 
   %-------------------------------------%
   %     Initial Boundary Conditions     %
   %-------------------------------------%
+  % Add state- and parameter-space dimensions to input data structure
+  data_in.xdim = data_u.xdim;
+  data_in.pdim = data_u.pdim;
+
   % Apply the boundary conditions for the initial points near the equilibrium
-  prob = coco_add_func(prob, 'bcs_initial', @boundary_conditions_initial, data_in, ...
+  prob = coco_add_func(prob, 'bcs_initial', bcs_initial{:}, data_in, ...
                        'zero', 'uidx', ...
                        [uidx_u(maps_u.x0_idx); ...
                         uidx_s(maps_s.x1_idx); ...
@@ -84,9 +98,13 @@ function prob_out = glue_conditions(prob_in, data_in, epsilon_in)
   %-----------------------------------%
   %     Final Boundary Conditions     %
   %-----------------------------------%
+  % Add state- and parameter-space dimensions to input data structure
+  data_in.xdim = data_u.xdim;
+  data_in.pdim = data_u.pdim;
+  
   % Append hyperplane conditions with parameters 'seg_u' and 'seg_s' for the unstable
   % and stable segments, respectively.
-  prob = coco_add_func(prob, 'bcs_final', @boundary_conditions_final, data_in, ...
+  prob = coco_add_func(prob, 'bcs_final', bcs_final{:}, data_in, ...
                        'inactive', {'seg_u', 'seg_s'}, ...
                        'uidx', [uidx_u(maps_u.x1_idx); uidx_s(maps_s.x0_idx)]);
 

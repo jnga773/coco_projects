@@ -1,5 +1,5 @@
-function [data_in, y_out] = boundary_conditions_final(prob_in, data_in, u_in)
-  % [data_in, y_out] = boundary_conditions_final(prob_in, data_in, u_in)
+function [data_in, y_out] = bcs_final(prob_in, data_in, u_in)
+  % [data_in, y_out] = bcs_final(prob_in, data_in, u_in)
   %
   % Boundary conditions of the two trajectory segments. Both segments end on
   % the plane \Sigma, which we define by a point and a normal vector in
@@ -27,15 +27,19 @@ function [data_in, y_out] = boundary_conditions_final(prob_in, data_in, u_in)
   %     An array containing to the two boundary conditions.
   % data_in : structure
   %     Not actually output here but you need to have it for COCO.
+
+  % State- and parameter-space dimensions
+  xdim = data_in.xdim;
+  pdim = data_in.pdim;
   
   %--------------------------%
   %     Input Parameters     %
   %--------------------------%
   % Final vector of the unstable manifold
-  x1_unstable = u_in(1:3);
+  x1_unstable = u_in(1:xdim);
 
   % Initial vector of the stable manifold
-  x0_stable   = u_in(4:6);
+  x0_stable   = u_in(xdim+1:end);
 
   %------------------------------------%
   %     Read Points from "data_in"     %

@@ -1,4 +1,4 @@
-function plot_homoclinic_manifold_run(run_in, label_in, label_approx_in, fig_num_in, save_figure)
+function plot_homoclinic_manifold_run(run_in, label_in, xbp_old_in, fig_num_in, save_figure)
   %-------------------%
   %     Read Data     %
   %-------------------%
@@ -42,7 +42,7 @@ function plot_homoclinic_manifold_run(run_in, label_in, label_approx_in, fig_num
   %       DisplayName='Stable Manifold');
 
   % Plot base solution
-  plot_homoclinic_hyperplane_base(ax, x0, p0_in, label_approx_in)
+  plot_homoclinic_hyperplane_base(ax, x0, p0_in, xbp_old_in)
 
   % Legend
   legend(ax, 'Interpreter', 'latex')
@@ -81,5 +81,7 @@ function plot_homoclinic_manifold_run(run_in, label_in, label_approx_in, fig_num
     % exportgraphics(fig, ['./images/', figname, '.png'], Resolution=800);
     exportgraphics(fig, ['./images/', figname, '.pdf'], ContentType='vector');
   end
+
+
 
 end

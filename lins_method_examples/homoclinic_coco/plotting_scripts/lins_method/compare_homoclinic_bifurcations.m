@@ -1,6 +1,6 @@
 function compare_homoclinic_bifurcations(run_names_in, save_figure)
   % Run names
-  run_approx = run_names_in.approx_homo.continue_homoclinics;
+  run_approx = run_names_in.continue_approx_homoclinics;
   run_lins   = run_names_in.lins_method.continue_homoclinics;
 
   %-------------------%

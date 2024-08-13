@@ -1,5 +1,5 @@
-function [data_in, y_out] = boundary_conditions_initial(prob_in, data_in, u_in)
-  % [data_in, y_out] = boundary_conditions_initial(prob_in, data_in, u_in)
+function [data_in, y_out] = bcs_initial(prob_in, data_in, u_in)
+  % [data_in, y_out] = bcs_initial(prob_in, data_in, u_in)
   %
   % COCO compatible encoding for the "initial" boundary conditions of the two
   % trajectory segments. 
@@ -36,23 +36,27 @@ function [data_in, y_out] = boundary_conditions_initial(prob_in, data_in, u_in)
   % data_in : structure
   %     Not actually output here but you need to have it for COCO.
 
+  % State- and parameter-space dimensions
+  xdim = data_in.xdim;
+  pdim = data_in.pdim;
+
   %--------------------------%
   %     Input Parameters     %
   %--------------------------%
   % Initial vector of the unstable manifold
-  x0_unstable = u_in(1:3);
+  x0_unstable = u_in(1 : xdim);
 
   % Final vector of the stable manifold
-  x1_stable   = u_in(4:6);
+  x1_stable   = u_in(xdim+1 : 2*xdim);
 
   % Equilibrium point
-  x_ss        = u_in(7:9);
+  x_ss        = u_in(2*xdim+1 : 3*xdim);
 
   % System parameters
-  parameters = u_in(10:11);
+  parameters = u_in(3*xdim+1 : 3*xdim+pdim);
 
   % Epsilon spacings and angle
-  eps = u_in(12:14);
+  eps = u_in(end-2 : end);
   eps1 = eps(1); eps2 = eps(2); theta = eps(3);
 
   %---------------------------------------%

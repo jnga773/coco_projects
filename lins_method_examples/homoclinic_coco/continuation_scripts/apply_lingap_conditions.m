@@ -1,5 +1,5 @@
-function prob_out = glue_lin_conditions(prob_in, data_in, lingap_in)
-  % prob_out = glue_lin_conditions(prob_in, data_in, lingap_in)
+function prob_out = apply_lingap_conditions(prob_in, data_in, bcs_funcs_in, lingap_in)
+  % prob_out = apply_lingap_conditions(prob_in, data_in, lingap_in)
   %
   % Applies the Lin gap and Lin phase boundary conditions to the COCO problem.
   % The parameter [lingap] is then allowed to vary.
@@ -10,6 +10,8 @@ function prob_out = glue_lin_conditions(prob_in, data_in, lingap_in)
   %     Continuation problem structure.
   % data_in : structure
   %     Problem data structure containing boundary condition information.
+  % bcs_funcs_in : structure
+  %     Data structure containing lists of boundary condition functions.
   % lingap_in : float
   %     Value of the Lin gap distance parameter.
   %
@@ -17,6 +19,12 @@ function prob_out = glue_lin_conditions(prob_in, data_in, lingap_in)
   % ----------
   % prob_out : COCO problem structure
   %     Continuation problem structure.
+
+  %---------------%
+  %     Input     %
+  %---------------%
+  % List of functions
+  bcs_lingap = bcs_funcs_in.bcs_lingap;
 
   % Set the COCO problem
   prob = prob_in;
@@ -52,10 +60,14 @@ function prob_out = glue_lin_conditions(prob_in, data_in, lingap_in)
   %---------------------------------%
   %     Apply Lin Gap Condition     %
   %---------------------------------%
+  % Add state- and parameter-space dimensions to input data structure
+  data_in.xdim = data_u.xdim;
+  data_in.pdim = data_u.pdim;
+
   % Append Lin's gap condition. 
   % Here, lingap_in is appended as an input to the u-vector input for the function
-  % @boundary_conditions_lingap.
-  prob = coco_add_func(prob, 'bcs_lingap', @boundary_conditions_lingap, data_in, ...
+  % @bcs_lingap.
+  prob = coco_add_func(prob, 'bcs_lingap', bcs_lingap{:}, data_in, ...
                        'zero', 'uidx', ...
                        [uidx_u(maps_u.x1_idx); uidx_s(maps_s.x0_idx)], ...
                        'u0', lingap_in);

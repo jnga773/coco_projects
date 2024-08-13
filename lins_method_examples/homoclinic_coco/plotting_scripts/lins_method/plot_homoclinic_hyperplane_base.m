@@ -1,4 +1,4 @@
-function plot_homoclinic_hyperplane_base(ax_in, x0_in, p0_in, label_approx_in)
+function plot_homoclinic_hyperplane_base(ax_in, x0_in, p0_in, xbp_old_in)
   % PLOT_HOMOCLINIC_HYPERPLANE_BASE: Plots the unstable and stable
   % eigenvectors and the Sigma plane. This will be called in
   % plot_homoclinic_manifolds().
@@ -6,9 +6,6 @@ function plot_homoclinic_hyperplane_base(ax_in, x0_in, p0_in, label_approx_in)
   %-------------------%
   %     Read Data     %
   %-------------------%
-  % Read solution of previous run with largest period
-  [~, x_approx, ~] = read_approximate_homoclinic_solution(label_approx_in);
-
   % Calculate non-trivial steady states and stable and unstable eigenvectors
   [vu, vs1, vs2] = unstable_stable_eigenvectors(x0_in, p0_in);
 
@@ -35,7 +32,7 @@ function plot_homoclinic_hyperplane_base(ax_in, x0_in, p0_in, label_approx_in)
   %     Plot Data     %
   %-------------------%
   % Plot approximate homoclinic (high-period periodic orbit)
-  plot3(ax_in, x_approx(:, 1), x_approx(:, 2), x_approx(:, 3), LineStyle='--', ...
+  plot3(ax_in, xbp_old_in(:, 1), xbp_old_in(:, 2), xbp_old_in(:, 3), LineStyle='--', ...
         Color='Black', DisplayName='Approximate Homoclinic');
 
   % Plot manifold
