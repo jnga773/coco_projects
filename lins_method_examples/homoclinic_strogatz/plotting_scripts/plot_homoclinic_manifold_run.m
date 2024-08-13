@@ -1,10 +1,12 @@
-function plot_homoclinic_manifold_run(run_in, label_in, fig_num_in, p0_in, save_figure)
+function plot_homoclinic_manifold_run(run_in, label_in, fig_num_in, save_figure)
   %-------------------%
   %     Read Data     %
   %-------------------%
   % Read solution of current run
   [sol1, ~] = coll_read_solution('unstable', run_in, label_in);
   [sol2, ~] = coll_read_solution('stable', run_in, label_in);
+
+  p0_in = sol1.p;
 
   % x-solution
   x_sol1 = sol1.xbp;

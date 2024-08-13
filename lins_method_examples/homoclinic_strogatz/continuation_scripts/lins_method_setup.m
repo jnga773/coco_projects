@@ -1,55 +1,66 @@
-%-------------------------------------------------------------------------%
-%%                        Setup Lin's Method Data                        %%
-%-------------------------------------------------------------------------%
-% Calculate non-trivial steady states
-[~, vu, vs] = unstable_stable_eigenvectors(p0);
+function data_out = lins_method_setup(x0_in, p_in, pnames_in)
+  % data_out = lins_method_setup(p_in)
+  %
+  % Sets up initial solution to the Lin methods continuation problem.
 
-% Parameters
-p0_L = p0;
+  %---------------%
+  %     Input     %
+  %---------------%
+  x_ss = x0_in;
+  
+  %----------------------------------%
+  %     Setup Lin's Method Stuff     %
+  %----------------------------------%
+  % Calculate non-trivial steady states
+  [~, vu, vs] = unstable_stable_eigenvectors(p_in);
 
-%----------------------------------%
-%     Setup Lin's Method Stuff     %
-%----------------------------------%
-% Initial distances from the equilibria, along the tangent spaces of the
-% unstable and stable manifolds, to the initial points along the corresponding
-% trajectory segments.
-eps1 = 0.1;
-eps2 = 0.05;
+  % Initial distances from the equilibria, along the tangent spaces of the
+  % unstable and stable manifolds, to the initial points along the corresponding
+  % trajectory segments.
+  % eps1 = 0.1;
+  % eps2 = 0.05;
+  eps1 = 0.2;
+  eps2 = 0.2;
 
-% Initial distances from the equilibria, along the tangent spaces of the
-% unstable and stable manifolds, to the initial points along the corresponding
-% trajectory segments.
-eps1 = 0.2;
-eps2 = 0.2;
+  % Lin epsilons vector
+  epsilon0 = [eps1; eps2];
 
-% Lin epsilons vector
-epsilon0 = [eps1; eps2];
+  % Normal vector to hyperplane \Sigma (just the y-axis at x=0.5)
+  normal = [0, 1];
+  % Intersection point for hyperplane
+  pt0 = [0.5; 0.2];
 
-%--------------------------------------------%
-%     Boundary Conditions data Structure     %
-%--------------------------------------------%
-% Add parameter names to data_bcs
-data_bcs.pnames = pnames;
+  %-----------------------------%
+  %     Boundary Conditions     %
+  %-----------------------------%
+  % Initial time
+  t0 = 0;
 
-% Normal vector to hyperplane \Sigma (just the y-axis at x=0.5)
-data_bcs.normal = [0, 1];
-% Intersection point for hyperplane
-data_bcs.pt0 = [0.5; 0.2];
+  % Unstable Manifold: Initial point
+  x_init_u = x_ss' + eps1 * vu';
+  % Unstable Manifold: Final point
+  x_final_u = pt0;
 
-% Store the stable and unstable equilibria points into data_bcs
-data_bcs.equilib_pt = x0;
+  % Stable Manifold: Initial point
+  x_init_s = x_ss' + eps2 * vs';
+  % Stable Manifold: Final point
+  x_final_s = pt0;
 
-% Initial time
-data_bcs.t0 = 0;
-% Initial parameters
-data_bcs.p0 = p0_L;
+  %----------------%
+  %     Output     %
+  %----------------%
+  data_out.p0        = p_in;
+  data_out.pnames    = pnames_in;
+  data_out.x_ss      = x0_in;
 
-% Unstable Manifold: Initial point
-data_bcs.x_init_u = x0' + eps1 * vu';
-% Unstable Manifold: Final point
-data_bcs.x_final_u = data_bcs.pt0;
+  data_out.t0        = t0;
+  data_out.x_init_u  = x_init_u;
+  data_out.x_final_u = x_final_u;
+  data_out.x_init_s  = x_init_s;
+  data_out.x_final_s = x_final_s;
 
-% Stable Manifold: Initial point
-data_bcs.x_init_s = x0' + eps2 * vs';
-% Stable Manifold: Final point
-data_bcs.x_final_s = data_bcs.pt0;
+  data_out.normal    = normal;
+  data_out.pt0       = pt0;
+  data_out.epsilon0  = epsilon0;
+
+end
