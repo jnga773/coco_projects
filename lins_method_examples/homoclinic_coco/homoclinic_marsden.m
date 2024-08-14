@@ -80,6 +80,7 @@ addpath('./boundary_conditions/');
 addpath('./continuation_scripts/');
 
 % Add plotting scripts
+addpath('./plotting_scripts/');
 % addpath('./plotting_scripts/homoclinic_approx/');
 addpath('./plotting_scripts/lins_method/');
 
@@ -928,10 +929,8 @@ label_plot = 25;
 
 plot_homoclinic_manifold_run(run_new, label_plot, data_lins.xbp_PO, 6, save_figure);
 
-plot_homoclinic_manifold_run(run_new, label_plot, data_lins.xbp_PO, 19, save_figure);
-
-plot_temporal_solution_single(run_new, label_plot, 20, save_figure);
-plot_temporal_solutions(run_new, 19, save_figure);
+% plot_temporal_solution_single(run_new, label_plot, 20, save_figure);
+% plot_temporal_solutions(run_new, 19, save_figure);
 
 compare_homoclinic_bifurcations(run_names, save_figure);
 
