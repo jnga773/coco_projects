@@ -77,6 +77,17 @@ prob = coco_prob();
 % Create construction of equilibrium continuation
 prob = ode_isol2ep(prob, 'x0', funcs.field{:}, x0, pnames, p0);
 
+% prob = ode_isol2ep(prob, 'x0', funcs.field{:}, x0, pnames, p0, '-var', eye(2));
+
+% % Hold the initial condition of solution to variational problem fixed
+% % Read data and uidx indices
+% [data_var, uidx_var] = coco_get_func_data(prob, 'x0.ep.var', 'data', 'uidx');
+% % Add parameters for each component of the monodromy matrix
+% prob = coco_add_pars(prob, 'pars', ...
+%                      uidx_var(data_var.ep_var.v_idx,:), ...
+%                      {'s1', 's2', ...
+%                       's3', 's4'});
+
 % Extract toolbox data and indices for the equilibrium point
 [data, uidx] = coco_get_func_data(prob, 'x0.ep', 'data', 'uidx');
 
@@ -140,4 +151,19 @@ prob = coco_add_pars(prob, 'par_eig2', ...
 % 'ls', 'vs_1', and 'vs_2' in the bd array.
 
 % Calculate continuation
-bd = coco(prob, 'test_run', [], 1, 'mu', p_range);
+bd = coco(prob, 'test_run', [], 1, {'mu', 'lam1', 'lam2'}, p_range);
+
+% %%
+% %---------------------%
+% %     Test Things     %
+% %---------------------%
+% % Solution label
+% label_read = 4;
+
+% % Read variational problem chart and CoCo data
+% chart = coco_read_solution('', 'test_run', label_read, 'chart');
+% % Read CoCo data
+% data = coco_read_solution('x0.ep', 'test_run', label_read, 'data');
+
+% % Get some matrix?
+% M = chart.x(data.ep_var.v_idx)
