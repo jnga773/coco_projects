@@ -33,7 +33,7 @@ function [data_in, y_out] = bcs_linphase(prob_in, data_in, u_in)
   x1_unstable = u_in(1 : xdim);
 
   % Initial point of the stable trajectory
-  x0_stable = u_in(xdim+1 : end);
+  x0_stable = u_in(xdim+1 : 2*xdim);
 
   % Lin-gap vector
   vphase = data_in.vphase_vec;

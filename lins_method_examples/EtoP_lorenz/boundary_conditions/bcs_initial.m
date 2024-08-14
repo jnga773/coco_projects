@@ -45,22 +45,16 @@ function [data_in, y_out] = bcs_initial(prob_in, data_in, u_in)
   %--------------------------%
   % Initial vector of the unstable manifold
   x0_unstable = u_in(1 : xdim);
-
   % Final vector of the stable manifold
   x1_stable   = u_in(xdim+1 : 2*xdim);
-
   % Final point of periodic orbit solution
   x_final_po  = u_in(2*xdim+1 : 3*xdim);
-
   % Equilibrium point
   x0          = u_in(3*xdim+1 : 4*xdim);
-
   % System parameters
   parameters  = u_in(4*xdim+1 : 4*xdim+pdim);
-
   % Eigenvector indices
   vec_floquet = u_in(4*xdim+pdim+1 : end-2);
-
   % Epsilon spacings and angle
   eps1        = u_in(end-1);
   eps2        = u_in(end);

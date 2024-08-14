@@ -63,7 +63,7 @@ function data_out = find_lingap_vector(run_in)
 
   % Take this point to be the solution
   % x0_stable = endpoints(min_idx, :);
-  labels(min_idx)
+  labels(min_idx);
   sol_s = coll_read_solution('stable', run_in, labels(min_idx));
   x0_stable = sol_s.xbp(1, :);
 
