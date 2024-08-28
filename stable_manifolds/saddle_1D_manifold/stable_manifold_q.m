@@ -351,7 +351,7 @@ run_old = run_names.hopf_to_PO;
 label_old = coco_bd_labs(coco_bd_read(run_old), 'PO_PT');
 
 % Print to console
-fprintf("~~~ Stable Manifold: Second Run ~~~ \n");
+fprintf("~~~ Stable Manifold: First Run ~~~ \n");
 fprintf('Calculate one of the stable-manifold branches \n');
 fprintf('Run name: %s \n', run_new);
 fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
