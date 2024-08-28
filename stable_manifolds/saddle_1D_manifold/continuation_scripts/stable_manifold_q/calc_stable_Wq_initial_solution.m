@@ -7,16 +7,28 @@ function data_out = calc_stable_Wq_initial_solution(run_in, label_in)
   %-------------------%
   %     Read Data     %
   %-------------------%
-  % Read solution from previous run
-  [sol, data]     = ep_read_solution('xpos', run_in, label_in);
+  % Read PO solution from previos run
+  [sol_PO, data_PO] = coll_read_solution('po.orb', run_in, label_in);
+  
+  % State space solution
+  xbp_PO = sol_PO.xbp;
+  % Time
+  tbp_PO = sol_PO.tbp;
+  % Period
+  T_PO   = sol_PO.T;
+  % Parameters
+  p      = sol_PO.p;
+  % Parameter names
+  pnames = data_PO.pnames;
+
+  % Read EP solution from previous run
+  [sol_pos, ~] = ep_read_solution('xpos', run_in, label_in);
 
   % Stationary point
-  xpos = sol.x;
-  % Parameters
-  p    = sol.p;
+  xpos = sol_pos.x;
   
   % DFDX function
-  func_DFDX = data.dfdxhan;
+  func_DFDX = data_PO.dfdxhan;
 
   %------------------------------------------------%
   %     Calculate Eigenvectors and Eigenvalues     %
@@ -50,7 +62,12 @@ function data_out = calc_stable_Wq_initial_solution(run_in, label_in)
   %     Output     %
   %----------------%
   % Load PO solution data
-  data_out.p        = sol.p;
+  data_out.p        = p;
+  data_out.pnames   = pnames;
+
+  data_out.xbp_PO   = xbp_PO;
+  data_out.tbp_PO   = tbp_PO;
+  data_out.T_PO     = T_PO;
 
   data_out.x_init_1 = x_init_1';
   data_out.x_init_2 = x_init_2';
