@@ -1,5 +1,5 @@
-function [data_in, y_out] = bcs(prob_in, data_in, u_in)
-  % [data_in, y_out] = bcs(prob_in, data_in, u_in)
+function [data_in, y_out] = bcs_eig(prob_in, data_in, u_in)
+  % [data_in, y_out] = bcs_eig(prob_in, data_in, u_in)
   % 
   % COCO compatible encoding for the boundary conditions of the eigenvalues and
   % eigenvectors of the monodromy matrix. Ensures they are eigenvectors and
@@ -15,10 +15,9 @@ function [data_in, y_out] = bcs(prob_in, data_in, u_in)
   % u_in : array (floats?)
   %     Total u-vector of the continuation problem. This function
   %     only utilises the following (as imposed by coco_add_func):
-  %           u_in(1 : xdim)            - Equilibrium point
-  %           u_in(xdim+1 : xdim+pdim)  - System parameters
-  %           u_in(xdim+pdim+1 : end-1) - The eigenvector
-  %           u_in(end)                 - The eigenvalue
+  %          * u_in(1:9)   - The monodromy matrix,
+  %          * u_in(10:12) - The stable Floquet vector (vec_floquet),
+  %          * u_in(13)    - The stable Floquet multiplier (lam_floquet).
   %
   % Output
   % ----------
@@ -27,34 +26,34 @@ function [data_in, y_out] = bcs(prob_in, data_in, u_in)
   % data_in : structure
   %     Not actually output here but you need to have it for COCO.
 
-  % State space and parameter vector dimensions
+  % State- and parameter-space dimensions
   xdim = data_in.xdim;
   pdim = data_in.pdim;
-  % Jacobian function handle
-  DFDX = data_in.dfdxhan;
 
   %--------------------------%
   %     Input Parameters     %
   %--------------------------%
-  % Equilibrium point
-  x0_ss      = u_in(1 : xdim);
-  % System parameters
-  parameters = u_in((xdim + 1):(xdim + pdim));
+  % Monodromy matrix indices
+  v1_idx      = u_in(1 : xdim*xdim);
   % Eigenvector
-  eig_vec    = u_in((xdim + pdim + 1):end-1);
+  vec_floquet = u_in(end-xdim : end-1);
   % Eigenvalue
-  eig_val    = u_in(end);
+  lam_floquet = u_in(end);
+
+  %-------------------%
+  %     Read Data     %
+  %-------------------%
+  % Reshape indices for monodromy matrix 
+  M1 = reshape(v1_idx, xdim, xdim);
 
   %---------------------------------------%
   %     Calculate Boundary Conditions     %
   %---------------------------------------%
-  % Calculate Jacobian matrix
-  J = DFDX(x0_ss, parameters);
   % Eigenvalue equations
-  eig_eqn = (J * eig_vec) - (eig_val * eig_vec);
+  eig_eqn = (M1 * vec_floquet) - (lam_floquet * vec_floquet);
 
   % Unit vector equations
-  vec_eqn = (eig_vec' * eig_vec) - 1;
+  vec_eqn = (vec_floquet' * vec_floquet) - 1;
 
   %----------------%
   %     Output     %

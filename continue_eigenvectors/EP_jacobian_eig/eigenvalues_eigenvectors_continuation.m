@@ -151,19 +151,8 @@ prob = coco_add_pars(prob, 'par_eig2', ...
 % 'ls', 'vs_1', and 'vs_2' in the bd array.
 
 % Calculate continuation
-bd = coco(prob, 'test_run', [], 1, {'mu', 'lam1', 'lam2'}, p_range);
+bd = coco(prob, 'test_run', [], 1, {'mu', 'lam1', 'lam2'}, p_range)
 
-% %%
-% %---------------------%
-% %     Test Things     %
-% %---------------------%
-% % Solution label
-% label_read = 4;
-
-% % Read variational problem chart and CoCo data
-% chart = coco_read_solution('', 'test_run', label_read, 'chart');
-% % Read CoCo data
-% data = coco_read_solution('x0.ep', 'test_run', label_read, 'data');
-
-% % Get some matrix?
-% M = chart.x(data.ep_var.v_idx)
+%=========================================================================%
+%                               END OF FILE                               %
+%=========================================================================%
