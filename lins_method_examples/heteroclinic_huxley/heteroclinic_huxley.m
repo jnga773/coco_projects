@@ -71,8 +71,9 @@ clc;
 
 % Add equation/functions to path
 addpath('./functions/');
+addpath('./functions/field/');
 % Add boundary condition functions to path
-addpath('./boundary_conditions/');
+addpath('./functions/boundary_conditions/');
 
 % Add continuation scripts
 addpath('./continuation_scripts/');
