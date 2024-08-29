@@ -10,7 +10,7 @@ function plot_initial_periodic_orbit(save_figure)
   %     Read Data     %
   %-------------------%
   % Load data matrix
-  load('./data/initial_PO.mat');
+  load('./data_mat/initial_PO.mat');
 
   %--------------------------------------%
   %     Plot Initial Periodic Orbits     %
@@ -39,7 +39,7 @@ function plot_initial_periodic_orbit(save_figure)
         DisplayName='$\Gamma$');
 
   % Plot equilibrium points: x_{0}
-  plot(ax, x0(1), x0(2), ...
+  plot(ax, x_0(1), x_0(2), ...
         LineStyle='none', ...
         Marker='o', MarkerFaceColor='r', MarkerSize=10, ...
         MarkerEdgeColor='r', DisplayName='$\vec{x}_{\ast}$');
