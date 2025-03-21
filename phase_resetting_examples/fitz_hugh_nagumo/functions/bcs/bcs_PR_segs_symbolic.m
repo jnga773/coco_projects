@@ -86,11 +86,9 @@ function bcs_coco_out = bcs_PR_segs_symbolic()
   % Phase resetting parameters
   syms T k theta_old theta_new
   syms mu_s eta
-  syms A_perturb theta_perturb
   syms d_x d_y
   p_PR = [T; k; theta_old; theta_new;
           mu_s; eta;
-          A_perturb; theta_perturb;
           d_x; d_y];
 
   %============================================================================%
