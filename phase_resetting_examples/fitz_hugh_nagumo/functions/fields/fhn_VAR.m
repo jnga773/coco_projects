@@ -1,5 +1,5 @@
-function y_out = floquet(u_in, p_in)
-  % y_out = floquet(u_in, p_in)
+function y_out = fhn_VAR(u_in, p_in)
+  % y_out = fhn_VAR(u_in, p_in)
   %
   % Adjoint function to calculate the Floquet bundle I guess?
   

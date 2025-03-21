@@ -1,5 +1,5 @@
-function F_coco_out = floquet_symbolic()
-  % F_coco_out = floquet_symbolic()
+function F_coco_out = fhn_VAR_symbolic()
+  % F_coco_out = fhn_VAR_symbolic()
   %
   % Creates a CoCo-compatible function encoding for the adjoint
   % equation that computes the Floquet bundle.

@@ -1,5 +1,5 @@
-function bcs_coco_out = bcs_floquet_symbolic()
-  % bcs_coco_out = bcs_floquet_symbolic()
+function bcs_coco_out = bcs_VAR_symbolic()
+  % bcs_coco_out = bcs_VAR_symbolic()
   %
   % Symbolic COCO encoding of the adjoint equations needed to calculate
   % the Floquet multipliers:

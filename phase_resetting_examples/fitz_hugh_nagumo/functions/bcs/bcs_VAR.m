@@ -1,5 +1,5 @@
-function [data_in, y_out] = bcs_floquet(prob_in, data_in, u_in)
-  % [data_in, y_out] = bcs_floquet(prob_in, data_in, u_in)
+function [data_in, y_out] = bcs_VAR(prob_in, data_in, u_in)
+  % [data_in, y_out] = bcs_VAR(prob_in, data_in, u_in)
   %
   % Boundary conditions for the Floquet multipliers with the adjoint equation
   %                  d/dt w = -J^{T} w    .

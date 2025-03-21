@@ -69,12 +69,12 @@ bcs_funcs.bcs_PO = bcs_PO_symbolic();
 bcs_funcs.bcs_T = bcs_T_symbolic();
 
 % Adjoint equations: Functions (for floquet_mu and floquet_wnorm)
-% funcs.floquet = {@floquet_adjoint};
-funcs.floquet = floquet_symbolic();
+% funcs.floquet = {@fhn_VAR};
+funcs.floquet = fhn_VAR_symbolic();
 
 % Boundary conditions: Floquet multipliers
-% bcs_funcs.bcs_floquet = {@bcs_floquet};
-bcs_funcs.bcs_floquet = bcs_floquet_symbolic();
+% bcs_funcs.bcs_floquet = {@bcs_VAR};
+bcs_funcs.bcs_floquet = bcs_VAR_symbolic();
 
 %=========================================================================%
 %                    CALCULATE INITIAL PERIODIC ORBIT                     %
@@ -297,7 +297,7 @@ fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
 %     Calculate Solution     %
 %----------------------------%
 % Calculate dem tings
-data_soln = calculate_periodic_orbit(run_old, label_old);
+data_soln = calc_initial_solution_PO(run_old, label_old);
 
 %----------------------------%
 %     Setup Continuation     %
@@ -326,13 +326,13 @@ prob = ode_isol2coll(prob, 'initial_PO', funcs.field{:}, ...
                      data_soln.t, data_soln.x, pnames, data_soln.p);
 
 % Add equilibrium points for non trivial steady states
-prob = ode_ep2ep(prob, 'x0',   run_old, label_old);
+prob = ode_ep2ep(prob, 'x0', run_old, label_old);
 
 %------------------------------------------------%
 %     Apply Boundary Conditions and Settings     %
 %------------------------------------------------%
 % Glue parameters and apply boundary condition
-prob = apply_PO_boundary_conditions(prob, bcs_funcs.bcs_PO);
+prob = apply_boundary_conditions_PO(prob, bcs_funcs.bcs_PO);
 
 %-------------------------%
 %     Add COCO Events     %
@@ -353,16 +353,15 @@ bd_PO = coco(prob, run_new, [], 1, {'c', 'z'}, [0.0, 2.0]);
 label_plot = coco_bd_labs(coco_bd_read(run_new), 'PO_PT');
 label_plot = label_plot(1);
 
-% Calculate stable manifold of saddle point 'q' and save data to .mat in 
-% ./data_mat/ directory
-save_initial_PO_data(run_new, label_plot);
+% Save initial periodic orbit data
+save_data_PO(run_new, label_plot, './data_mat/initial_PO.mat');
 
 % Plot solution
-plot_initial_periodic_orbit(save_figure);
+plot_initial_periodic_orbit();
 
-%-------------------------------------------------------------------------%
+%=========================================================================%
 %%            Compute Floquet Bundle at Zero Phase Point (mu)            %%
-%-------------------------------------------------------------------------%
+%=========================================================================%
 % We now add the adjoint function and Floquet boundary conditions to
 % compute the adjoint (left or right idk) eigenvectors and eigenvalues.
 % This will give us the perpendicular vector to the tangent of the periodic
@@ -391,7 +390,7 @@ fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
 %--------------------------%
 %     Calculate Things     %
 %--------------------------%
-data_adjoint = calc_initial_solution_adjoint_problem(run_old, label_old);
+data_adjoint = calc_initial_solution_VAR(run_old, label_old);
 
 %------------------------------------%
 %     Setup Floquet Continuation     %
@@ -424,7 +423,7 @@ prob = ode_isol2coll(prob, 'adjoint', funcs.floquet{:}, ...
 %     Apply Boundary Conditions and Settings     %
 %------------------------------------------------%
 % Apply boundary conditions
-prob = apply_floquet_boundary_conditions(prob, bcs_funcs);
+prob = apply_boundary_conditions_VAR(prob, bcs_funcs);
 
 %-------------------------%
 %     Add COCO Events     %
@@ -481,7 +480,7 @@ prob = ode_BP2coll(prob, 'adjoint', run_old, label_old);
 %     Apply Boundary Conditions and Settings     %
 %------------------------------------------------%
 % Apply boundary conditions
-prob = apply_floquet_boundary_conditions(prob, bcs_funcs);
+prob = apply_boundary_conditions_VAR(prob, bcs_funcs);
 
 %-------------------------%
 %     Add COCO Events     %
@@ -500,8 +499,8 @@ coco(prob, run_new, [], 1, {'w_norm', 'mu_s', 'T'}, [0.0, 1.1]);
 %-------------------%
 label_plot = coco_bd_labs(coco_bd_read(run_new), 'NORM1');
 
-% Save solution to .mat to be read in 'yamada_PTC.m'
-save_floquet_data(run_new, label_plot);
+% Save solution to .mat to be read in phase resetting codes
+save_data_VAR(run_new, label_plot, './data_mat/solution_VAR.mat');
 
 %=========================================================================%
 %                               END OF FILE                               %

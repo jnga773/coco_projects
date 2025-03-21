@@ -1,8 +1,24 @@
-function prob_out = apply_PO_boundary_conditions(prob_in, bcs_PO_in)
-  % prob_out = apply_PO_boundary_conditions(prob_in)
+function prob_out = apply_boundary_conditions_PO(prob_in, bcs_PO_in)
+  % prob_out = apply_boundary_conditions_PO(prob_in)
   %
-  % Glue the parameters of the EP segments and PO segment together 
-  % (as they're all the same anyway)
+  % This function reads index data for the stable periodic orbit segment and equilibrium points,
+  % glues the COLL and EP parameters together, applies periodic orbit boundary conditions.
+  %
+  % Parameters
+  % ----------
+  % prob_in : COCO problem structure
+  %     Input continuation problem structure.
+  % bcs_PO_in : List of functions
+  %     List of boundary conditions for the periodic orbit.
+  %
+  % Returns
+  % -------
+  % prob_out : COCO problem structure
+  %     Output continuation problem structure with applied boundary conditions.
+  %
+  % See Also
+  % --------
+  % coco_get_func_data, coco_add_glue, coco_add_func, coco_add_pars
 
   %---------------%
   %     Input     %
@@ -23,6 +39,11 @@ function prob_out = apply_PO_boundary_conditions(prob_in, bcs_PO_in)
   maps     = data.coll_seg.maps;
   maps1    = data1.ep_eqn;
 
+  %-------------------------%
+  %     Glue Parameters     %
+  %-------------------------%
+  prob = coco_add_glue(prob, 'glue_p1', uidx(maps.p_idx), uidx1(maps1.p_idx));
+
   %-----------------------------%
   %     Boundary Conditions     %
   %-----------------------------%
@@ -31,11 +52,7 @@ function prob_out = apply_PO_boundary_conditions(prob_in, bcs_PO_in)
                        uidx([maps.x0_idx(1:data.xdim); ...
                              maps.x1_idx(1:data.xdim); ...
                              maps.p_idx(1:data.pdim)]));
-
-  %-------------------------%
-  %     Glue Parameters     %
-  %-------------------------%
-  prob = coco_add_glue(prob, 'glue_p1', uidx(maps.p_idx), uidx1(maps1.p_idx));
+  
   %----------------%
   %     Output     %
   %----------------%
