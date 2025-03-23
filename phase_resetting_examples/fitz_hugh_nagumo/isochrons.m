@@ -302,7 +302,7 @@ parfor (run = 1 : length(label_old), M)
   this_run_name = {run_new; sprintf('run_%02d', run)};
 
   % Run continuation
-  run_isochron_continuation(this_run_name, run_old, this_run_label, data_PR, bcs_funcs);
+  run_isochron_continuation(this_run_name, run_old, this_run_label, data_PR, bcs_funcs, {'d_x', 'd_y'});
 
 end
 
