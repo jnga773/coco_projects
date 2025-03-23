@@ -1,5 +1,5 @@
-function bcs_coco_out = bcs_PR_segs_isochron_symbolic()
-  % bcs_coco_out = bcs_PR_segs_isochron_symbolic()
+function bcs_coco_out = bcs_PR_segs_symbolic()
+  % bcs_coco_out = bcs_PR_segs_symbolic()
   %
   % Boundary conditions for the four segments of the phase-resetting problem:
   %                          x1(0) - x2(1) = 0 ,
@@ -120,20 +120,19 @@ function bcs_coco_out = bcs_PR_segs_isochron_symbolic()
   %-------------------%
   %     Segment 4     %
   %-------------------%
-  % Perturbation vector
-  d_vec = [d_x; d_y];
+  d_vec = [cos(theta_perturb);
+           sin(theta_perturb)];
 
   % Boundary Conditions - Segment 4
-  bcs_seg4_1 = x0_seg4 - x0_seg3 - d_vec;
+  bcs_seg4_1 = x0_seg4 - x0_seg3 - (A_perturb * d_vec);
   bcs_seg4_2 = dot(x1_seg4 - x0_seg2, w0_seg2);
-  % bcs_seg4_3 = norm(x1_seg4 - x0_seg2) - eta;
 
   % The last boundary condition has a singularity in the Jacobian for the initial
   % vector, as the norm is zero. We then redfine this boundary condition as the
   % square.
+  % bcs_seg4_3 = norm(x1_seg4 - x0_seg2) - eta;
   diff_vec = x1_seg4 - x0_seg2;
   bcs_seg4_3 = (diff_vec(1) ^ 2) + (diff_vec(2) ^ 2) - eta;
-  % bcs_seg4_3 = ((x1_seg4(1) - x0_seg2(1)) ^ 2) + ((x1_seg4(2) - x0_seg2(2)) ^ 2) + ((x1_seg4(3) - x0_seg2(3)) ^ 2) - eta;
 
   %============================================================================%
   %                                   OUTPUT                                   %
@@ -153,7 +152,7 @@ function bcs_coco_out = bcs_PR_segs_isochron_symbolic()
           bcs_seg4_1; bcs_seg4_2; bcs_seg4_3];
 
   % Filename for output functions
-  filename_out = './functions/symcoco/F_bcs_PR_segs_isochron';
+  filename_out = './functions/symcoco/F_bcs_PR';
 
   % COCO Function encoding
   bcs_coco = sco_sym2funcs(bcs, {uvec}, {'u'}, 'filename', filename_out);

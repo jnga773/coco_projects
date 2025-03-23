@@ -13,9 +13,6 @@ clc;
 
 % Add equation/functions to path
 addpath('./functions/');
-
-% Add equation/functions to path
-addpath('./functions/');
 % Add field functions to path
 addpath('./functions/fields/');
 % Add boundary condition functions to path
@@ -24,20 +21,15 @@ addpath('./functions/bcs/');
 addpath('./functions/symcoco/');
 
 % Add continuation scripts
-addpath('./continuation_scripts/PTC/');
-
+addpath('./continuation_scripts/phase_reset/');
 % Add plotting scripts
-addpath('./plotting_scripts/PTC');
-
-% Save figure switch
-% save_figure = true;
-save_figure = false;
+addpath('./plotting_scripts/PTC/');
 
 %-------------------------%
 %     Functions Lists     %
 %-------------------------%
 % Phase Reset Segment 1: Functions
-% func.seg1 = {@func_seg1};
+% funcs.seg1 = {@func_seg1};
 funcs.seg1 = func_seg1_symbolic();
 
 % Phase Reset: Segment 2
@@ -57,8 +49,8 @@ funcs.seg4 = func_seg4_symbolic();
 bcs_funcs.bcs_T = bcs_T_symbolic();
 
 % Boundary conditions: Phase-resetting segments
-% bcs_funcs.bcs_segs = {@bcs_PR_segs};
-bcs_funcs.bcs_segs = bcs_PR_segs_symbolic();
+% bcs_funcs.bcs_PR = {@bcs_PR};
+bcs_funcs.bcs_PR = bcs_PR_symbolic();
 
 %-------------------------------------------------------------------------%
 %%                   Increasing Pertubation Amplitude                    %%
@@ -67,7 +59,7 @@ bcs_funcs.bcs_segs = bcs_PR_segs_symbolic();
 %     Run Name     %
 %------------------%
 % Current run name
-run_names.phase_reset_perturbation = 'run01_phase_reset_perturbation';
+run_names.phase_reset_perturbation = 'run07_phase_reset_perturbation';
 run_new = run_names.phase_reset_perturbation;
 
 % Print to console
@@ -84,7 +76,7 @@ k = 10;
 theta_perturb = pi;
 
 % Set initial conditions from previous solutions
-data_PR = calc_PR_initial_conditions(k, theta_perturb);
+data_PR = calc_initial_solution_PR('./data_mat/solution_VAR.mat', k, theta_perturb);
 
 %----------------------------%
 %     Setup Continuation     %
@@ -95,7 +87,7 @@ prob = coco_prob();
 % Set step sizes
 % prob = coco_set(prob, 'cont', 'h_min', 5e-5);
 % prob = coco_set(prob, 'cont', 'h0', 1e-3);
-prob = coco_set(prob, 'cont', 'h_max', 1e1);
+% prob = coco_set(prob, 'cont', 'h_max', 1e1);
 
 % Set adaptive mesh
 prob = coco_set(prob, 'cont', 'NAdapt', 10);
@@ -113,7 +105,7 @@ prob = coco_set(prob, 'coll', 'MXCL', 'off');
 % Set norm to int
 prob = coco_set(prob, 'cont', 'norm', inf);
 
-% Set MaxRes and al_max
+% % Set MaxRes and al_max
 % prob = coco_set(prob, 'cont', 'MaxRes', 10);
 % prob = coco_set(prob, 'cont', 'al_max', 25);
 
@@ -166,7 +158,7 @@ prob = ode_isol2coll(prob, 'seg4', funcs.seg4{:}, ...
 % Apply all boundary conditions, glue parameters together, and
 % all that other good COCO stuff. Looking the function file
 % if you need to know more ;)
-prob = apply_PR_boundary_conditions(prob, data_PR, bcs_funcs);
+prob = apply_boundary_conditions_PR(prob, data_PR, bcs_funcs);
 
 %-------------------------%
 %     Add COCO Events     %
@@ -266,7 +258,7 @@ prob = ode_coll2coll(prob, 'seg4', run_old, label_old);
 % Apply all boundary conditions, glue parameters together, and
 % all that other good COCO stuff. Looking the function file
 % if you need to know more ;)
-prob = apply_PR_boundary_conditions(prob, data_PR, bcs_funcs);
+prob = apply_boundary_conditions_PR(prob, data_PR, bcs_funcs);
 
 %-------------------------%
 %     Add COCO Events     %

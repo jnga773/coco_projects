@@ -1,5 +1,5 @@
-function [data_in, y_out] = bcs_PR_segs(prob_in, data_in, u_in)
-  % [data_in, y_out] = bcs_PR_segs(prob_in, data_in, u_in)
+function [data_in, y_out] = bcs_isochron(prob_in, data_in, u_in)
+  % [data_in, y_out] = bcs_isochron(prob_in, data_in, u_in)
   %
   % Boundary conditions for the four segments of the phase-resetting problem:
   %                          x1(0) - x2(1) = 0 ,
@@ -12,6 +12,10 @@ function [data_in, y_out] = bcs_PR_segs(prob_in, data_in, u_in)
   %                x4(0) - x3(0) - A_p d_p = 0 ,
   %                (x4(1) - x2(0)) . w2(0) = 0 ,
   %               | x4(1) - x2(0) | - \eta = 0 .
+  %
+  % The difference between this function and bcs_PR_segs is that, here, 
+  % the displacement vector is defined by two separate component
+  % parameters: d_{p} = (d_x, d_y).
   %
   % Input
   % ----------
@@ -111,12 +115,12 @@ function [data_in, y_out] = bcs_PR_segs(prob_in, data_in, u_in)
   % Distance from pertured segment to \Gamma
   eta           = parameters(p_maps.eta);
   % Size of perturbation
-  A_perturb     = parameters(p_maps.A_perturb);
+  % A_perturb     = parameters(p_maps.A_perturb);
   % Angle of perturbation
-  theta_perturb = parameters(p_maps.theta_perturb);
+  % theta_perturb = parameters(p_maps.theta_perturb);
   % Perturbation vector components
-  % d_x = parameters(p_maps.d_x);
-  % d_y = parameters(p_maps.d_y);
+  d_x = parameters(p_maps.d_x);
+  d_y = parameters(p_maps.d_y);
 
   %============================================================================%
   %                         BOUNDARY CONDITION ENCODING                        %
@@ -149,10 +153,10 @@ function [data_in, y_out] = bcs_PR_segs(prob_in, data_in, u_in)
   %     Segment 4     %
   %-------------------%
   % Perturbation vector
-  d_vec = [cos(theta_perturb); sin(theta_perturb)];
+  d_vec = [d_x; d_y];
 
   % Boundary Conditions - Segment 4
-  bcs_seg4_1 = x0_seg4 - x0_seg3 - (A_perturb * d_vec);
+  bcs_seg4_1 = x0_seg4 - x0_seg3 - d_vec;
   bcs_seg4_2 = dot(x1_seg4 - x0_seg2, w0_seg2);
   bcs_seg4_3 = norm(x1_seg4 - x0_seg2) - eta;
   % bcs_seg4_3 = (norm(x1_seg4 - x0_seg2) ^ 2) - eta;

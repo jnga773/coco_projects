@@ -25,11 +25,9 @@ function F_coco_out = func_seg3_symbolic()
   syms T k theta_old theta_new
   syms mu_s eta
   syms A_perturb theta_perturb
-  syms d_x d_y
   p_PR = [T; k; theta_old; theta_new;
           mu_s; eta;
-          A_perturb; theta_perturb;
-          d_x; d_y];
+          A_perturb; theta_perturb];
 
   % Total vectors
   uvec = xvec;

@@ -82,15 +82,15 @@ function prob_out = apply_boundary_conditions_PR(prob_in, data_in, bcs_funcs_in,
   %     Add Boundary Conditions     %
   %---------------------------------%
   % Boundary condition function list
-  bcs_T         = bcs_funcs_in.bcs_T;
-  bcs_segs      = bcs_funcs_in.bcs_segs;
+  bcs_T  = bcs_funcs_in.bcs_T;
+  bcs_PR = bcs_funcs_in.bcs_PR;
 
   % Apply period boundary condition
   prob = coco_add_func(prob, 'bcs_T', bcs_T{:}, dim_data, 'zero', ...
                        'uidx', uidx1(maps1.T_idx));
 
   % Add boundary conditions for four segments
-  prob = coco_add_func(prob, 'bcs_PR_segs', bcs_segs{:}, dim_data, 'zero', 'uidx', ...
+  prob = coco_add_func(prob, 'bcs_PR_segs', bcs_PR{:}, dim_data, 'zero', 'uidx', ...
                        [uidx1(maps1.x0_idx);
                         uidx2(maps2.x0_idx);
                         uidx3(maps3.x0_idx);
