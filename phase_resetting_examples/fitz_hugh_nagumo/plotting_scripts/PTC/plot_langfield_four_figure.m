@@ -1,4 +1,4 @@
-function plot_langfield_four_figure(run_in, save_figure)
+function plot_langfield_four_figure(run_in)
   % plot_phase_reset_PO(run_in, label_in, run_PO_base_in)
   %
   % Plots the phase resetting periodic orbit from all four segments.
@@ -134,15 +134,5 @@ function plot_langfield_four_figure(run_in, save_figure)
 
   % Hold axes
   hold(ax(4), 'off');
-
-  %---------------------%
-  %     Save Figure     %
-  %---------------------%
-  if save_figure == true
-    % Filename
-    figname = 'langfield_four_figure';
-    % exportgraphics(fig, ['./images/', figname, '.png'], Resolution=800);
-    exportgraphics(fig, ['./images/', figname, '.pdf'], ContentType='vector');
-  end
 
 end

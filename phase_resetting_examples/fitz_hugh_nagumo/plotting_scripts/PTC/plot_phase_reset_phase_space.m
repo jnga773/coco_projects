@@ -1,4 +1,4 @@
-function plot_phase_reset_phase_space(run_in, label_in, fig_num_in, save_figure)
+function plot_phase_reset_phase_space(run_in, label_in, fig_num_in)
   % plot_phase_reset_PO(run_in, label_in)
   %
   % Plots the phase resetting periodic orbit from all four segments.
@@ -24,13 +24,5 @@ function plot_phase_reset_phase_space(run_in, label_in, fig_num_in, save_figure)
   % Axis title
   title_str = sprintf('COCO Solution (run: $\\verb!%s!$, label: %d)', run_in, label_in);
   ax.Title.String = title_str;
-
-  % Save figure
-  if save_figure == true
-    % Filename
-    figname = sprintf('phase_reset_curve_%s_%d', run_in(1:5), label_in);
-    % exportgraphics(fig, ['./images/', figname, '.png'], Resolution=800);
-    exportgraphics(fig, ['./images/', figname, '.pdf'], ContentType='vector');
-  end
 
 end

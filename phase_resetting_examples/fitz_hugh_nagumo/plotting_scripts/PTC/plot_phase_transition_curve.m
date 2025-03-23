@@ -1,4 +1,4 @@
-function plot_phase_transition_curve(run_in, SP_labels_in)
+function plot_phase_transition_curve(run_in)
   %-------------------%
   %     Read Data     %
   %-------------------%
@@ -26,11 +26,11 @@ function plot_phase_transition_curve(run_in, SP_labels_in)
   d_vec = [cos(theta_perturb);
            sin(theta_perturb)];
 
-  % Special points for other plots
-  SP_point1 = [coco_bd_val(bd, SP_labels_in(1), 'theta_old');
-               coco_bd_val(bd, SP_labels_in(1), 'theta_new')];
-  SP_point2 = [coco_bd_val(bd, SP_labels_in(2), 'theta_old');
-               coco_bd_val(bd, SP_labels_in(2), 'theta_new')];
+  % % Special points for other plots
+  % SP_point1 = [coco_bd_val(bd, SP_labels_in(1), 'theta_old');
+  %              coco_bd_val(bd, SP_labels_in(1), 'theta_new')];
+  % SP_point2 = [coco_bd_val(bd, SP_labels_in(2), 'theta_old');
+  %              coco_bd_val(bd, SP_labels_in(2), 'theta_new')];
 
   %--------------%
   %     Plot     %

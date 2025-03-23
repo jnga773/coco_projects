@@ -185,11 +185,11 @@ label_plot = sort(coco_bd_labs(coco_bd_read(run_new), 'SP'));
 label_plot = label_plot(end);
 
 % Plot some stuff my g
-plot_phase_reset_phase_space(run_new, label_plot, 21, save_figure);
+plot_phase_reset_phase_space(run_new, label_plot, 21);
 
 % Plot perturbation amplitude against theta_new
-plot_langfield_four_figure(run_new, save_figure)
-% plot_A_perturb_theta_new(run_new, save_figure);
+plot_langfield_four_figure(run_new)
+% plot_A_perturb_theta_new(run_new);
 
 %-------------------------------------------------------------------------%
 %%                 Phase Transition Curve (PTC) - Single                 %%
@@ -271,7 +271,7 @@ coco(prob, run_new, [], 1, {'theta_old', 'theta_new', 'eta', 'mu_s', 'T', 'A_per
 %     Test Plots     %
 %--------------------%
 % Plot first SP solution
-plot_phase_reset_phase_space(run_new, label_plot(1), 1, save_figure);
+plot_phase_reset_phase_space(run_new, label_plot(1), 1);
 
 % Plot phase transition curve (PTC)
 plot_phase_transition_curve(run_new);
