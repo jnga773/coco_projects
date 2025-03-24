@@ -1,11 +1,11 @@
-function data_out = calculate_initial_PO(param_in)
-  % data_out = calculate_initial_PO()
+function data_out = calc_initial_solution_PO(param_in, funcs_in)
+  % data_out = calc_initial_solution_PO(param_in, funcs_in)
   %
   % Calculates the initial periodic orbit using MATLAB's built-in
   % ode45 to time-integrate a solution.
 
-  % Add hardcoded functions to path
-  addpath('./functions/fields/hardcoded/');
+  % Field function
+  field_func = funcs_in.field{1};
 
   %--------------------%
   %     Parameters     %
@@ -28,10 +28,10 @@ function data_out = calculate_initial_PO(param_in)
 
   % Evolve the state to an "steady state" to find oscillating periodic orbit
   % Solve using ode45 to long-time-limit
-  [~, x_long] = ode45(@(t, x) winfree(x, p0_PO), [0, t_long_max], x0_PO);
+  [~, x_long] = ode45(@(t, x) field_func(x, p0_PO), [0, t_long_max], x0_PO);
 
   % Use the final solution from this run ^ as initial condition here
-  [~, x_PO] = ode45(@(t, x) winfree(x, p0_PO), t_PO, x_long(end, :)');
+  [~, x_PO] = ode45(@(t, x) field_func(x, p0_PO), t_PO, x_long(end, :)');
 
   %----------------%
   %     Output     %

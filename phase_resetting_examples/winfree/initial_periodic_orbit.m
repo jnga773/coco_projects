@@ -21,14 +21,9 @@ addpath('./functions/bcs/');
 addpath('./functions/symcoco/');
 
 % Add continuation scripts
-addpath('./continuation_scripts/initial_periodic_orbit/');
-
+addpath('./continuation_scripts/initial_PO/');
 % Add plotting scripts
-addpath('./plotting_scripts/initial_periodic_orbit');
-
-% Figure save switch
-% save_figure = true;
-save_figure = false;
+addpath('./plotting_scripts/initial_PO');
 
 %--------------------%
 %     Parameters     %
@@ -73,12 +68,12 @@ bcs_funcs.bcs_PO = bcs_PO_symbolic();
 bcs_funcs.bcs_T = bcs_T_symbolic();
 
 % Adjoint equations: Functions (for floquet_mu and floquet_wnorm)
-% funcs.floquet = {@floquet_adjoint};
-funcs.floquet = floquet_symbolic();
+% funcs.VAR = {@VAR};
+funcs.VAR = VAR_symbolic();
 
 % Boundary conditions: Floquet multipliers
-% bcs_funcs.bcs_floquet = {@bcs_floquet};
-bcs_funcs.bcs_floquet = bcs_floquet_symbolic();
+% bcs_funcs.bcs_VAR = {@bcs_VAR};
+bcs_funcs.bcs_VAR = bcs_VAR_symbolic();
 
 %=========================================================================%
 %                    CALCULATE INITIAL PERIODIC ORBIT                     %
@@ -111,7 +106,7 @@ fprintf('Run name: %s\n', run_new);
 %------------------------------------%
 %     Calculate Initial Solution     %
 %------------------------------------%
-data_isol = calculate_initial_PO(p0);
+data_isol = calc_initial_solution_PO(p0, funcs);
 
 %-------------------------------%
 %     Continuation Settings     %
@@ -191,11 +186,11 @@ fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
 %     Calculate Solution     %
 %----------------------------%
 % Calculate dem tings
-data_soln = calculate_periodic_orbit(run_old, label_old);
+data_soln = rotate_solution_PO(run_old, label_old);
 
-%-------------------------------%
-%     Continuation Settings     %
-%-------------------------------%
+%----------------------------%
+%     Setup Continuation     %
+%----------------------------%
 % Set up the COCO problem
 prob = coco_prob();
 
@@ -215,26 +210,23 @@ prob = coco_set(prob, 'cont', 'PtMX', PtMX);
 % Set frequency of saved solutions
 prob = coco_set(prob, 'cont', 'NPR', 10);
 
-% Set norm
-prob = coco_set(prob, 'cont', 'norm', inf);
-
-%----------------------------%
-%     Setup Continuation     %
-%----------------------------%
 % Set initial guess to 'coll'
 prob = ode_isol2coll(prob, 'initial_PO', funcs.field{:}, ...
                      data_soln.t, data_soln.x, pnames, data_soln.p);
 
 % Add equilibrium points for non trivial steady states
-prob = ode_ep2ep(prob, 'x0',   run_old, label_old);
+prob = ode_ep2ep(prob, 'x0', run_old, label_old);
 
+%------------------------------------------------%
+%     Apply Boundary Conditions and Settings     %
+%------------------------------------------------%
 % Glue parameters and apply boundary condition
-prob = apply_PO_boundary_conditions(prob, bcs_funcs.bcs_PO);
+prob = apply_boundary_conditions_PO(prob, bcs_funcs.bcs_PO);
 
 %------------------------%
 %     Add COCO Event     %
 %------------------------%
-% Event for A = 7.5
+% Event for a = 0.0
 prob = coco_add_event(prob, 'PO_PT', 'a', 0.0);
 
 %------------------%
@@ -252,14 +244,14 @@ label_plot = label_plot(1);
 
 % Calculate stable manifold of saddle point 'q' and save data to .mat in 
 % ./data_mat/ directory
-save_initial_PO_data(run_new, label_plot);
+save_data_PO(run_new, label_plot, './data_mat/initial_PO.mat');
 
 % Plot solution
-plot_initial_periodic_orbit(save_figure);
+plot_initial_periodic_orbit();
 
-%-------------------------------------------------------------------------%
+%=========================================================================%
 %%            Compute Floquet Bundle at Zero Phase Point (mu)            %%
-%-------------------------------------------------------------------------%
+%=========================================================================%
 % We now add the adjoint function and Floquet boundary conditions to
 % compute the adjoint (left or right idk) eigenvectors and eigenvalues.
 % This will give us the perpendicular vector to the tangent of the periodic
@@ -288,11 +280,11 @@ fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
 %--------------------------%
 %     Calculate Things     %
 %--------------------------%
-data_adjoint = calc_initial_solution_adjoint_problem(run_old, label_old);
+data_adjoint = calc_initial_solution_VAR(run_old, label_old);
 
-%-------------------------------%
-%     Continuation Settings     %
-%-------------------------------%
+%------------------------------------%
+%     Setup Floquet Continuation     %
+%------------------------------------%
 % Set up the COCO problem
 prob = coco_prob();
 
@@ -312,26 +304,20 @@ prob = coco_set(prob, 'cont', 'NAdapt', 1);
 % Turn off MXCL
 prob = coco_set(prob, 'coll', 'MXCL', 'off');
 
-% Set norm
-prob = coco_set(prob, 'cont', 'norm', inf);
-
-%----------------------------%
-%     Setup Continuation     %
-%----------------------------%
 % Add segment as initial solution
-prob = ode_isol2coll(prob, 'adjoint', funcs.floquet{:}, ...
+prob = ode_isol2coll(prob, 'adjoint', funcs.VAR{:}, ...
                      data_adjoint.t0, data_adjoint.x0, ...
                      data_adjoint.pnames, data_adjoint.p0);
 
-%-----------------------------------%
-%     Apply Boundary Conditions     %
-%-----------------------------------%
+%------------------------------------------------%
+%     Apply Boundary Conditions and Settings     %
+%------------------------------------------------%
 % Apply boundary conditions
-prob = apply_floquet_boundary_conditions(prob, bcs_funcs);
+prob = apply_boundary_conditions_VAR(prob, bcs_funcs);
 
-%------------------------%
-%     Add COCO Event     %
-%------------------------%
+%-------------------------%
+%     Add COCO Events     %
+%-------------------------%
 % Add event
 prob = coco_add_event(prob, 'mu=1', 'mu_s', 1.0);
 
@@ -353,7 +339,7 @@ coco(prob, run_new, [], 1, {'mu_s', 'w_norm', 'T'} , [0.0, 1.1]);
 %     Run Name     %
 %------------------%
 % Current run name
-run_names.compute_floquet_2 = 'run08_compute_floquet_bundle_2_w';
+run_names.compute_floquet_2 = 'run04_compute_floquet_bundle_2_w';
 run_new = run_names.compute_floquet_2;
 % Which run this continuation continues from
 run_old = run_names.compute_floquet_1;
@@ -368,33 +354,27 @@ fprintf('Calculate Floquet bundle (w_norm) \n');
 fprintf('Run name: %s \n', run_new);
 fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
 
-%-------------------------------%
-%     Continuation Settings     %
-%-------------------------------%
+%------------------------------------%
+%     Setup Floquet Continuation     %
+%------------------------------------%
 % Set up the COCO problem
 prob = coco_prob();
 
 % Set number of PtMX steps
 prob = coco_set(prob, 'cont', 'PtMX', 250);
 
-% Set norm
-prob = coco_set(prob, 'cont', 'norm', inf);
-
-%----------------------------%
-%     Setup Continuation     %
-%----------------------------%
 % Continue coll from previous branching point
 prob = ode_BP2coll(prob, 'adjoint', run_old, label_old);
 
-%-----------------------------------%
-%     Apply Boundary Conditions     %
-%-----------------------------------%
+%------------------------------------------------%
+%     Apply Boundary Conditions and Settings     %
+%------------------------------------------------%
 % Apply boundary conditions
-prob = apply_floquet_boundary_conditions(prob, bcs_funcs);
+prob = apply_boundary_conditions_VAR(prob, bcs_funcs);
 
-%------------------------%
-%     Add COCO Event     %
-%------------------------%
+%-------------------------%
+%     Add COCO Events     %
+%-------------------------%
 % Add event when w_norm = 1
 prob = coco_add_event(prob, 'NORM1', 'w_norm', 1.0);
 
@@ -409,8 +389,8 @@ coco(prob, run_new, [], 1, {'w_norm', 'mu_s', 'T'}, [0.0, 1.1]);
 %-------------------%
 label_plot = coco_bd_labs(coco_bd_read(run_new), 'NORM1');
 
-% Save solution to .mat to be read in 'yamada_PTC.m'
-save_floquet_data(run_new, label_plot);
+% Save solution to .mat to be read in phase resetting codes
+save_data_VAR(run_new, label_plot, './data_mat/solution_VAR.mat');
 
 %=========================================================================%
 %                               END OF FILE                               %

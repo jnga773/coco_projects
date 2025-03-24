@@ -26,10 +26,6 @@ addpath('./continuation_scripts/initial_PO/');
 % Add plotting scripts
 addpath('./plotting_scripts/initial_PO');
 
-% Figure save switch
-% save_figure = true;
-save_figure = false;
-
 %--------------------%
 %     Parameters     %
 %--------------------%
@@ -69,12 +65,12 @@ bcs_funcs.bcs_PO = bcs_PO_symbolic();
 bcs_funcs.bcs_T = bcs_T_symbolic();
 
 % Adjoint equations: Functions (for floquet_mu and floquet_wnorm)
-% funcs.floquet = {@fhn_VAR};
-funcs.floquet = fhn_VAR_symbolic();
+% funcs.VAR = {@VAR};
+funcs.VAR = VAR_symbolic();
 
 % Boundary conditions: Floquet multipliers
-% bcs_funcs.bcs_floquet = {@bcs_VAR};
-bcs_funcs.bcs_floquet = bcs_VAR_symbolic();
+% bcs_funcs.bcs_VAR = {@bcs_VAR};
+bcs_funcs.bcs_VAR = bcs_VAR_symbolic();
 
 %=========================================================================%
 %                    CALCULATE INITIAL PERIODIC ORBIT                     %
@@ -415,7 +411,7 @@ prob = coco_set(prob, 'cont', 'NAdapt', 1);
 prob = coco_set(prob, 'coll', 'MXCL', 'off');
 
 % Add segment as initial solution
-prob = ode_isol2coll(prob, 'adjoint', funcs.floquet{:}, ...
+prob = ode_isol2coll(prob, 'adjoint', funcs.VAR{:}, ...
                      data_adjoint.t0, data_adjoint.x0, ...
                      data_adjoint.pnames, data_adjoint.p0);
 

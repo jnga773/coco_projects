@@ -28,11 +28,9 @@ function F_coco_out = func_seg1_symbolic()
   syms T k theta_old theta_new
   syms mu_s eta
   syms A_perturb theta_perturb
-  syms d_x d_y
   p_PR = [T; k; theta_old; theta_new;
           mu_s; eta;
-          A_perturb; theta_perturb;
-          d_x; d_y];
+          A_perturb; theta_perturb];
 
   % Total vectors
   uvec = [xvec; wvec];
@@ -44,7 +42,7 @@ function F_coco_out = func_seg1_symbolic()
   % Vector field
   F_vec = field(xvec, p_sys);
 
-  % Vector equation
+  % Vector field equation
   vec_eqn = T * theta_new * F_vec;
 
   % Calculate tranpose of Jacobian at point xvec

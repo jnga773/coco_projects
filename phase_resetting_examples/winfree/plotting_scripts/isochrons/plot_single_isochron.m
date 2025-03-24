@@ -1,5 +1,5 @@
-function plot_single_isochron(run_in, save_figure)
-  % plot_single_isochron(run_in, save_figure)
+function plot_single_isochron(run_in)
+  % plot_single_isochron(run_in)
   %
   % Plots a single isochron from the isochron_test.m run.
 
@@ -75,15 +75,5 @@ function plot_single_isochron(run_in, save_figure)
   %----------------------%
   box(ax, 'on');
   grid(ax, 'on');
-
-  %---------------------%
-  %     Save Figure     %
-  %---------------------%
-  if save_figure == true
-    % Create filename
-    filename_out = sprintf('./images/single_isochron_test.pdf');
-    % Save figure
-    exportgraphics(fig, filename_out, ContentType='vector');
-  end
 
 end

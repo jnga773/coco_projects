@@ -20,16 +20,14 @@ function F_coco_out = func_seg3_symbolic()
   % System parameters
   syms a omega
   p_sys = [a; omega];
-
+  
   % Phase resetting parameters
   syms T k theta_old theta_new
   syms mu_s eta
   syms A_perturb theta_perturb
-  syms d_x d_y
   p_PR = [T; k; theta_old; theta_new;
           mu_s; eta;
-          A_perturb; theta_perturb;
-          d_x; d_y];
+          A_perturb; theta_perturb];
 
   % Total vectors
   uvec = xvec;
@@ -41,7 +39,7 @@ function F_coco_out = func_seg3_symbolic()
   % Vector field
   F_vec = field(xvec, p_sys);
 
-  % Vector equation
+  % Vector field equation
   vec_eqn = T * (1 - theta_old) * F_vec;
 
   % Total equation

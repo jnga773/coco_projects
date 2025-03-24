@@ -29,10 +29,6 @@ addpath('./continuation_scripts/isochrons/');
 % Add plotting scripts
 addpath('./plotting_scripts/isochrons/');
 
-% Save figure switch
-% save_figure = true;
-save_figure = false;
-
 %-------------------------%
 %     Functions Lists     %
 %-------------------------%
@@ -57,8 +53,8 @@ funcs.seg4 = func_seg4_symbolic();
 bcs_funcs.bcs_T = bcs_T_symbolic();
 
 % Boundary conditions: Phase-resetting segments
-% bcs_funcs.bcs_segs = {@bcs_PR_segs_isochron};
-bcs_funcs.bcs_segs = bcs_PR_segs_isochron_symbolic();
+% bcs_funcs.bcs_PR = {@bcs_isochron};
+bcs_funcs.bcs_PR= bcs_isochron_symbolic();
 
 %-------------------------------------------------------------------------%
 %%             Isochrons: Continue Along the Periodic Orbit              %%
@@ -79,12 +75,10 @@ fprintf('Run name: %s \n', run_new);
 %     Read Data     %
 %-------------------%
 % Set periodicity
-k = 5;
-% Set perturbation direction
-theta_perturb = pi;
+k = 10;
 
 % Set initial conditions from previous solutions
-data_PR = calc_PR_initial_conditions(k, theta_perturb);
+data_PR = calc_initial_solution_PR('./data_mat/solution_VAR.mat', k, isochron=true);
 
 %----------------------------%
 %     Setup Continuation     %
@@ -166,7 +160,7 @@ prob = ode_isol2coll(prob, 'seg4', funcs.seg4{:}, ...
 % Apply all boundary conditions, glue parameters together, and
 % all that other good COCO stuff. Looking the function file
 % if you need to know more ;)
-prob = apply_isochron_boundary_conditions(prob, data_PR, bcs_funcs);
+prob = apply_boundary_conditions_PR(prob, data_PR, bcs_funcs, isochron=true);
 
 %-------------------------%
 %     Add COCO Events     %
@@ -222,8 +216,8 @@ prob = coco_prob();
 % prob = coco_set(prob, 'corr', 'TOL', 5e-7);
 
 % Set step sizes
-% prob = coco_set(prob, 'cont', 'h_min', 5e-2);
-% prob = coco_set(prob, 'cont', 'h0', 1e-1);
+% prob = coco_set(prob, 'cont', 'h_min', 5e-5);
+% prob = coco_set(prob, 'cont', 'h0', 1e-3);
 prob = coco_set(prob, 'cont', 'h_max', 1e1);
 
 % Set adaptive meshR
@@ -236,8 +230,8 @@ prob = coco_set(prob, 'cont', 'PtMX', 750);
 prob = coco_set(prob, 'cont', 'norm', inf);
 
 % Set MaxRes and al_max
-prob = coco_set(prob, 'cont', 'MaxRes', 10);
-prob = coco_set(prob, 'cont', 'al_max', 25);
+% prob = coco_set(prob, 'cont', 'MaxRes', 10);
+% prob = coco_set(prob, 'cont', 'al_max', 25);
 
 %-------------------------------------------%
 %     Continue from Trajectory Segments     %
@@ -257,7 +251,7 @@ prob = ode_coll2coll(prob, 'seg4', run_old, label_old);
 % Apply all boundary conditions, glue parameters together, and
 % all that other good COCO stuff. Looking the function file
 % if you need to know more ;)
-prob = apply_isochron_boundary_conditions(prob, data_PR, bcs_funcs);
+prob = apply_boundary_conditions_PR(prob, data_PR, bcs_funcs, isochron=true);
 
 %-------------------------%
 %     Add COCO Events     %
@@ -270,10 +264,10 @@ coco(prob, run_new, [], 1, {'d_x', 'd_y', 'eta', 'mu_s', 'T'}, prange);
 %     Test Plots     %
 %--------------------%
 % Plot single isochron
-plot_single_isochron(run_new, save_figure);
+plot_single_isochron(run_new);
 
 %-------------------------------------------------------------------------%
-%%                       Compute Isochrons - Single                      %%
+%%                       Compute Isochrons - Multi                       %%
 %-------------------------------------------------------------------------%
 %------------------%
 %     Run Name     %
@@ -308,7 +302,7 @@ parfor (run = 1 : length(label_old), M)
   this_run_name = {run_new; sprintf('run_%02d', run)};
 
   % Run continuation
-  isochron_scan(this_run_name, run_old, this_run_label, data_PR, bcs_funcs);
+  run_isochron_continuation(this_run_name, run_old, this_run_label, data_PR, bcs_funcs, {'d_x', 'd_y'});
 
 end
 
@@ -316,8 +310,8 @@ end
 %     Test Plots     %
 %--------------------%
 % Plot all isochron scans
-plot_single_isochron({run_new, 'run_02'}, save_figure);
-plot_all_isochrons(run_new, save_figure);
+plot_single_isochron({run_new, 'run_02'});
+plot_all_isochrons(run_new);
 
 %=========================================================================%
 %                               END OF FILE                               %

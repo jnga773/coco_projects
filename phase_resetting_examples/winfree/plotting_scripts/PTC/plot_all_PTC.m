@@ -1,5 +1,5 @@
-function plot_all_PTC(run_in, save_figure)
-  % plot_all_PTC(run_in, save_figure)
+function plot_all_PTC(run_in)
+  % plot_all_PTC(run_in)
   %
   % Plot Phase Transition Curves (PTCs) for all of the sub-runs in
   % [run_in].
@@ -170,11 +170,5 @@ function plot_all_PTC(run_in, save_figure)
   % Axis stuff
   box(ax, 'on');
   grid(ax, 'on');
-
-  % Save figure
-  if save_figure == true
-    % Filename
-    exportgraphics(fig, './images/phase_transition_curve_scan.pdf', ContentType='vector');
-  end
 
 end

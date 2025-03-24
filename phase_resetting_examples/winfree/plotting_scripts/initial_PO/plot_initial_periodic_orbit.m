@@ -1,4 +1,4 @@
-function plot_initial_periodic_orbit(save_figure)
+function plot_initial_periodic_orbit()
   % plot_initial_periodic_orbit()
   %
   % Plots the initial periodic orbit from the 'coll' toolbox run.
@@ -35,11 +35,11 @@ function plot_initial_periodic_orbit(save_figure)
 
   % Plot initial periodic orbit
   plot(ax, xbp_PO(:, 1), xbp_PO(:, 2), ...
-        LineStyle='-', Color=colours(3, :), ...
+        LineStyle='-', Color=colours(3, :), LineWidth=2.5, ...
         DisplayName='$\Gamma$');
 
   % Plot equilibrium points: x_{0}
-  plot(ax, x_0(1), x_0(2), ...
+  plot(ax, x0(1), x0(2), ...
         LineStyle='none', ...
         Marker='o', MarkerFaceColor='r', MarkerSize=10, ...
         MarkerEdgeColor='r', DisplayName='$\vec{x}_{\ast}$');
@@ -85,14 +85,5 @@ function plot_initial_periodic_orbit(save_figure)
   %----------------------%
   box(ax, 'on');
   grid(ax, 'on');
-
-  %----------------------%
-  %      Save Figure     %
-  %----------------------%
-  if save_figure == true
-    % Filename
-    figname = './images/initial_periodic_orbit.pdf';
-    exportgraphics(fig, figname, ContentType='vector');
-  end
 
 end

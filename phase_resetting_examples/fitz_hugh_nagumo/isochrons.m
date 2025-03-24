@@ -25,10 +25,6 @@ addpath('./continuation_scripts/phase_reset/');
 % Add plotting scripts
 addpath('./plotting_scripts/isochrons/');
 
-% Save figure switch
-% save_figure = true;
-save_figure = false;
-
 %-------------------------%
 %     Functions Lists     %
 %-------------------------%

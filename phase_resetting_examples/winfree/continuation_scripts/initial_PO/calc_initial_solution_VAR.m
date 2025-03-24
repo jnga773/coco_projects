@@ -1,7 +1,28 @@
-function data_out = calc_initial_solution_adjoint_problem(run_in, label_in)
-  % data_out = calc_initial_solution_adjoint_problem(run_in, label_in);
+function data_out = calc_initial_solution_VAR(run_in, label_in)
+  % data_out = calc_initial_solution_VAR(run_in, label_in);
   %
   % Calculates and sets the initial solution to solve for the adjoint problem
+  %
+  % Parameters
+  % ----------
+  % run_in : string
+  %     The run identifier for the continuation problem.
+  % label_in : integer
+  %     The label identifier for the continuation problem.
+  %
+  % Returns
+  % -------
+  % data_out : struct
+  %     Structure containing the initial conditions for the trajectory segments.
+  %     Fields:
+  %         - t0 : Normalized temporal data.
+  %         - x0 : Initial state solution.
+  %         - p0 : Initial parameter array.
+  %         - pnames : Parameter names.
+  %
+  % See Also
+  % --------
+  % coll_read_solution
 
   %-----------------------%
   %     Read Solution     %

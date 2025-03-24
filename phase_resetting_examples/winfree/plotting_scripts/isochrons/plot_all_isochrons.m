@@ -1,5 +1,5 @@
-function plot_all_isochrons(run_in, save_figure)
-  % plot_all_isochrons(run_in, save_figure)
+function plot_all_isochrons(run_in)
+  % plot_all_isochrons(run_in)
   %
   % Plots all isochron from the isochron_multi.m run.
 
@@ -63,15 +63,5 @@ function plot_all_isochrons(run_in, save_figure)
   %----------------------%
   box(ax, 'on');
   grid(ax, 'on');
-
-  %---------------------%
-  %     Save Figure     %
-  %---------------------%
-  if save_figure == true
-    % Create filename
-    filename_out = sprintf('./images/multi_isochrons.pdf');
-    % Save figure
-    exportgraphics(fig, filename_out, ContentType='vector');
-  end
 
 end

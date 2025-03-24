@@ -13,9 +13,6 @@ clc;
 
 % Add equation/functions to path
 addpath('./functions/');
-
-% Add equation/functions to path
-addpath('./functions/');
 % Add field functions to path
 addpath('./functions/fields/');
 % Add boundary condition functions to path
@@ -24,20 +21,15 @@ addpath('./functions/bcs/');
 addpath('./functions/symcoco/');
 
 % Add continuation scripts
-addpath('./continuation_scripts/PTC/');
-
+addpath('./continuation_scripts/phase_reset/');
 % Add plotting scripts
 addpath('./plotting_scripts/PTC');
-
-% Save figure switch
-% save_figure = true;
-save_figure = false;
 
 %-------------------------%
 %     Functions Lists     %
 %-------------------------%
 % Phase Reset Segment 1: Functions
-% func.seg1 = {@func_seg1};
+% funcs.seg1 = {@func_seg1};
 funcs.seg1 = func_seg1_symbolic();
 
 % Phase Reset: Segment 2
@@ -57,8 +49,8 @@ funcs.seg4 = func_seg4_symbolic();
 bcs_funcs.bcs_T = bcs_T_symbolic();
 
 % Boundary conditions: Phase-resetting segments
-% bcs_funcs.bcs_segs = {@bcs_PR_segs};
-bcs_funcs.bcs_segs = bcs_PR_segs_symbolic();
+% bcs_funcs.bcs_PR = {@bcs_PR};
+bcs_funcs.bcs_PR = bcs_PR_symbolic();
 
 %-------------------------------------------------------------------------%
 %%                   Increasing Pertubation Amplitude                    %%
@@ -84,7 +76,7 @@ k = 5;
 theta_perturb = pi;
 
 % Set initial conditions from previous solutions
-data_PR = calc_PR_initial_conditions(k, theta_perturb);
+data_PR = calc_initial_solution_PR('./data_mat/solution_VAR.mat', k, theta_perturb);
 
 %----------------------------%
 %     Setup Continuation     %
@@ -93,19 +85,19 @@ data_PR = calc_PR_initial_conditions(k, theta_perturb);
 prob = coco_prob();
 
 % Set step sizes
-% prob = coco_set(prob, 'cont', 'h_min', 5e-5);
-% prob = coco_set(prob, 'cont', 'h0', 1e-3);
-prob = coco_set(prob, 'cont', 'h_max', 1e1);
+% prob = coco_set(prob, 'cont', 'h_min', 1e-3);
+% prob = coco_set(prob, 'cont', 'h0', 1e-2);
+% prob = coco_set(prob, 'cont', 'h_max', 1e0);
 
 % Set adaptive mesh
 prob = coco_set(prob, 'cont', 'NAdapt', 10);
 
 % Set number of steps
-PtMX = 1000;
+PtMX = 500;
 prob = coco_set(prob, 'cont', 'PtMX', [0, PtMX]);
 
 % Set number of stored solutions
-prob = coco_set(prob, 'cont', 'NPR', 100);
+% prob = coco_set(prob, 'cont', 'NPR', 100);
 
 % Turn off MXCL
 prob = coco_set(prob, 'coll', 'MXCL', 'off');
@@ -113,7 +105,7 @@ prob = coco_set(prob, 'coll', 'MXCL', 'off');
 % Set norm to int
 prob = coco_set(prob, 'cont', 'norm', inf);
 
-% Set MaxRes and al_max
+% % Set MaxRes and al_max
 prob = coco_set(prob, 'cont', 'MaxRes', 10);
 prob = coco_set(prob, 'cont', 'al_max', 25);
 
@@ -125,8 +117,8 @@ prob = coco_set(prob, 'cont', 'al_max', 25);
 % orbit the unperturbed periodic orbit many times before "resetting". Hence
 % we have set the NTST for this segment (NTST(4)) as k * 50.
 NTST(1) = 50;
-NTST(2) = 10;
-NTST(3) = 10;
+NTST(2) = 50;
+NTST(3) = 50;
 NTST(4) = 50 * k;
 
 prob = coco_set(prob, 'seg1.coll', 'NTST', NTST(1));
@@ -166,7 +158,7 @@ prob = ode_isol2coll(prob, 'seg4', funcs.seg4{:}, ...
 % Apply all boundary conditions, glue parameters together, and
 % all that other good COCO stuff. Looking the function file
 % if you need to know more ;)
-prob = apply_PR_boundary_conditions(prob, data_PR, bcs_funcs);
+prob = apply_boundary_conditions_PR(prob, data_PR, bcs_funcs);
 
 %-------------------------%
 %     Add COCO Events     %
@@ -193,11 +185,11 @@ label_plot = sort(coco_bd_labs(coco_bd_read(run_new), 'SP'));
 label_plot = label_plot(end);
 
 % Plot some stuff my g
-plot_phase_reset_phase_space(run_new, label_plot, 21, save_figure);
+plot_phase_reset_phase_space(run_new, label_plot, 21);
 
 % Plot perturbation amplitude against theta_new
-plot_langfield_four_figure(run_new, save_figure)
-% plot_A_perturb_theta_new(run_new, save_figure);
+plot_langfield_four_figure(run_new)
+% plot_A_perturb_theta_new(run_new);
 
 %-------------------------------------------------------------------------%
 %%                 Phase Transition Curve (PTC) - Single                 %%
@@ -266,7 +258,7 @@ prob = ode_coll2coll(prob, 'seg4', run_old, label_old);
 % Apply all boundary conditions, glue parameters together, and
 % all that other good COCO stuff. Looking the function file
 % if you need to know more ;)
-prob = apply_PR_boundary_conditions(prob, data_PR, bcs_funcs);
+prob = apply_boundary_conditions_PR(prob, data_PR, bcs_funcs);
 
 %-------------------------%
 %     Add COCO Events     %
@@ -279,7 +271,7 @@ coco(prob, run_new, [], 1, {'theta_old', 'theta_new', 'eta', 'mu_s', 'T', 'A_per
 %     Test Plots     %
 %--------------------%
 % Plot first SP solution
-plot_phase_reset_phase_space(run_new, label_plot(1), 1, save_figure);
+plot_phase_reset_phase_space(run_new, label_plot(1), 1);
 
 % Plot phase transition curve (PTC)
 plot_phase_transition_curve(run_new);
@@ -290,44 +282,53 @@ plot_phase_transition_curve(run_new);
 %------------------%
 %     Run Name     %
 %------------------%
-% % Current run name
-% run_names.phase_transition_curve = 'run10_phase_reset_PTC_scan';
-% % Which run this continuation continues from
-% run_old = run_names.phase_reset_perturbation;
-% 
-% % Continuation point
-% label_old = coco_bd_labs(coco_bd_read(run_old), 'SP');
-% 
-% % Print to console
-% fprintf("~~~ Phase Reset: Second Run ~~~ \n");
-% fprintf('Calculate phase transition curve \n');
-% fprintf('Run name: %s \n', run_names.phase_transition_curve);
-% fprintf('Continuing from SP points in run: %s \n', run_old);
+% Current run name
+run_names.phase_transition_curve = 'run10_phase_reset_PTC_scan';
+run_new = run_names.phase_transition_curve;
+% Which run this continuation continues from
+run_old = run_names.phase_reset_perturbation;
+
+% Continuation point
+label_old = coco_bd_labs(coco_bd_read(run_old), 'SP');
+% label_old = [2, 3, 5, 7, 8, 10, 12, 13, 15, 17, 18, 26, 34, 41, 55, 62, 69, 75, 105, 135, 141, 147, 152, 158, 164];
+
+% Print to console
+fprintf("~~~ Phase Reset: Second Run ~~~ \n");
+fprintf('Calculate phase transition curve \n');
+fprintf('Run name: %s \n', run_new);
+fprintf('Continuing from SP points in run: %s \n', run_old);
 
 %---------------------------------%
 %     Cycle through SP labels     %
 %---------------------------------%
-% % Set number of threads
-% M = 0;
-% parfor (run = 1 : length(label_old), M)
-%   % Label for this run
-%   this_run_label = label_old(run);
-% 
-%   % Data directory for this run
-%   fprintf('\n Continuing from point %d in run: %s \n', this_run_label, run_old);
-% 
-%   this_run_name = {run_names.phase_transition_curve; sprintf('run_%02d', run)};
-% 
-%   % Run continuation
-%   PTC_scan_A_perturb(this_run_name, run_old, this_run_label, data_PR, bcs_funcs);
-% 
-% end
+% Set number of threads
+M = 6;
+parfor (run = 1 : length(label_old), M)
+  % Label for this run
+  this_run_label = label_old(run);
+
+  % Data directory for this run
+  fprintf('\n Continuing from point %d in run: %s \n', this_run_label, run_old);
+
+  this_run_name = {run_new; sprintf('run_%02d', run)};
+
+  % Save solution points for theta_old
+  SP_values = -1.0 : 0.1 : 2.0;
+
+  % Run continuation
+  run_PTC_continuation(this_run_name, run_old, this_run_label, data_PR, SP_values, bcs_funcs);
+
+end
 
 %--------------------%
 %     Test Plots     %
 %--------------------%
 % Plot PTC plane in A_perturb
-% plot_PTC_plane_A_perturb(run_new, save_figure);
+% plot_PTC_plane_A_perturb(run_new);
+
+% Save PTC scan data
+% save_PTC_scan_data(run_new, './data_mat/PTC_scan_data_G_small_set.mat');
+save_data_PTC(run_new, './data_mat/PTC_scan_data_I_small_set.mat');
 
 %=========================================================================%
 %                               END OF FILE                               %

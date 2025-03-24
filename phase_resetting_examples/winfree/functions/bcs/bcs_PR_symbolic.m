@@ -28,7 +28,7 @@ function bcs_coco_out = bcs_PR_segs_symbolic()
   %            u_in(19:20) - w(1) of segment 2,
   %            u_in(21:22) - x(1) of segment 3,
   %            u_in(23:24) - x(1) of segment 4,
-  %            u_in(25:37) - Parameters.
+  %            u_in(25:35) - Parameters.
   %
   % Output
   % ----------
@@ -87,11 +87,9 @@ function bcs_coco_out = bcs_PR_segs_symbolic()
   syms T k theta_old theta_new
   syms mu_s eta
   syms A_perturb theta_perturb
-  syms d_x d_y
   p_PR = [T; k; theta_old; theta_new;
           mu_s; eta;
-          A_perturb; theta_perturb;
-          d_x; d_y];
+          A_perturb; theta_perturb];
 
   %============================================================================%
   %                         BOUNDARY CONDITION ENCODING                        %
@@ -100,7 +98,7 @@ function bcs_coco_out = bcs_PR_segs_symbolic()
   %     Segment 1 and Segment 2     %
   %---------------------------------%
   % Vector field
-  F_vec = winfree_symbolic_field(x0_seg1, p_sys);
+  F_vec = field(x0_seg1, p_sys);
 
   % Boundary Conditions - Segments 1 and 2
   bcs_seg12_1   = x0_seg1 - x1_seg2;
@@ -122,20 +120,19 @@ function bcs_coco_out = bcs_PR_segs_symbolic()
   %-------------------%
   %     Segment 4     %
   %-------------------%
-  % Perturbation vector
-  d_vec = [cos(theta_perturb); sin(theta_perturb)];
+  d_vec = [cos(theta_perturb);
+           sin(theta_perturb)];
 
   % Boundary Conditions - Segment 4
   bcs_seg4_1 = x0_seg4 - x0_seg3 - (A_perturb * d_vec);
   bcs_seg4_2 = dot(x1_seg4 - x0_seg2, w0_seg2);
-  % bcs_seg4_3 = norm(x1_seg4 - x0_seg2) - eta;
 
   % The last boundary condition has a singularity in the Jacobian for the initial
   % vector, as the norm is zero. We then redfine this boundary condition as the
   % square.
+  % bcs_seg4_3 = norm(x1_seg4 - x0_seg2) - eta;
   diff_vec = x1_seg4 - x0_seg2;
   bcs_seg4_3 = (diff_vec(1) ^ 2) + (diff_vec(2) ^ 2) - eta;
-  % bcs_seg4_3 = ((x1_seg4(1) - x0_seg2(1)) ^ 2) + ((x1_seg4(2) - x0_seg2(2)) ^ 2) + ((x1_seg4(3) - x0_seg2(3)) ^ 2) - eta;
 
   %============================================================================%
   %                                   OUTPUT                                   %
@@ -155,7 +152,7 @@ function bcs_coco_out = bcs_PR_segs_symbolic()
           bcs_seg4_1; bcs_seg4_2; bcs_seg4_3];
 
   % Filename for output functions
-  filename_out = './functions/symcoco/F_bcs_PR_segs';
+  filename_out = './functions/symcoco/F_bcs_PR';
 
   % COCO Function encoding
   bcs_coco = sco_sym2funcs(bcs, {uvec}, {'u'}, 'filename', filename_out);

@@ -7,7 +7,7 @@ function F_coco_out = fhn_VAR_symbolic()
   % State space dimension
   xdim = 2;
   % Vector field
-  field = @fhn_symbolic_field;
+  field = @winfree_symbolic_field;
 
   %---------------%
   %     Input     %
@@ -19,8 +19,8 @@ function F_coco_out = fhn_VAR_symbolic()
   wvec = sym('w', [xdim, 1]);
 
   % System parameters
-  syms c a b z
-  p_sys = [c; a; b; z];
+  syms a omega
+  p_sys = [a; omega];
 
   % Phase resetting parameters
   syms mu_s w_norm
@@ -51,7 +51,7 @@ function F_coco_out = fhn_VAR_symbolic()
   F_seg = [F_eqn; adj_eqn];
 
   % CoCo-compatible encoding
-  filename_out = './functions/symcoco/F_floquet';
+  filename_out = './functions/symcoco/F_VAR';
   F_coco = sco_sym2funcs(F_seg, {uvec, pvec}, {'x', 'p'}, 'filename', filename_out);
 
   %----------------%

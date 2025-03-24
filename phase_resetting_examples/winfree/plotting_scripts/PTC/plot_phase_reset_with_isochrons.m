@@ -1,4 +1,4 @@
-function plot_phase_reset_with_isochrons(run_in, label_in, fig_num_in, save_figure)
+function plot_phase_reset_with_isochrons(run_in, label_in, fig_num_in)
   % plot_phase_resetplot_phase_reset_with_isochrons_PO(run_in, label_in)
   %
   % Plots the phase resetting periodic orbit along with the calculating isochrons
@@ -133,15 +133,5 @@ function plot_phase_reset_with_isochrons(run_in, label_in, fig_num_in, save_figu
   %----------------------%
   box(ax, 'on');
   grid(ax, 'on');
-
-  %---------------------%
-  %     Save Figure     %
-  %---------------------%
-  if save_figure == true
-    % Create filename
-    filename_out = sprintf('./images/phase_reset_curve_%s_%d.pdf', run_in(1:5), label_in);
-    % Save figure
-    exportgraphics(fig, filename_out, ContentType='vector');
-  end
 
 end

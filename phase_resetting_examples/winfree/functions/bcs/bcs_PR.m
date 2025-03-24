@@ -1,5 +1,5 @@
-function [data_in, y_out] = bcs_PR_segs(prob_in, data_in, u_in)
-  % [data_in, y_out] = bcs_PR_segs(prob_in, data_in, u_in)
+function [data_in, y_out] = bcs_PR(prob_in, data_in, u_in)
+  % [data_in, y_out] = bcs_PR(prob_in, data_in, u_in)
   %
   % Boundary conditions for the four segments of the phase-resetting problem:
   %                          x1(0) - x2(1) = 0 ,
