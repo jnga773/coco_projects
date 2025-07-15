@@ -90,10 +90,16 @@ bcs_funcs.bcs_eig      = {@bcs_eig};
 run_names.initial_EP = 'run01_initial_EP';
 run_new = run_names.initial_EP;
 
-% Print to console
-fprintf('~~~ First run (ode_isol2ep) ~~~\n');
-fprintf('Run name: %s\n', run_new);
-fprintf('Continue family of equilibrium points.\n')
+%--------------------------%
+%     Print to Console     %
+%--------------------------%
+fprintf(' =====================================================================\n');
+fprintf(' Initialisation: First Run\n');
+fprintf(' Continue family of equilibrium points\n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Continuation parameters : %s\n', 'r');
+fprintf(' =====================================================================\n');
 
 %-------------------------------%
 %     Continuation Settings     %
@@ -136,11 +142,18 @@ run_old = run_names.initial_EP;
 label_old = coco_bd_labs(coco_bd_read(run_old), 'BP');
 label_old = label_old(1);
 
-% Print to console
-fprintf('~~~ Initialisation: Second run (ode_BP2ep) ~~~\n');
-fprintf('Continue bifurcations from the branching point\n');
-fprintf('Run name: %s \n', run_new);
-fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
+%--------------------------%
+%     Print to Console     %
+%--------------------------%
+fprintf(' =====================================================================\n');
+fprintf(' Initialisation: Second Run\n');
+fprintf(' Continue bifurcations from the branching point\n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Previous run name       : %s\n', run_old);
+fprintf(' Previous solution label : %d\n', label_old);
+fprintf(' Continuation parameters : %s\n', 'r');
+fprintf(' =====================================================================\n');
 
 %-------------------------------%
 %     Continuation Settings     %
@@ -186,11 +199,18 @@ run_old = run_names.branching_point;
 label_old = coco_bd_labs(coco_bd_read(run_old), 'HB');
 label_old = label_old(1);
 
-% Print to console
-fprintf('~~~ Periodic Orbits from Hopf (ode_HB2po) ~~~\n');
-fprintf('Continue periodic orbits originating from Hopf bifurcation\n');
-fprintf('Run name: %s \n', run_new);
-fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
+%--------------------------%
+%     Print to Console     %
+%--------------------------%
+fprintf(' =====================================================================\n');
+fprintf(' Floquet Bundle: First Run\n');
+fprintf(' Continue periodic orbits originating from Hopf bifurcation\n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Previous run name       : %s\n', run_old);
+fprintf(' Previous solution label : %d\n', label_old);
+fprintf(' Continuation parameters : %s\n', 'r');
+fprintf(' =====================================================================\n');
 
 %-------------------------------%
 %     Continuation Settings     %
@@ -266,11 +286,18 @@ run_old = run_names.PO_from_hopf;
 % Continuation point
 label_old = coco_bd_labs(coco_bd_read(run_old), 'r24');
 
-% Print to console
-fprintf('~~~ Periodic Orbits from Hopf (ode_po2po) ~~~\n');
-fprintf('Continue periodic orbits originating from Hopf bifurcation\n');
-fprintf('Run name: %s \n', run_new);
-fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
+%--------------------------%
+%     Print to Console     %
+%--------------------------%
+fprintf(' =====================================================================\n');
+fprintf(' Floquet Bundle: Second Run\n');
+fprintf(' Continue periodic orbits and Floquet bundle\n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Previous run name       : %s\n', run_old);
+fprintf(' Previous solution label : %d\n', label_old);
+fprintf(' Continuation parameters : %s\n', 'r');
+fprintf(' =====================================================================\n');
 
 %-----------------------------------------%
 %     Calculate Stable Floquet Vector     %

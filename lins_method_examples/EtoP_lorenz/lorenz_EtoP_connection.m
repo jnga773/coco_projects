@@ -137,10 +137,16 @@ bcs_funcs.bcs_linphase = {@bcs_linphase};
 run_names.initial_EP = 'run01_initial_EP';
 run_new = run_names.initial_EP;
 
-% Print to console
-fprintf('~~~ First run (ode_isol2ep) ~~~\n');
-fprintf('Run name: %s\n', run_new);
-fprintf('Continue family of equilibrium points.\n')
+%--------------------------%
+%     Print to Console     %
+%--------------------------%
+fprintf(' =====================================================================\n');
+fprintf(' Initialisation: First Run\n');
+fprintf(' Continue family of equilibrium points\n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Continuation parameters : %s\n', 'r');
+fprintf(' =====================================================================\n');
 
 %----------------------------%
 %     Setup Continuation     %
@@ -180,11 +186,18 @@ run_old = run_names.initial_EP;
 label_old = coco_bd_labs(coco_bd_read(run_old), 'BP');
 label_old = label_old(1);
 
-% Print to console
-fprintf('~~~ Initialisation: Second run (ode_BP2ep) ~~~\n');
-fprintf('Continue bifurcations from the branching point\n');
-fprintf('Run name: %s \n', run_new);
-fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
+%--------------------------%
+%     Print to Console     %
+%--------------------------%
+fprintf(' =====================================================================\n');
+fprintf(' Initialisation: Second Run\n');
+fprintf(' Continue bifurcations from the branching point\n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Previous run name       : %s\n', run_old);
+fprintf(' Previous solution label : %d\n', label_old);
+fprintf(' Continuation parameters : %s\n', 'r');
+fprintf(' =====================================================================\n');
 
 %----------------------------%
 %     Setup Continuation     %
@@ -227,11 +240,18 @@ run_old = run_names.branching_point;
 label_old = coco_bd_labs(coco_bd_read(run_old), 'HB');
 label_old = label_old(1);
 
-% Print to console
-fprintf('~~~ Periodic Orbits from Hopf (ode_HB2po) ~~~\n');
-fprintf('Continue periodic orbits originating from Hopf bifurcation\n');
-fprintf('Run name: %s \n', run_new);
-fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
+%--------------------------%
+%     Print to Console     %
+%--------------------------%
+fprintf(' =====================================================================\n');
+fprintf(' Initialisation: Third Run\n');
+fprintf(' Continue periodic orbits originating from Hopf bifurcation\n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Previous run name       : %s\n', run_old);
+fprintf(' Previous solution label : %d\n', label_old);
+fprintf(' Continuation parameters : %s\n', 'r');
+fprintf(' =====================================================================\n');
 
 %----------------------------%
 %     Setup Continuation     %
@@ -306,13 +326,20 @@ run_old = run_names.PO_from_hopf;
 
 % Continuation point
 label_old = coco_bd_labs(coco_bd_read(run_old), 'r24');
-label_old = label_old(1); 
+label_old = label_old(1);
 
-% Print to console
-fprintf("~~~ Lin's Method: First Run (ode_isol2coll) ~~~ \n");
-fprintf('Grow unstable manifold from one of the periodic orbits \n');
-fprintf('Run name: %s  \n', run_new);
-fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
+%--------------------------%
+%     Print to Console     %
+%--------------------------%
+fprintf(' =====================================================================\n');
+fprintf(" Lin's Method: First Run\n");
+fprintf(' Continue unstable trajectory segment until we hit Sigma plane\n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Previous run name       : %s\n', run_old);
+fprintf(' Previous solution label : %d\n', label_old);
+fprintf(' Continuation parameters : %s\n', 'seg_u, T1, T2');
+fprintf(' =====================================================================\n');
 
 %-------------------%
 %     Read Data     %
@@ -407,11 +434,18 @@ run_old = run_names.unstable_manifold;
 label_old = coco_bd_labs(coco_bd_read(run_old), 'DelU');
 label_old = label_old(1);
 
-% Print to console
-fprintf("~~~ Lin's Method: Second Run (ode_coll2coll) ~~~ \n");
-fprintf('Grow stable manifold from one of the periodic orbits \n');
-fprintf('Run name: %s \n', run_new);
-fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
+%--------------------------%
+%     Print to Console     %
+%--------------------------%
+fprintf(' =====================================================================\n');
+fprintf(" Lin's Method: Second Run\n");
+fprintf(' Continue stable trajectory segment until we hit Sigma plane\n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Previous run name       : %s\n', run_old);
+fprintf(' Previous solution label : %d\n', label_old);
+fprintf(' Continuation parameters : %s\n', 'seg_s, T2, T1');
+fprintf(' =====================================================================\n');
 
 %----------------------------%
 %     Setup Continuation     %
@@ -501,11 +535,18 @@ run_old = run_names.stable_manifold;
 label_old = sort(coco_bd_labs(coco_bd_read(run_old), 'DelS'));
 label_old = label_old(1);
 
-% Print to console
-fprintf("~~~ Lin's Method: Third Run (coll_seg2seg) ~~~ \n");
-fprintf('Grow stable manifold from one of the periodic orbits \n');
-fprintf('Run name: %s \n', run_new);
-fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
+%--------------------------%
+%     Print to Console     %
+%--------------------------%
+fprintf(' =====================================================================\n');
+fprintf(" Lin's Method: Third Run\n");
+fprintf(' Grow stable manifold from one of the periodic orbits\n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Previous run name       : %s\n', run_old);
+fprintf(' Previous solution label : %d\n', label_old);
+fprintf(' Continuation parameters : %s\n', 'eps2, T1, T2');
+fprintf(' =====================================================================\n');
 
 %----------------------------%
 %     Setup Continuation     %
@@ -593,10 +634,18 @@ run_new = run_names.close_lingap;
 % Which run this continuation continues from
 run_old = run_names.sweep_orbits;
 
-% Print to console
-fprintf("~~~ Lin's Method: Fourth Run (ode_coll2coll) ~~~ \n");
-fprintf('Reduce the Lin gap to zero \n');
-fprintf('Run name: %s \n', run_new);
+%--------------------------%
+%     Print to Console     %
+%--------------------------%
+fprintf(' =====================================================================\n');
+fprintf(" Lin's Method: Fourth Run\n");
+fprintf(' Reduce the Lin gap to zero\n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Previous run name       : %s\n', run_old);
+fprintf(' Previous solution label : %d\n', label_old);
+fprintf(' Continuation parameters : %s\n', 'lingap, r, eps2, T1, T2');
+fprintf(' =====================================================================\n');
 
 %-------------------%
 %     Read Data     %
@@ -701,11 +750,18 @@ run_old = run_names.close_lingap;
 label_old = coco_bd_labs(coco_bd_read(run_old), 'Lin0');
 label_old = label_old(1);
 
-% Print to console
-fprintf("~~~ Lin's Method: Fourth Run (ode_coll2coll) ~~~ \n");
-fprintf('Reduce the Lin gap to zero \n');
-fprintf('Run name: %s \n', run_new);
-fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
+%--------------------------%
+%     Print to Console     %
+%--------------------------%
+fprintf(' =====================================================================\n');
+fprintf(" Lin's Method: Fourth Run\n");
+fprintf(' Continue constrained segments to find parametrisation of homoclinic\n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Previous run name       : %s\n', run_old);
+fprintf(' Previous solution label : %d\n', label_old);
+fprintf(' Continuation parameters : %s\n', 's, r, eps1, eps2, T2');
+fprintf(' =====================================================================\n');
 
 %----------------------------%
 %     Setup Continuation     %

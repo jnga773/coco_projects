@@ -1,40 +1,47 @@
-function data_out = calc_stable_Wq_initial_solution(run_in, label_in)
-  % data_out = calc_stable_Wq_initial_solution(filename_in)
+function data_out = calc_initial_solution_Wsq(run_in, label_in)
+  % data_out = calc_initial_solution_Wsq(run_in, label_in)
   %
   % Calculate the stable manifold of the equilibrium point in the middle of
   % the periodic orbit.
+  %
+  % Parameters
+  % ----------
+  % run_in : string
+  %     The run identifier for the continuation problem.
+  % label_in : int
+  %     The solution label for the continuation problem.
+  %
+  % Returns
+  % -------
+  % data_out : struct
+  %     Structure containing the stable manifold data.
+  %     Fields:
+  %         - x_init_1 : Initial state vector for the stable manifold (positive direction).
+  %         - x_init_2 : Initial state vector for the stable manifold (negative direction).
+  %         - t0 : Initial time.
+  %         - ls : Stable eigenvalue.
+  %         - vs : Stable eigenvector.
+  %         - eps : Initial distance from the equilibrium.
+  %         - p : Parameters of the solution.
+  %
+  % See Also
+  % --------
+  % ep_read_solution
 
   %-------------------%
   %     Read Data     %
   %-------------------%
-  % Read PO solution from previos run
-  [sol_PO, data_PO] = coll_read_solution('po.orb', run_in, label_in);
-  
-  % State space solution
-  xbp_PO = sol_PO.xbp;
-  % Time
-  tbp_PO = sol_PO.tbp;
-  % Period
-  T_PO   = sol_PO.T;
+  % x_pos solution
+  sol_xpos = ep_read_solution('xpos',  run_in, label_in);
+  xpos = sol_xpos.x;
   % Parameters
-  p      = sol_PO.p;
-  % Parameter names
-  pnames = data_PO.pnames;
-
-  % Read EP solution from previous run
-  [sol_pos, ~] = ep_read_solution('xpos', run_in, label_in);
-
-  % Stationary point
-  xpos = sol_pos.x;
-  
-  % DFDX function
-  func_DFDX = data_PO.dfdxhan;
+  p    = sol_xpos.p;
 
   %------------------------------------------------%
   %     Calculate Eigenvectors and Eigenvalues     %
   %------------------------------------------------%
-  % Calculate non-trivial steady states
-  J = func_DFDX(xpos, p);
+  % Calculate Jacobian of the equilibrium point
+  J = yamada_DFDX(xpos, p);
 
   % Calculate eigenvalues and eigenvectors
   [eigval, eigvec] = eig(J);
@@ -62,13 +69,6 @@ function data_out = calc_stable_Wq_initial_solution(run_in, label_in)
   %     Output     %
   %----------------%
   % Load PO solution data
-  data_out.p        = p;
-  data_out.pnames   = pnames;
-
-  data_out.xbp_PO   = xbp_PO;
-  data_out.tbp_PO   = tbp_PO;
-  data_out.T_PO     = T_PO;
-
   data_out.x_init_1 = x_init_1';
   data_out.x_init_2 = x_init_2';
   data_out.t0       = t0;
@@ -77,5 +77,7 @@ function data_out = calc_stable_Wq_initial_solution(run_in, label_in)
   data_out.vs       = vs;
 
   data_out.eps      = eps;
+
+  data_out.p        = p;
 
 end

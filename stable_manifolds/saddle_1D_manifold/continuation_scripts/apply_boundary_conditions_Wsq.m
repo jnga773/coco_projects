@@ -1,12 +1,31 @@
-function prob_out = apply_Wq_conditions(prob_in, bcs_funcs_in, eps_in)
-  % prob_out = apply_Wq_conditions(prob_in, bcs_funcs_in, eps_in)
+function prob_out = apply_boundary_conditions_Wsq(prob_in, bcs_funcs_in, eps_in)
+  % prob_out = apply_boundary_conditions_Wsq(prob_in, bcs_funcs_in, eps_in)
   %
-  % Apply the boundary conditions for the stable-manifold calculations
+  % This function reads index data for the stable periodic orbit segment and equilibrium points, glues the COLL and EP parameters together, applies periodic orbit boundary conditions, and adds variational problem matrix parameters.
+  %
+  % Parameters
+  % ----------
+  % prob_in : COCO problem structure
+  %     Input continuation problem structure.
+  % bcs_funcs_in : List of functions
+  %     Structure containing boundary condition functions.
+  % eps_in : double
+  %     Epsilon parameter for boundary conditions.
+  %
+  % Returns
+  % -------
+  % prob_out : COCO problem structure
+  %     Output continuation problem structure with applied boundary conditions.
+  %
+  % See Also
+  % --------
+  % coco_get_func_data, coco_add_glue, coco_add_func, coco_add_pars
 
   % Set the COCO problem
   prob = prob_in;
 
   % Boundary condition function list
+  % bcs_eig     = bcs_funcs_in.bcs_eig;
   bcs_initial = bcs_funcs_in.bcs_initial;
   bcs_final   = bcs_funcs_in.bcs_final;
 
@@ -40,12 +59,13 @@ function prob_out = apply_Wq_conditions(prob_in, bcs_funcs_in, eps_in)
   %-----------------------------------------------------%
   % All segments have the same system parameters, so "glue" them together,
   % i.e., let COCO know that they are the same thing.
-  prob = coco_add_glue(prob, 'pars_EP', ...
-                       [uidx_s(maps_s.p_idx); uidx_s(maps_s.p_idx); uidx_s(maps_s.p_idx)], ...
-                       [uidx_pos(maps_pos.p_idx); uidx_neg(maps_neg.p_idx); uidx_0(maps_0.p_idx)]);
-  prob = coco_add_glue(prob, 'pars_COLL', ...
-                       [uidx_s(maps_s.p_idx); uidx_s(maps_s.p_idx)], ...
-                       [uidx1(maps1.p_idx); uidx2(maps2.p_idx)]);
+  prob = coco_add_glue(prob, 'pars_glue', ...
+                       [uidx_s(maps_s.p_idx); ...
+                        uidx_s(maps_s.p_idx); uidx_s(maps_s.p_idx); ...
+                        uidx_s(maps_s.p_idx); uidx_s(maps_s.p_idx)], ...
+                       [uidx_0(maps_0.p_idx); ...
+                        uidx_pos(maps_pos.p_idx); uidx_neg(maps_neg.p_idx); ...
+                        uidx1(maps1.p_idx); uidx2(maps2.p_idx)]);
 
   %-------------------------------------%
   %     Initial Boundary Conditions     %

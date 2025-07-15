@@ -126,10 +126,16 @@ bcs_funcs.bcs_lingap  = {@bcs_lingap};
 run_names.unstable_manifold = 'run01_unstable_manifold';
 run_new = run_names.unstable_manifold;
 
-% Print to console
-fprintf("~~~ Lin's Method: First Run (ode_isol2coll) ~~~ \n");
-fprintf('Continue unstable trajectory segment until we hit Sigma plane \n');
-fprintf('Run name: %s  \n', run_new);
+%--------------------------%
+%     Print to Console     %
+%--------------------------%
+fprintf(' =====================================================================\n');
+fprintf(" Lin's Method: First Run\n");
+fprintf(' Continue unstable trajectory segment until we hit Sigma plane\n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Continuation parameters : %s\n', 'seg_u, T1, mu');
+fprintf(' =====================================================================\n');
 
 %-------------------%
 %     Read Data     %
@@ -203,10 +209,18 @@ run_old = run_names.unstable_manifold;
 label_old = coco_bd_labs(coco_bd_read(run_old), 'DelU');
 label_old = label_old(2);
 
-% Print to console
-fprintf("~~~ Lin's Method: Second Run (ode_coll2coll) ~~~ \n");
-fprintf('Continue stable trajectory segment until we hit Sigma plane \n');
-fprintf('Run name: %s  \n', run_new);
+%--------------------------%
+%     Print to Console     %
+%--------------------------%
+fprintf(' =====================================================================\n');
+fprintf(" Lin's Method: Second Run\n");
+fprintf(' Continue stable trajectory segment until we hit Sigma plane\n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Previous run name       : %s\n', run_old);
+fprintf(' Previous solution label : %d\n', label_old);
+fprintf(' Continuation parameters : %s\n', 'seg_s, T2, mu');
+fprintf(' =====================================================================\n');
 
 %----------------------------%
 %     Setup Continuation     %
@@ -276,11 +290,18 @@ run_old = run_names.stable_manifold;
 label_old = coco_bd_labs(coco_bd_read(run_old), 'DelS');
 label_old = label_old(1);
 
-% Print to console
-fprintf("~~~ Lin's Method: Third Run (ode_coll2coll) ~~~ \n");
-fprintf('Close the Lin Gap on the Sigma Plane \n');
-fprintf('Run name: %s \n', run_new);
-fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
+%--------------------------%
+%     Print to Console     %
+%--------------------------%
+fprintf(' =====================================================================\n');
+fprintf(" Lin's Method: Third Run\n");
+fprintf(' Reduce the Lin gap to zero\n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Previous run name       : %s\n', run_old);
+fprintf(' Previous solution label : %d\n', label_old);
+fprintf(' Continuation parameters : %s\n', 'lingap, T1, T2, mu, seg_u');
+fprintf(' =====================================================================\n');
 
 %----------------------------%
 %     Setup Continuation     %
@@ -360,11 +381,18 @@ run_old = run_names.close_lingap;
 label_old = coco_bd_labs(coco_bd_read(run_old), 'Lin0');
 label_old = label_old(1);
 
-% Print to console
-fprintf("~~~ Lin's Method: Fourth Run (ode_coll2coll) ~~~ \n");
-fprintf('Close epsilon gap until eps1=1e-8 \n');
-fprintf('Run name: %s \n', run_new);
-fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
+%--------------------------%
+%     Print to Console     %
+%--------------------------%
+fprintf(' =====================================================================\n');
+fprintf(" Lin's Method: Fourth Run\n");
+fprintf(' Close epsilon gap until eps1=1e-8\n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Previous run name       : %s\n', run_old);
+fprintf(' Previous solution label : %d\n', label_old);
+fprintf(' Continuation parameters : %s\n', 'eps1, T1, T2, mu, seg_u');
+fprintf(' =====================================================================\n');
 
 %----------------------------%
 %     Setup Continuation     %
@@ -446,11 +474,18 @@ run_old = run_names.close_eps1;
 % Label for previous run solution
 label_old = coco_bd_labs(coco_bd_read(run_old), 'EPS1');
 
-% Print to console
-fprintf("~~~ Lin's Method: Fifth Run (ode_coll2coll) ~~~ \n");
-fprintf('Close epsilon gap until eps2=1e-8 \n');
-fprintf('Run name: %s \n', run_new);
-fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
+%--------------------------%
+%     Print to Console     %
+%--------------------------%
+fprintf(' =====================================================================\n');
+fprintf(" Lin's Method: Fifth Run\n");
+fprintf(' Close epsilon gap until eps2=1e-8\n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Previous run name       : %s\n', run_old);
+fprintf(' Previous solution label : %d\n', label_old);
+fprintf(' Continuation parameters : %s\n', 'eps2, T1, T2, mu, seg_u');
+fprintf(' =====================================================================\n');
 
 %----------------------------%
 %     Setup Continuation     %

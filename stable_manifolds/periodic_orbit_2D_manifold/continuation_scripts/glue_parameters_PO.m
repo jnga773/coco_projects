@@ -14,7 +14,11 @@ function prob_out = glue_parameters_PO(prob_in)
   %     Read Data     %
   %-------------------%
   % Read index data periodic orbit segment
-  [data, uidx] = coco_get_func_data(prob, 'po.orb.coll', 'data', 'uidx');
+  [data, uidx] = coco_get_func_data(prob, 'PO_stable.po.orb.coll', 'data', 'uidx');
+  [data_var, uidx_var] = coco_get_func_data(prob, 'PO_stable.po.orb.coll.var', 'data', 'uidx');
+  % Index mapping
+  maps_s   = data.coll_seg.maps;
+  maps_var = data_var.coll_var;
 
   % Read index data equilibrium points
   [data1, uidx1] = coco_get_func_data(prob, 'xpos.ep', 'data', 'uidx');
@@ -34,6 +38,16 @@ function prob_out = glue_parameters_PO(prob_in)
   prob = coco_add_glue(prob, 'glue_p1', uidx(maps.p_idx), uidx1(maps1.p_idx));
   prob = coco_add_glue(prob, 'glue_p2', uidx(maps.p_idx), uidx2(maps2.p_idx));
   prob = coco_add_glue(prob, 'glue_p3', uidx(maps.p_idx), uidx3(maps3.p_idx));
+
+  %-----------------------------------%
+  %     Define Problem Parameters     %
+  %-----------------------------------%
+  % Add variational problem matrix parameters
+  prob = coco_add_pars(prob, 'pars_var_unstable', ...
+                       uidx_var(maps_var.v0_idx,:), ...
+                       {'var1', 'var2', 'var3', ...
+                        'var4', 'var5', 'var6', ...
+                        'var7', 'var8', 'var9'});
 
   %----------------%
   %     Output     %

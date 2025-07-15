@@ -1,14 +1,46 @@
-function data_out = calc_stable_W_PO_initial_solution(run_in, label_in)
-  % data_out = calc_stable_W_PO_initial_solution(filename_in)
+function data_out = calc_initial_solution_WS_PO(run_in, label_in)
+  % data_out = calc_initial_solution_WS_PO(run_in, label_in)
   %
   % Calculate the stable manifold of the equilibrium point in the middle of
   % the periodic orbit.
+  %
+  % Parameters
+  % ----------
+  % run_in : string
+  %     The run identifier for the continuation problem.
+  % label_in : int
+  %     The solution label for the continuation problem.
+  %
+  % Returns
+  % -------
+  % data_out : struct
+  %     Structure containing the stable manifold data.
+  %     Fields:
+  %         - xdim : Dimension of the state space solution.
+  %         - pdim : Dimension of the parameters.
+  %         - p : Parameters of the solution.
+  %         - pnames : Names of the parameters.
+  %         - vec_s : Stable eigenvector.
+  %         - lam_s : Stable eigenvalue (Floquet thingie).
+  %         - xbp_PO : State space solution of the periodic orbit.
+  %         - tbp_PO : Time data of the periodic orbit solution.
+  %         - T_PO : Period of the periodic orbit.
+  %         - p : Parameters of the solution.
+  %         - pnames : Names of the parameters.
+  %         - x_init_1 : Initial state vector for the stable manifold (positive direction).
+  %         - x_init_2 : Initial state vector for the stable manifold (negative direction).
+  %         - t0 : Initial time.
+  %         - eps : Initial distance from the equilibrium.
+  %
+  % See Also
+  % --------
+  % coll_read_solution, coco_read_solution
 
   %-------------------%
   %     Read Data     %
   %-------------------%
   % Read PO solution from previous run
-  [sol_PO, data_PO] = coll_read_solution('po.orb', run_in, label_in);
+  [sol_PO, data_PO] = coll_read_solution('PO_stable.po.orb', run_in, label_in);
   
   % State space solution
   xbp_PO = sol_PO.xbp;
@@ -34,8 +66,8 @@ function data_out = calc_stable_W_PO_initial_solution(run_in, label_in)
   xbp_end = xbp_PO(end, :);
 
   % Monodromy matrix
-  chart = coco_read_solution('po.orb.coll.var', run_in, label_in, 'chart');
-  data  = coco_read_solution('po.orb.coll', run_in, label_in, 'data');
+  chart = coco_read_solution('PO_stable.po.orb.coll.var', run_in, label_in, 'chart');
+  data  = coco_read_solution('PO_stable.po.orb.coll', run_in, label_in, 'data');
 
   % Create monodrony matrix
   M1 = chart.x(data.coll_var.v1_idx);

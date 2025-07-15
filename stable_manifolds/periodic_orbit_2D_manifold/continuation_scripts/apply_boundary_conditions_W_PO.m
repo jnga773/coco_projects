@@ -1,7 +1,31 @@
-function prob_out = apply_W_PO_conditions(prob_in, bcs_funcs_in, eps_in, vec_floquet_in, lam_floquet_in)
-  % prob_out = apply_W_PO_conditions(prob_in, bcs_funcs_in, vec_floquet_in, lam_floquet_in)
+function prob_out = apply_boundary_conditions_W_PO(prob_in, bcs_funcs_in, eps_in, vec_floquet_in, lam_floquet_in)
+  % prob_out = apply_boundary_conditions_W_PO(prob_in, bcs_funcs_in, vec_floquet_in, lam_floquet_in)
   %
-  % Apply the boundary conditions for the stable-manifold calculations
+  % This function reads index data for the stable periodic orbit segment and equilibrium points,
+  % glues the COLL and EP parameters together, applies periodic orbit boundary conditions,
+  % and adds variational problem matrix parameters.
+  %
+  % Parameters
+  % ----------
+  % prob_in : COCO problem structure
+  %     Input continuation problem structure.
+  % bcs_funcs_in : List of functions
+  %     Structure containing boundary condition functions.
+  % eps_in : double
+  %     Epsilon parameter for boundary conditions.
+  % vec_floquet_in : double
+  %     Initial vector for the Floquet multipliers.
+  % lam_floquet_in : double
+  %     Initial value for the Floquet multiplier.
+  %
+  % Returns
+  % -------
+  % prob_out : COCO problem structure
+  %     Output continuation problem structure with applied boundary conditions.
+  %
+  % See Also
+  % --------
+  % coco_get_func_data, coco_add_glue, coco_add_func, coco_add_pars
 
   % Set the COCO problem
   prob = prob_in;

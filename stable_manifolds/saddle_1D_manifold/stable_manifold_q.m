@@ -29,12 +29,10 @@ addpath('./functions/bcs/');
 addpath('./functions/symcoco/');
 
 % Add continuations script functions to path
-addpath('./continuation_scripts/initial_PO/');
-addpath('./continuation_scripts/stable_manifold_q/');
+addpath('./continuation_scripts/');
 
 % Add plotting scripts
-addpath('./plotting_scripts/initial_PO/');
-addpath('./plotting_scripts/stable_manifold_q/');
+addpath('./plotting_scripts/');
 
 %--------------------%
 %     Parameters     %
@@ -44,9 +42,9 @@ addpath('./plotting_scripts/stable_manifold_q/');
 B = 5.8;
 a = 1.8;
 
-% Set some initial values for \gamma and A
-gamma = 0.10;
-A = 6.6;
+% Parameters for the periodic orbit
+gamma_PO = 3.5e-2;
+A_PO     = 7.4;
 
 %-----------------------%
 %     Problem Setup     %
@@ -55,15 +53,10 @@ A = 6.6;
 pnames = {'gamma', 'A', 'B', 'a'};
 
 % Initial parameter values
-p0 = [gamma; A; B; a];
+p0 = [gamma_PO; A_PO; B; a];
 
-% Initial state values
-x0 = [A; B; 0];
-
-% Parameter ranges
-gamma_range = [0.0, 0.25];
-A_range = [5.0, 11.0];
-p_range = {A_range, gamma_range};
+% Initial point
+x0 = [10; 10; 10];
 
 % State dimensions
 pdim = length(p0);
@@ -86,207 +79,50 @@ bcs_funcs.bcs_initial = {@bcs_Wq_initial};
 bcs_funcs.bcs_final = {@bcs_Wq_final};
 
 %=========================================================================%
-%                    CALCULATE INITIAL PERIODIC ORBIT                     %
+%%                   CALCULATE INITIAL PERIODIC ORBIT                    %%
 %=========================================================================%
-% We compute a family of periodic orbits, emanating from a Hopf
-% bifurcation. We first compute the Hopf bifurcation line using the 'EP'
-% toolbox, and then a family of periodic orbits with the 'PO' toolbox.
-% Finally, we shift the state-space solution data such that, at t=0,
-%                       x1(t=0) = max(x1) .
-% We then verify this solution using the 'COLL' toolbox.
+% Using ODE45, we compute a guess solution to a stable periodic orbit. We
+% then feed this as an initial solution to the 'PO' toolbox. Finally, we
+% "rotate" the head-point and use this to confirm a solution of a periodic
+% orbit, where the first point corresponds to max(G).
 
 %-------------------------------------------------------------------------%
-%%                   Compute Initial Equilibrium Point                   %%
+%%                 Confirm ODE45 Periodic Orbit Solution                 %%
 %-------------------------------------------------------------------------%
-% We compute and continue the equilibrium point of the model using
-% the 'EP' toolbox constructor 'ode_isol2ep'.
+% Calculate the periodic orbit using MATLAB's ode45 function.
 
 %------------------%
 %     Run Name     %
 %------------------%
 % Current run name
-run_names.initial_EP = 'run01_initial_EP';
-run_new = run_names.initial_EP;
-
-% Print to console
-fprintf('~~~ Initial Periodic Orbit: First Run ~~~\n');
-fprintf('Solve for initial solution of the equilibrium point\n')
-fprintf('Run name: %s\n', run_new);
-
-
-%-------------------------------%
-%     Continuation Settings     %
-%-------------------------------%
-% Set up COCO problem
-prob = coco_prob();
-
-% Set upper bound of continuation steps in each direction along solution
-prob = coco_set(prob, 'cont', 'PtMX', 50);
-
-%----------------------------%
-%     Setup Continuation     %
-%----------------------------%
-% Set up isol2ep problem
-prob = ode_isol2ep(prob, '', funcs.field{:}, x0, pnames, p0);
-
-%------------------%
-%     Run COCO     %
-%------------------%
-% Run COCO continuation
-coco(prob, run_new, [], 1, 'A', A_range);
-
-%-------------------------------------------------------------------------%
-%%                   Continuation from Branching Point                   %%
-%-------------------------------------------------------------------------%
-% We switch branches at the BP point to find the Hopf bifurcations.
-
-%------------------%
-%     Run Name     %
-%------------------%
-% Current run name
-run_names.branching_point = 'run02_branching_point_continuation';
-run_new = run_names.branching_point;
-% Previous run name
-run_old = run_names.initial_EP;
-
-% Continuation point
-label_old = coco_bd_labs(coco_bd_read(run_old), 'BP');
-label_old = label_old(1);
-
-% Print to console
-fprintf('~~~ Initial Periodic Orbit: Second run ~~~\n');
-fprintf('Continue bifurcations from the branching point\n');
-fprintf('Run name: %s \n', run_new);
-fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
-
-%-------------------------------%
-%     Continuation Settings     %
-%-------------------------------%
-% Set up COCO problem
-prob = coco_prob();
-
-% Set NAdapt to 1?
-prob = coco_set(prob, 'cont', 'NAdapt', 1);
-
-% Set upper bound of continuation steps in each direction along solution
-PtMX = 50;
-prob = coco_set(prob, 'cont', 'PtMX', [PtMX, 0]);
-
-%----------------------------%
-%     Setup Continuation     %
-%----------------------------%
-% Continue from branching point
-prob = ode_BP2ep(prob, '', run_old, label_old);
-
-%------------------%
-%     Run COCO     %
-%------------------%
-% Run COCO continuation
-coco(prob, run_new, [], 1, 'A', A_range);
-
-%-------------------------------------------------------------------------%
-%%                           Move Hopf A Value                           %%
-%-------------------------------------------------------------------------%
-% Continuing from a Hopf bifurcation with 'ode_HB2HB', we vary
-% the 'A' parameter to A = 7.3757
-
-%------------------%
-%     Run Name     %
-%------------------%
-% Current run name
-run_names.move_hopf = 'run03_move_hopf';
-run_new = run_names.move_hopf;
-% Which run this continuation continues from
-run_old = run_names.branching_point;
-
-% Continuation point
-label_old = coco_bd_labs(coco_bd_read(run_old), 'HB');
-label_old = label_old(1);
-
-% Print to console
-fprintf("~~~ Initial Periodic Orbit: Third Run ~~~ \n");
-fprintf('Move the gamma value \n');
-fprintf('Run name: %s \n', run_new);
-fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
-
-%-------------------------------%
-%     Continuation Settings     %
-%-------------------------------%
-% Set up the COCO problem
-prob = coco_prob();
-
-% Set step sizes
-prob = coco_set(prob, 'cont', 'h_min', 5e-2, 'h0', 5e-2, 'h_max', 5e-2);
-
-% Set frequency of saved solutions
-prob = coco_set(prob, 'cont', 'NPR', 10);
-
-% Set upper bound of continuation steps in each direction along solution
-PtMX = 100;
-prob = coco_set(prob, 'cont', 'PtMX', [0, PtMX]);
-
-%----------------------------%
-%     Setup Continuation     %
-%----------------------------%
-% Initial solution to periodic orbit (COLL Toolbox)
-prob = ode_HB2HB(prob, '', run_old, label_old);
-
-%-------------------------%
-%     Add COCO Events     %
-%-------------------------%
-% Saved-point solution for A = 7.3757
-prob = coco_add_event(prob, 'H_PT', 'A', 7.3757);
-
-%------------------%
-%     Run COCO     %
-%------------------%
-% Run COCO continuation
-coco(prob, run_new, [], 1, {'A', 'gamma'}, A_range);
-
-%-------------------------------------------------------------------------%
-%%                        Hopf to Periodic Orbit                         %%
-%-------------------------------------------------------------------------%
-% Continue a family of periodic orbits emanating from the Hopf
-% bifurcation with 'ode_HB2po'.
-
-%------------------%
-%     Run Name     %
-%------------------%
-% Current run name
-run_names.hopf_to_PO = 'run05_hopf_to_PO';
-run_new = run_names.hopf_to_PO;
-% Which run this continuation continues from
-run_old = run_names.move_hopf;
-
-% Continuation point
-label_old = coco_bd_labs(coco_bd_read(run_old), 'H_PT');
-
-% Print to console
-fprintf("~~~ Initial Periodic Orbit: Fifth Run ~~~ \n");
-fprintf('Periodic orbits from Hopf bifurcation \n');
-fprintf('Run name: %s \n', run_new);
-fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
+run_names.initial_PO_ode45 = 'run01_initial_PO_ode45';
+run_new = run_names.initial_PO_ode45;
 
 %--------------------------%
-%     Calculate Things     %
+%     Print to Console     %
 %--------------------------%
-% Read previous solution
-sol = ep_read_solution('', run_old, label_old);
+fprintf(' =====================================================================\n');
+fprintf(' Initial Periodic Orbit: First Run\n');
+fprintf(' Find new periodic orbit\n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Continuation parameters : %s\n', 'A, gamma');
+fprintf(' =====================================================================\n');
 
-% Calculate non-trivial solutions
-[xpos, xneg] = non_trivial_ss(sol.p);
+%----------------------------%
+%     Calculate Solution     %
+%----------------------------%
+% Calculate dem tings
+data_ode45 = calc_initial_solution_ODE45(x0, p0, funcs.field);
 
-%-------------------------------%
-%     Continuation Settings     %
-%-------------------------------%
+%----------------------------%
+%     Setup Continuation     %
+%----------------------------%
 % Set up the COCO problem
 prob = coco_prob();
-
-% Set norm
-prob = coco_set(prob, 'cont', 'norm', inf);
 
 % Set NTST mesh 
-prob = coco_set(prob, 'coll', 'NTST', 25);
+prob = coco_set(prob, 'coll', 'NTST', 50);
 
 % Set NAdpat
 prob = coco_set(prob, 'cont', 'NAdapt', 1);
@@ -295,53 +131,40 @@ prob = coco_set(prob, 'cont', 'NAdapt', 1);
 prob = coco_set(prob, 'coll', 'MXCL', false);
 
 % Set PtMX steps
-PtMX = 50;
-prob = coco_set(prob, 'cont', 'PtMX', [0, PtMX]);
-
-% % Set step sizes
-% h_size = 1e0;
-% prob = coco_set(prob, 'cont', 'h_min', h_size, 'h0', h_size, 'h_max', h_size);
+PtMX = 20;
+prob = coco_set(prob, 'cont', 'PtMX', PtMX);
 
 % Set frequency of saved solutions
 prob = coco_set(prob, 'cont', 'NPR', 10);
 
-%----------------------------%
-%     Setup Continuation     %
-%----------------------------%
-% Continue from Hopf bifurcation
-prob = ode_HB2po(prob, '', run_old, label_old);
+% Set initial guess to 'coll'
+prob = ode_isol2po(prob, '', funcs.field{:}, ...
+                   data_ode45.t, data_ode45.x, pnames, p0);
 
-% Follow non trivial solutions
+% Add equilibrium points for non trivial steady states
 prob = ode_isol2ep(prob, 'xpos', funcs.field{:}, ...
-                   xpos, sol.p);
+                   data_ode45.xpos, p0);
 prob = ode_isol2ep(prob, 'xneg', funcs.field{:}, ...
-                   xneg, sol.p);
-prob = ode_isol2ep(prob, 'x0',   funcs.field{:}, ...
-                   x0,   sol.p);
+                   data_ode45.xneg, p0);
+prob = ode_isol2ep(prob, 'x0', funcs.field{:}, ...
+                   data_ode45.x0, p0);
 
-% Glue parameters of each continuation problem
+%------------------------------------------------%
+%     Apply Boundary Conditions and Settings     %
+%------------------------------------------------%
+% Glue parameters and apply boundary condition
 prob = glue_parameters_PO(prob);
 
 %-------------------------%
 %     Add COCO Events     %
 %-------------------------%
-% Saved point for solution for gamma = 3.54e-2
-prob = coco_add_event(prob, 'PO_PT', 'gamma', 3.54e-2);
+prob = coco_add_event(prob, 'PO_PT', 'A', A_PO);
 
 %------------------%
 %     Run COCO     %
 %------------------%
 % Run COCO continuation
-bd = coco(prob, run_new, [], 1, {'gamma', 'A'}, gamma_range);
-
-%----------------------%
-%    Testing Plots     %
-%----------------------%
-% Solution to plot
-label_plot = sort(coco_bd_labs(coco_bd_read(run_new), 'PO_PT'));
-
-% Create plots
-plot_hopf_to_PO_solution(run_new, label_plot);
+coco(prob, run_new, [], 1, {'A', 'gamma'});
 
 %=========================================================================%
 %                     CALCULATE STABLE MANIFOLD OF Q                      %
@@ -359,25 +182,32 @@ plot_hopf_to_PO_solution(run_new, label_plot);
 %     Run Name     %
 %------------------%
 % Current run name
-run_names.stable_manifold1 = 'run06_stable_manifold_seg1';
+run_names.stable_manifold1 = 'run02_stable_manifold_seg1';
 run_new = run_names.stable_manifold1;
 % Which run this continuation continues from
-run_old = run_names.hopf_to_PO;
+run_old = run_names.initial_PO_ode45;
 
 % Continuation point
 label_old = coco_bd_labs(coco_bd_read(run_old), 'PO_PT');
 
-% Print to console
-fprintf("~~~ Stable Manifold: First Run ~~~ \n");
-fprintf('Calculate one of the stable-manifold branches \n');
-fprintf('Run name: %s \n', run_new);
-fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
+%--------------------------%
+%     Print to Console     %
+%--------------------------%
+fprintf(' =====================================================================\n');
+fprintf(' Stable Manifold of q: First Run\n');
+fprintf(' Calculate one of the stable-manifold branches \n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Previous run name       : %s\n', run_old);
+fprintf(' Previous solution label : %d\n', label_old);
+fprintf(' Continuation parameters : %s\n', 'W_seg1, T1, W_seg2');
+fprintf(' =====================================================================\n');
 
 %----------------------------%
 %     Calculate Solution     %
 %----------------------------%
 % Calculate dem tings
-data_isol = calc_stable_Wq_initial_solution(run_old, label_old);
+data_isol = calc_initial_solution_Wsq(run_old, label_old);
 
 %-------------------------------%
 %     Continuation Settings     %
@@ -395,7 +225,9 @@ prob = coco_set(prob, 'coll', 'NTST', 50);
 prob = coco_set(prob, 'coll', 'MXCL', false);
 
 % Set step size
-prob = coco_set(prob, 'cont', 'h_min', 5e-1, 'h', 1, 'h_max', 1e1);
+prob = coco_set(prob, 'cont', 'h_min', 1e-2);
+prob = coco_set(prob, 'cont', 'h', 1e0);
+prob = coco_set(prob, 'cont', 'h_max', 1e1);
 
 % Set PtMX steps
 PtMX = 50;
@@ -408,9 +240,7 @@ prob = coco_set(prob, 'cont', 'NPR', 10);
 %     Setup Continuation     %
 %----------------------------%
 % Continue periodic orbits
-prob = ode_isol2po(prob, 'PO_stable', funcs.field{:}, ...
-                   data_isol.tbp_PO, data_isol.xbp_PO, ...
-                   data_isol.pnames, data_isol.p);
+prob = odepo2po(prob, 'PO_stable', run_old, '', label_ol);
 
 % Add collocation trajectory segment for stable manifold
 prob = ode_isol2coll(prob, 'W1', funcs.field{:}, ...
@@ -427,7 +257,7 @@ prob = ode_ep2ep(prob, 'x0', run_old, label_old);
 %     Apply Boundary Conditions     %
 %-----------------------------------%
 % Glue parameters and apply boundary condition
-prob = apply_Wq_conditions(prob, bcs_funcs, data_isol.eps);
+prob = apply_boundary_conditions_Wsq(prob, bcs_funcs, data_isol.eps);
 
 %------------------------%
 %     Add CoCo Event     %
@@ -460,18 +290,25 @@ plot_orbit_and_Wq_solution(run_new, label_plot);
 %     Run Name     %
 %------------------%
 % Current run name
-run_names.stable_manifold2 = 'run07_stable_manifold_seg2';
+run_names.stable_manifold2 = 'run03_stable_manifold_seg2';
 run_new = run_names.stable_manifold2;
 run_old = run_names.stable_manifold1;
 
 % Previous solution label
 label_old = coco_bd_labs(coco_bd_read(run_old), 'Del1');
 
-% Print to console
-fprintf("~~~ Stable Manifold: Second Run ~~~ \n");
-fprintf('Calculate one of the stable-manifold branches \n');
-fprintf('Run name: %s \n', run_new);
-fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
+%--------------------------%
+%     Print to Console     %
+%--------------------------%
+fprintf(' =====================================================================\n');
+fprintf(' Stable Manifold of q: Second Run\n');
+fprintf(' Calculate the other stable-manifold branch\n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Previous run name       : %s\n', run_old);
+fprintf(' Previous solution label : %d\n', label_old);
+fprintf(' Continuation parameters : %s\n', 'W_seg2, T2, W_seg1');
+fprintf(' =====================================================================\n');
 
 %-------------------------------%
 %     Continuation Settings     %
@@ -489,7 +326,9 @@ prob = coco_set(prob, 'coll', 'NTST', 50);
 prob = coco_set(prob, 'coll', 'MXCL', false);
 
 % Set step size
-prob = coco_set(prob, 'cont', 'h_min', 5e-1, 'h', 1, 'h_max', 1e1);
+prob = coco_set(prob, 'cont', 'h_min', 1e-2);
+prob = coco_set(prob, 'cont', 'h', 1e-1);
+prob = coco_set(prob, 'cont', 'h_max', 1e1);
 
 % Set PtMX steps
 PtMX = 50;
@@ -521,7 +360,7 @@ prob = ode_ep2ep(prob, 'x0', run_old, label_old);
 eps = chart.x(data.eps_idx);
 
 % Glue parameters and apply boundary condition
-prob = apply_Wq_conditions(prob, bcs_funcs, eps);
+prob = apply_boundary_conditions_Wsq(prob, bcs_funcs, eps);
 
 %------------------------%
 %     Add CoCo Event     %
@@ -554,18 +393,25 @@ plot_orbit_and_Wq_solution(run_new, label_plot);
 %     Run Name     %
 %------------------%
 % Current run name
-run_names.close_eps = 'run08_stable_manifold_close_eps';
+run_names.close_eps = 'run04_stable_manifold_close_eps';
 run_new = run_names.close_eps;
 run_old = run_names.stable_manifold2;
 
 % Previous solution label
 label_old = coco_bd_labs(coco_bd_read(run_old), 'Del2') ;
 
-% Print to console
-fprintf("~~~ Stable Manifold: Third Run ~~~ \n");
-fprintf('Close the initial distance eps \n');
-fprintf('Run name: %s \n', run_new);
-fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
+%--------------------------%
+%     Print to Console     %
+%--------------------------%
+fprintf(' =====================================================================\n');
+fprintf(' Stable Manifold of q: Third Run\n');
+fprintf(' Close the initial distance eps\n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Previous run name       : %s\n', run_old);
+fprintf(' Previous solution label : %d\n', label_old);
+fprintf(' Continuation parameters : %s\n', 'eps, T1, T2');
+fprintf(' =====================================================================\n');
 
 %-------------------------------%
 %     Continuation Settings     %
@@ -583,7 +429,9 @@ prob = coco_set(prob, 'coll', 'NTST', 50);
 prob = coco_set(prob, 'coll', 'MXCL', false);
 
 % Set step size
-prob = coco_set(prob, 'cont', 'h_min', 1e-2, 'h', 1e-1, 'h_max', 5e-1);
+prob = coco_set(prob, 'cont', 'h_min', 1e-2);
+prob = coco_set(prob, 'cont', 'h', 1e-1);
+prob = coco_set(prob, 'cont', 'h_max', 5e-1);
 
 % Set PtMX steps
 PtMX = 200;
@@ -615,7 +463,7 @@ prob = ode_ep2ep(prob, 'x0', run_old, label_old);
 eps = chart.x(data.eps_idx);
 
 % Glue parameters and apply boundary condition
-prob = apply_Wq_conditions(prob, bcs_funcs, eps);
+prob = apply_boundary_conditions_Wsq(prob, bcs_funcs, eps);
 
 %------------------------%
 %     Add CoCo Event     %
