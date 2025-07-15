@@ -72,7 +72,7 @@ xdim = length(x0);
 funcs.field = yamada_symbolic();
 
 % Boundary conditions: Eigenvalues and eigenvectors
-bcs_funcs.bcs_eig = {@bcs_eig};
+bcs_funcs.bcs_eig = {@bcs_eig_PO};
 
 % Boundary conditions: Initial condition
 bcs_funcs.bcs_initial = {@bcs_W_PO_initial};
@@ -159,7 +159,7 @@ prob = ode_isol2ep(prob, 'x0', funcs.field{:}, ...
 %     Apply Boundary Conditions and Settings     %
 %------------------------------------------------%
 % Glue parameters and apply boundary condition
-prob = glue_parameters_PO(prob);
+prob = glue_parameters_PO(prob, true);
 
 %-------------------------%
 %     Add COCO Events     %

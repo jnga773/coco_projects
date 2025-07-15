@@ -70,7 +70,7 @@ xdim = length(x0);
 funcs.field = yamada_symbolic();
 
 % Boundary conditions: Eigenvalues and eigenvectors
-bcs_funcs.bcs_eig = {@bcs_eig};
+bcs_funcs.bcs_eig = {@bcs_eig_q};
 
 % Boundary conditions: Initial condition
 bcs_funcs.bcs_initial = {@bcs_Wq_initial};
@@ -240,7 +240,7 @@ prob = coco_set(prob, 'cont', 'NPR', 10);
 %     Setup Continuation     %
 %----------------------------%
 % Continue periodic orbits
-prob = odepo2po(prob, 'PO_stable', run_old, '', label_ol);
+prob = ode_po2po(prob, 'PO_stable', run_old, '', label_old);
 
 % Add collocation trajectory segment for stable manifold
 prob = ode_isol2coll(prob, 'W1', funcs.field{:}, ...

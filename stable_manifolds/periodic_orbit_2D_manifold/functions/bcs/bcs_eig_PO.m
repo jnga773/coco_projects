@@ -1,5 +1,5 @@
-function [data_in, y_out] = bcs_eig(prob_in, data_in, u_in)
-  % [data_in, y_out] = bcs_eig(prob_in, data_in, u_in)
+function [data_in, y_out] = bcs_eig_PO(prob_in, data_in, u_in)
+  % [data_in, y_out] = bcs_eig_PO(prob_in, data_in, u_in)
   % 
   % COCO compatible encoding for the boundary conditions of the eigenvalues and
   % eigenvectors of the monodromy matrix. Ensures they are eigenvectors and

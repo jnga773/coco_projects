@@ -1,4 +1,4 @@
-function prob_out = glue_parameters_PO(prob_in)
+function prob_out = glue_parameters_PO(prob_in, floquet)
   % prob_out = glue_parameters_PO(prob_in)
   %
   % Glue the parameters of the EP segments and PO segment together 
@@ -19,6 +19,14 @@ function prob_out = glue_parameters_PO(prob_in)
   % See Also
   % --------
   % coco_get_func_data, coco_add_glue
+
+  %-------------------%
+  %     Arguments     %
+  %-------------------%
+  arguments
+    prob_in struct
+    floquet logical = false % Optional argument to add Floquet bundle parameters
+  end
 
   %---------------%
   %     Input     %
@@ -50,6 +58,23 @@ function prob_out = glue_parameters_PO(prob_in)
   prob = coco_add_glue(prob, 'glue_p1', uidx(maps.p_idx), uidx1(maps1.p_idx));
   prob = coco_add_glue(prob, 'glue_p2', uidx(maps.p_idx), uidx2(maps2.p_idx));
   prob = coco_add_glue(prob, 'glue_p3', uidx(maps.p_idx), uidx3(maps3.p_idx));
+
+  %------------------------%
+  %     Floquet Bundle     %
+  %------------------------%
+  if floquet
+    % Read index data for the Floquet bundle
+    [data_var, uidx_var] = coco_get_func_data(prob, 'PO_stable.po.orb.coll.var', 'data', 'uidx');
+    % Index mapping
+    maps_var = data_var.coll_var;
+    % Add variational problem matrix parameters
+    prob = coco_add_pars(prob, 'pars_var_unstable', ...
+                        uidx_var(maps_var.v0_idx,:), ...
+                        {'var1', 'var2', 'var3', ...
+                          'var4', 'var5', 'var6', ...
+                          'var7', 'var8', 'var9'});
+  end
+
 
   %----------------%
   %     Output     %
