@@ -1,6 +1,8 @@
-%-------------------------------------------------------------------------%
+%=========================================================================%
 %%                    LORENTZ MODEL (Floquet Bundle)                     %%
-%-------------------------------------------------------------------------%
+%=========================================================================%
+% lorenz_floquet_bundle.m
+%
 % This is a rewrite of the example in Section 10.2.2 of "Recipes for
 % Continuation" by Harry Dankowicz and Frank Schilder. In the book they use
 % the older 'po' and 'coll' toolboxes. Here, I have rewritten them using the
@@ -9,6 +11,37 @@
 % Here we compute the Floquet bundle from the monodromy matrix. We compute
 % the moonodromy matrix from the append variational problem with the
 % added '-var' option in the ode_HB2po call.
+%
+% CODE OVERVIEW:
+% run01_initial_EP
+%     Continue an equilibrium point until we reach a branching point using
+%     the 'EP' toolbox, ode_isol2ep.
+%
+% run02_branching_point
+%     Continue from the branching point until a Hopf bifurcation is detected,
+%     with ode_bp2ep, or ode_ep2ep with the 'branch' set to 'switch' with
+%     prob = coco_set(prob, 'cont', 'branch', 'switch').
+%
+% run03_hopf_bifurcation_PO
+%     From the Hopf bifurcation, we compute a family of periodic orbit with
+%     ode_HB2po.
+%
+% run04_PO_with_floquet
+%    The family of periodic orbits is computed again, with ode_po2po. This
+%    time, we set the option:
+%         ode_po2po(prob, run_old, label_old, '-var', eye(3))
+%    which also sets up a variational problem. With this set, we then define
+%    3^2 parameters for the flow matrix. From this, we can compute the
+%    monodromy matrix, which we input into the 'bcs_eig' function, to compute
+%    and continue its eigenvalues.
+%
+% REFERENCES:
+%    - COCO documentation: https://sourceforge.net/projects/cocotools/
+%    - Recipes for Continuation by Harry Dankowicz and Frank Schilder
+%
+% AUTHOR:
+%    Jacob Ngaha (j.ngaha@auckland.ac.nz)
+%=========================================================================%
 
 % Clear plots
 close all;
@@ -21,10 +54,6 @@ clc;
 addpath('./functions/');
 % Add boundary condition functions to path
 addpath('./boundary_conditions/');
-
-% Save figures switch
-% save_figure = true;
-save_figure = false;
 
 %--------------------%
 %     Parameters     %
