@@ -63,10 +63,6 @@ funcs.field = winfree_symbolic();
 % bcs_funcs.bcs_PO = {@bcs_PO};
 bcs_funcs.bcs_PO = bcs_PO_symbolic();
 
-% Boundary conditions: Period
-% bcs_funcs.bcs_T = {@bcs_T};
-bcs_funcs.bcs_T = bcs_T_symbolic();
-
 % Adjoint equations: Functions (for floquet_mu and floquet_wnorm)
 % funcs.VAR = {@VAR};
 funcs.VAR = VAR_symbolic();
@@ -95,18 +91,24 @@ bcs_funcs.bcs_VAR = bcs_VAR_symbolic();
 %     Run Name     %
 %------------------%
 % Current run name
-run_names.initial_PO = 'run01_initial_PO';
-run_new = run_names.initial_PO;
+run_names.initial_PO_ODE45 = 'run01_initial_PO';
+run_new = run_names.initial_PO_ODE45;
 
-% Print to console
-fprintf('~~~ Initial Periodic Orbit: First Run ~~~\n');
-fprintf('Solve for initial solution of a periodic orbit\n')
-fprintf('Run name: %s\n', run_new);
+%--------------------------%
+%     Print to Console     %
+%--------------------------%
+fprintf(' =====================================================================\n');
+fprintf(' Initial Periodic Orbit: First Run\n');
+fprintf(' Find new periodic orbit\n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Continuation parameters : %s\n', 'a, omega');
+fprintf(' =====================================================================\n');
 
 %------------------------------------%
 %     Calculate Initial Solution     %
 %------------------------------------%
-data_isol = calc_initial_solution_PO(p0, funcs);
+data_ode45 = calc_initial_solution_ODE45([10; 10], p0, funcs.field);
 
 %-------------------------------%
 %     Continuation Settings     %
@@ -114,8 +116,8 @@ data_isol = calc_initial_solution_PO(p0, funcs);
 % Set up the COCO problem
 prob = coco_prob();
 
-% % The value of 10 for 'NAdapt' implied that the trajectory discretisation
-% % is changed adaptively ten times before the solution is accepted.
+% The value of 10 for 'NAdapt' implied that the trajectory discretisation
+% is changed adaptively ten times before the solution is accepted.
 prob = coco_set(prob, 'coll', 'NTST', 30);
 
 % Set adaptive t mesh
@@ -136,11 +138,11 @@ prob = coco_set(prob, 'cont', 'norm', inf);
 %----------------------------%
 % Continue periodic orbit from initial solution
 prob = ode_isol2po(prob, '', funcs.field{:}, ...
-                   data_isol.t, data_isol.x, pnames, data_isol.p);
+                   data_ode45.t, data_ode45.x, pnames, p0);
 
-% Add segment for EP continuations
+% Add equilibrium points for non trivial steady states
 prob = ode_isol2ep(prob, 'x0', funcs.field{1}, ...
-                   [0.0; 0.0], data_isol.p);
+                   data_ode45.x0, p0);
 
 % Glue parameters
 prob = glue_parameters_PO(prob);
@@ -170,23 +172,30 @@ coco(prob, run_new, [], 1, {'a', 'omega'}, [-2.0, 2.0]);
 run_names.initial_PO_COLL = 'run02_initial_periodic_orbit';
 run_new = run_names.initial_PO_COLL;
 % Which run this continuation continues from
-run_old = run_names.initial_PO;
+run_old = run_names.initial_PO_ODE45;
 
 % Continuation point
 label_old = coco_bd_labs(coco_bd_read(run_old), 'PO_PT');
 label_old = label_old(1);
 
-% Print to console
-fprintf("~~~ Initial Periodic Orbit: Second Run ~~~ \n");
-fprintf('Find new periodic orbit \n');
-fprintf('Run name: %s \n', run_new);
-fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
+%--------------------------%
+%     Print to Console     %
+%--------------------------%
+fprintf(' =====================================================================\n');
+fprintf(' Initial Periodic Orbit: Second Run\n');
+fprintf(' Rotate periodic orbit\n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Previous run name       : %s\n', run_old);
+fprintf(' Previous solution label : %d\n', label_old);
+fprintf(' Continuation parameters : %s\n', 'a, omega');
+fprintf(' =====================================================================\n');
 
 %----------------------------%
 %     Calculate Solution     %
 %----------------------------%
 % Calculate dem tings
-data_soln = rotate_solution_PO(run_old, label_old);
+data_PO = calc_initial_solution_PO(run_old, label_old);
 
 %----------------------------%
 %     Setup Continuation     %
@@ -212,7 +221,7 @@ prob = coco_set(prob, 'cont', 'NPR', 10);
 
 % Set initial guess to 'coll'
 prob = ode_isol2coll(prob, 'initial_PO', funcs.field{:}, ...
-                     data_soln.t, data_soln.x, pnames, data_soln.p);
+                     data_PO.t, data_PO.x, data_PO.pnames, data_PO.p);
 
 % Add equilibrium points for non trivial steady states
 prob = ode_ep2ep(prob, 'x0', run_old, label_old);
@@ -222,6 +231,7 @@ prob = ode_ep2ep(prob, 'x0', run_old, label_old);
 %------------------------------------------------%
 % Glue parameters and apply boundary condition
 prob = apply_boundary_conditions_PO(prob, bcs_funcs.bcs_PO);
+% prob = apply_boundary_conditions_PO(prob, {@bcs_PO});
 
 %------------------------%
 %     Add COCO Event     %
@@ -250,41 +260,53 @@ save_data_PO(run_new, label_plot, './data_mat/initial_PO.mat');
 plot_initial_periodic_orbit();
 
 %=========================================================================%
-%%            Compute Floquet Bundle at Zero Phase Point (mu)            %%
+%%               Compute Floquet Bundle at Zero Phase Point              %%
 %=========================================================================%
 % We now add the adjoint function and Floquet boundary conditions to
 % compute the adjoint (left or right idk) eigenvectors and eigenvalues.
 % This will give us the perpendicular vector to the tangent of the periodic
 % orbit. However, this will only be for the eigenvector corresponding to
-% the eigenvalue \mu = 1. Hence, here we continue in \mu (mu_s) until
-% mu_s = 1.
+% the eigenvalue \mu = 1.
+
+%-------------------------------------------------------------------------%
+%%                     Compute Stable Eigenvalue 1.0                     %%
+%-------------------------------------------------------------------------%
+% Starting from an initial zero vector, we continue in mu until the stable
+% eigenvalue is 1.0
 
 %------------------%
 %     Run Name     %
 %------------------%
 % Current run name
-run_names.compute_floquet_1 = 'run03_compute_floquet_bundle_1_mu';
-run_new = run_names.compute_floquet_1;
+run_names.VAR_mu = 'run03_VAR_mu';
+run_new = run_names.VAR_mu;
 % Which run this continuation continues from
 run_old = run_names.initial_PO_COLL;
 
 % Continuation point
 label_old = coco_bd_labs(coco_bd_read(run_old), 'PO_PT');
 
-% Print to console
-fprintf("~~~ Floquet Bundle: First Run ~~~ \n");
-fprintf('Calculate Floquet bundle (mu) \n');
-fprintf('Run name: %s \n', run_new);
-fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
+%--------------------------%
+%     Print to Console     %
+%--------------------------%
+fprintf(' =====================================================================\n');
+fprintf(' Floquet Bundle: First Run\n');
+fprintf(' Calculate stable Floquet bundle eigenvalue\n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Previous run name       : %s\n', run_old);
+fprintf(' Previous solution label : %d\n', label_old);
+fprintf(' Continuation parameters : %s\n', 'mu_s, w_norm');
+fprintf(' =====================================================================\n');
 
 %--------------------------%
 %     Calculate Things     %
 %--------------------------%
-data_adjoint = calc_initial_solution_VAR(run_old, label_old);
+data_VAR = calc_initial_solution_VAR(run_old, label_old);
 
-%------------------------------------%
-%     Setup Floquet Continuation     %
-%------------------------------------%
+%----------------------------%
+%     Setup Continuation     %
+%----------------------------%
 % Set up the COCO problem
 prob = coco_prob();
 
@@ -306,8 +328,10 @@ prob = coco_set(prob, 'coll', 'MXCL', 'off');
 
 % Add segment as initial solution
 prob = ode_isol2coll(prob, 'adjoint', funcs.VAR{:}, ...
-                     data_adjoint.t0, data_adjoint.x0, ...
-                     data_adjoint.pnames, data_adjoint.p0);
+                     data_VAR.t0, data_VAR.x0, ...
+                     data_VAR.pnames, data_VAR.p0);
+
+                  
 
 %------------------------------------------------%
 %     Apply Boundary Conditions and Settings     %
@@ -325,10 +349,10 @@ prob = coco_add_event(prob, 'mu=1', 'mu_s', 1.0);
 %     Run COCO     %
 %------------------%
 % Run COCO continuation
-coco(prob, run_new, [], 1, {'mu_s', 'w_norm', 'T'} , [0.0, 1.1]);
+coco(prob, run_new, [], 1, {'mu_s', 'w_norm'} , [0.0, 1.1]);
 
 %-------------------------------------------------------------------------%
-%%          Compute Floquet Bundle at Zero Phase Point (w_norm)          %%
+%%                  Grow Orthogonal Stable Eigenvector                   %%
 %-------------------------------------------------------------------------%
 % Having found the solution (branching point 'BP') corresponding to
 % \mu = 1, we can continue in the norm of the vector w (w_norm), until the
@@ -339,24 +363,31 @@ coco(prob, run_new, [], 1, {'mu_s', 'w_norm', 'T'} , [0.0, 1.1]);
 %     Run Name     %
 %------------------%
 % Current run name
-run_names.compute_floquet_2 = 'run04_compute_floquet_bundle_2_w';
-run_new = run_names.compute_floquet_2;
+run_names.VAR_wnorm = 'run04_VAR_wnorm';
+run_new = run_names.VAR_wnorm;
 % Which run this continuation continues from
-run_old = run_names.compute_floquet_1;
+run_old = run_names.VAR_mu;
 
 % Continuation point
 label_old = coco_bd_labs(coco_bd_read(run_old), 'BP');
 label_old = label_old(1);
 
-% Print to console
-fprintf("~~~ Floquet Bundle: Second Run ~~~ \n");
-fprintf('Calculate Floquet bundle (w_norm) \n');
-fprintf('Run name: %s \n', run_new);
-fprintf('Continuing from point %d in run: %s \n', label_old, run_old);
+%--------------------------%
+%     Print to Console     %
+%--------------------------%
+fprintf(' =====================================================================\n');
+fprintf(' Floquet Bundle: Second Run\n');
+fprintf(' Grow norm of stable Floquet bundle vector\n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Previous run name       : %s\n', run_old);
+fprintf(' Previous solution label : %d\n', label_old);
+fprintf(' Continuation parameters : %s\n', 'mu_s, w_norm');
+fprintf(' =====================================================================\n');
 
-%------------------------------------%
-%     Setup Floquet Continuation     %
-%------------------------------------%
+%----------------------------%
+%     Setup Continuation     %
+%----------------------------%
 % Set up the COCO problem
 prob = coco_prob();
 
@@ -364,7 +395,9 @@ prob = coco_prob();
 prob = coco_set(prob, 'cont', 'PtMX', 250);
 
 % Continue coll from previous branching point
-prob = ode_BP2coll(prob, 'adjoint', run_old, label_old);
+% prob = ode_BP2coll(prob, 'adjoint', run_old, label_old);
+prob = ode_coll2coll(prob, 'adjoint', run_old, label_old);
+prob = coco_set(prob, 'cont', 'branch', 'switch');
 
 %------------------------------------------------%
 %     Apply Boundary Conditions and Settings     %

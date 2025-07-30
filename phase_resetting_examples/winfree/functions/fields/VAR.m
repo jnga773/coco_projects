@@ -29,8 +29,6 @@ function y_out = fhn_VAR(u_in, p_in)
   mu_s  = parameters(pdim+1, :);
   % Norm w-vector
   wnorm = parameters(pdim+2, :);
-  % Period
-  T     = parameters(pdim+3, :);
 
   %--------------------------%
   %     Calculate Things     %
@@ -42,7 +40,7 @@ function y_out = fhn_VAR(u_in, p_in)
   J = field_DFDX(x, p_system);
 
   % Vector field equations
-  vec_eqn = T .* vec_field;
+  vec_eqn = vec_field;
 
   % Length of u_in
   ll = length(x(1, :));
@@ -57,7 +55,7 @@ function y_out = fhn_VAR(u_in, p_in)
     J_transpose = transpose(J(:, :, i));
 
     % Adjoint equation
-    adj_eqn(:, i) = -T(i) * J_transpose * w(:, i);
+    adj_eqn(:, i) = -J_transpose * w(:, i);
 
   end
 

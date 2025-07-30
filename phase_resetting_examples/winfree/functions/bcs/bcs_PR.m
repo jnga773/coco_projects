@@ -22,19 +22,19 @@ function [data_in, y_out] = bcs_PR(prob_in, data_in, u_in)
   % u_in : array (floats?)
   %     Total u-vector of the continuation problem. This function
   %     only utilises the following (as imposed by coco_add_func):
-  %            u_in(1:3)   - x(0) of segment 1,
-  %            u_in(4:6)   - w(0) of segment 1,
-  %            u_in(7:9)   - x(0) of segment 2,
-  %            u_in(10:12) - w(0) of segment 2,
-  %            u_in(13:15) - x(0) of segment 3,
-  %            u_in(16:18) - x(0) of segment 4,
-  %            u_in(19:21) - x(1) of segment 1,
-  %            u_in(22:24) - w(1) of segment 1,
-  %            u_in(25:27) - x(1) of segment 2,
-  %            u_in(28:30) - w(1) of segment 2,
-  %            u_in(31:33) - x(1) of segment 3,
-  %            u_in(34:36) - x(1) of segment 4,
-  %            u_in(37:50) - Parameters.
+  %            u_in(1:2)   - x(0) of segment 1,
+  %            u_in(3:4)   - w(0) of segment 1,
+  %            u_in(5:6)   - x(0) of segment 2,
+  %            u_in(7:8)   - w(0) of segment 2,
+  %            u_in(9:10)  - x(0) of segment 3,
+  %            u_in(11:12) - x(0) of segment 4,
+  %            u_in(13:14) - x(1) of segment 1,
+  %            u_in(15:16) - w(1) of segment 1,
+  %            u_in(17:18) - x(1) of segment 2,
+  %            u_in(19:20) - w(1) of segment 2,
+  %            u_in(21:22) - x(1) of segment 3,
+  %            u_in(23:24) - x(1) of segment 4,
+  %            u_in(25:34) - Parameters.
   %
   % Output
   % ----------
@@ -98,8 +98,6 @@ function [data_in, y_out] = bcs_PR(prob_in, data_in, u_in)
   p_system     = parameters(1 : pdim);
 
   % Phase resetting parameters
-  % Period of the segment
-  % T             = parameters(p_maps.T);
   % Integer for period
   % k             = parameters(p_maps.k);
   % Phase where perturbation starts

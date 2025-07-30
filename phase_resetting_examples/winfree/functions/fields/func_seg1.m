@@ -41,22 +41,20 @@ function y_out = func_seg1(x_in, p_in)
   p_system     = p_in(1:pdim, :);
 
   % Phase resetting parameters
-  % Period of the segment
-  T             = p_in(pdim+1, :);
   % Integer for period
-  % k             = p_in(pdim+2, :);
+  % k             = p_in(pdim+1, :);
   % Phase where perturbation starts
-  % theta_old     = p_in(pdim+3, :);
+  % theta_old     = p_in(pdim+2, :);
   % Phase where segment comes back to \Gamma
-  theta_new     = p_in(pdim+4, :);
+  theta_new     = p_in(pdim+3, :);
   % Stable Floquet eigenvalue
-  % mu_s          = p_in(pdim+5, :);
+  % mu_s          = p_in(pdim+4, :);
   % Distance from pertured segment to \Gamma
-  % eta           = p_in(pdim+6, :);
+  % eta           = p_in(pdim+5, :);
   % Size of perturbation
-  % A_perturb     = p_in(pdim+7, :);
+  % A_perturb     = p_in(pdim+6, :);
   % Angle of perturbation
-  % theta_perturb = p_in(pdim+8, :);
+  % theta_perturb = p_in(pdim+7, :);
 
   %--------------------------%
   %     Calculate Things     %
@@ -65,7 +63,7 @@ function y_out = func_seg1(x_in, p_in)
   vec_field = field(x_vec, p_system);
   
   % Save to array
-  vec_eqn = T .* theta_new .* vec_field;
+  vec_eqn = theta_new .* vec_field;
 
   % Calculate adjoint equations
   % Jacobian at the zero-phase point
@@ -81,7 +79,7 @@ function y_out = func_seg1(x_in, p_in)
     temp(:, :, i) = -theta_new(i) * J_transpose(:, :, i);
 
     % Save to array
-    adj_eqn(:, :, i) = T(i) * temp(:, :, i) * w_vec(:, i);
+    adj_eqn(:, :, i) = temp(:, :, i) * w_vec(:, i);
   end
 
   %----------------%

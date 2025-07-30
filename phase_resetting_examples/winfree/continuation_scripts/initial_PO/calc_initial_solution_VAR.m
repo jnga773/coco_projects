@@ -42,8 +42,6 @@ function data_out = calc_initial_solution_VAR(run_in, label_in)
 
   % Temporal data
   tbp = sol.tbp;
-  % Normalise tbp
-  tbp = tbp / T;
 
   % Initial parameter space
   p_OG = sol.p;
@@ -55,19 +53,19 @@ function data_out = calc_initial_solution_VAR(run_in, label_in)
   w_norm = 0.0;
 
   % Extend the parameter space
-  p_out = [p_OG; mu_s; w_norm; T];
+  p_out = [p_OG; mu_s; w_norm];
 
   % Extend the parameter names
   pnames_out = pnames_OG;
   pnames_out{pdim+1} = 'mu_s';
   pnames_out{pdim+2} = 'w_norm';
-  pnames_out{pdim+3} = 'T';
 
   %----------------%
   %     Output     %
   %----------------%
   % Initial temporal solution
   data_out.t0 = tbp;
+  data_out.T  = T;
 
   % Initial state solution. First two columns correspond to the
   % periodic orbit, the third column corresponds to the eigenvalue

@@ -30,11 +30,8 @@ function bcs_coco_out = bcs_VAR_symbolic()
   % Adjoint parameters
   syms mu_s w_norm
 
-  % Period
-  syms T
-
   % Floquet parameters
-  p_flo   = [mu_s; w_norm; T];
+  p_flo   = [mu_s; w_norm];
 
   % Combined vector
   uvec    = [w_init;

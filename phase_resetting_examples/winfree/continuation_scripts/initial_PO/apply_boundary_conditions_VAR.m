@@ -36,7 +36,7 @@ function prob_out = apply_boundary_conditions_VAR(prob_in, bcs_funcs_in)
 
   % Dimensions of original structure
   xdim = 0.5 * data.xdim;
-  pdim = data.pdim - 3;
+  pdim = data.pdim - 2;
 
   % Save dimensions to be called in boundary condition functions
   dim_data.xdim = xdim;
@@ -55,17 +55,7 @@ function prob_out = apply_boundary_conditions_VAR(prob_in, bcs_funcs_in)
   prob = coco_add_func(prob, 'bcs_adjoint', bcs_funcs_in.bcs_VAR{:}, dim_data, 'zero', 'uidx', ...
                        uidx([maps.x0_idx(xdim+1:end); ...
                              maps.x1_idx(xdim+1:end); ...
-                             maps.p_idx(end-2:end)]));
-
-  % Apply period boundary condition
-  prob = coco_add_func(prob, 'bcs_T', bcs_funcs_in.bcs_T{:}, [], 'zero', ...
-                       'uidx', uidx(maps.T_idx));
-
-  %--------------------%
-  %     Parameters     %
-  %--------------------%
-  % Add segment period as parameter
-  % prob = coco_add_pars(prob, 'par_T', uidx(maps.T_idx), 'T_seg', 'active');
+                             maps.p_idx(end-1:end)]));
 
   %----------------%
   %     Output     %

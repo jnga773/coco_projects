@@ -28,7 +28,7 @@ function bcs_coco_out = bcs_isochron_symbolic()
   %            u_in(19:20) - w(1) of segment 2,
   %            u_in(21:22) - x(1) of segment 3,
   %            u_in(23:24) - x(1) of segment 4,
-  %            u_in(25:35) - Parameters.
+  %            u_in(25:34) - Parameters.
   %
   % Output
   % ----------
@@ -84,10 +84,10 @@ function bcs_coco_out = bcs_isochron_symbolic()
   p_sys = [a; omega];
 
   % Phase resetting parameters
-  syms T k theta_old theta_new
+  syms k theta_old theta_new
   syms mu_s eta
   syms d_x d_y
-  p_PR = [T; k; theta_old; theta_new;
+  p_PR = [k; theta_old; theta_new;
           mu_s; eta;
           d_x; d_y];
 

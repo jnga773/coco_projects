@@ -1,4 +1,26 @@
-function save_isochron_data(isochron_run_in, filename_in)
+function save_data_isochron_scan(isochron_run_in, filename_in)
+  % save_data_isochron_scan(isochron_run_in, filename_in)
+  %
+  % Saves the isochron data from the specified run directory into a .mat file.
+  %
+  % Input
+  % -----
+  % isochron_run_in : string
+  %     Name of the run directory containing the isochron data.
+  % filename_in : string
+  %     Name of the output .mat file to save the data to.
+  %
+  % See Also
+  % --------
+  % coco_bd_read, coco_bd_col, coco_bd_val
+
+  %-------------------%
+  %     Arguments     %
+  %-------------------%
+  arguments
+    isochron_run_in string
+    filename_in string
+  end
 
   %-----------------------------%
   %     Read Data: Isochrons    %
@@ -53,4 +75,5 @@ function save_isochron_data(isochron_run_in, filename_in)
   %---------------------------------------%
   % Save data
   save(filename_in, 'iso1_data', 'iso2_data', 'iso3_data', 'parameters');
+
 end
