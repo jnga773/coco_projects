@@ -1,4 +1,4 @@
-function run_PR_continuation(run_new, run_old, label_old, data_PR, bcs_funcs, continuation_parameters, parameter_range, options)
+function run_PR_continuation(run_new, run_old, label_old, data_PR, bcs_funcs, pcont, prange, options)
   % run_PR_continuation(run_new, run_old, label_old, data_PR, bcs_funcs, options)
   %
   % Run the phase resetting continuation problem, from label_old solution in
@@ -16,9 +16,9 @@ function run_PR_continuation(run_new, run_old, label_old, data_PR, bcs_funcs, co
   %     Data structure containing the initial conditions for the trajectory segments.
   % bcs_funcs : list of functions
   %     Structure containing boundary condition functions.
-  % continuation_parameters : cell
+  % pcont : cell
   %     Cell array containing additional parameters for the continuation.
-  % parameter_range : cell
+  % prange : cell
   %     Cell array containing the ranges for the continuation parameters.
   % SP_parameter : array
   %     Parameter to save SP solutions for
@@ -60,8 +60,8 @@ function run_PR_continuation(run_new, run_old, label_old, data_PR, bcs_funcs, co
     label_old double
     data_PR struct
     bcs_funcs struct
-    continuation_parameters cell = {'theta_old', 'theta_new', 'eta', 'mu_s'};
-    parameter_range cell = {[0.0, 2.0], [], [-1e-4, 1e-2], [0.99, 1.01]};
+    pcont cell = {'theta_old', 'theta_new', 'eta', 'mu_s'};
+    prange cell = {[0.0, 2.0], [], [-1e-4, 1e-2], [0.99, 1.01]};
 
     % Optional arguments
     options.SP_parameter string = ''
@@ -163,6 +163,6 @@ function run_PR_continuation(run_new, run_old, label_old, data_PR, bcs_funcs, co
   %     Run Continuation     %
   %--------------------------%
   % Run COCO continuation
-  coco(prob, run_new, [], 1, continuation_parameters, parameter_range);
+  coco(prob, run_new, [], 1, pcont, prange);
 
 end
