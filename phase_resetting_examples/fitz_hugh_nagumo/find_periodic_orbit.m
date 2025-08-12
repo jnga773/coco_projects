@@ -21,10 +21,9 @@ addpath('./functions/bcs/');
 addpath('./functions/symcoco/');
 
 % Add continuation scripts
-addpath('./continuation_scripts/initial_PO/');
-
+addpath('./continuation_scripts/');
 % Add plotting scripts
-addpath('./plotting_scripts/initial_PO');
+addpath('./plotting_scripts');
 
 %--------------------%
 %     Parameters     %
@@ -363,9 +362,6 @@ label_plot = label_plot(1);
 % Plot solution
 plot_initial_PO(run_new, label_plot);
 
-% % Save solution to .mat to be read in phase resetting codes
-% save_data_PO(run_new, label_plot, './solution_PO.mat');
-
 %=========================================================================%
 %%               Compute Floquet Bundle at Zero Phase Point              %%
 %=========================================================================%
@@ -527,14 +523,6 @@ prob = coco_add_event(prob, 'NORM1', 'w_norm', 1.0);
 %------------------%
 % Run COCO continuation
 coco(prob, run_new, [], 1, {'w_norm', 'mu_s', 'T'}, [0.0, 1.1]);
-
-%-------------------%
-%     Save Data     %
-%-------------------%
-% label_plot = coco_bd_labs(coco_bd_read(run_new), 'NORM1');
-
-% % Save solution to .mat to be read in phase resetting codes
-% save_data_VAR(run_new, label_plot, './solution_VAR.mat');
 
 %=========================================================================%
 %                               END OF FILE                               %

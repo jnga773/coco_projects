@@ -21,12 +21,9 @@ addpath('./functions/bcs/');
 addpath('./functions/symcoco/');
 
 % Add continuation scripts
-addpath('./continuation_scripts/initial_PO/');
-addpath('./continuation_scripts/phase_reset/');
-
+addpath('./continuation_scripts/');
 % Add plotting scripts
-addpath('./plotting_scripts/initial_PO/');
-addpath('./plotting_scripts/isochrons/');
+addpath('./plotting_scripts');
 
 %--------------------%
 %     Parameters     %
