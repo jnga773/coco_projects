@@ -30,29 +30,34 @@ function prob_out = apply_boundary_conditions_VAR(prob_in, bcs_funcs_in)
   %-------------------------------%
   % Read function data and u-vector indices
   [data, uidx] = coco_get_func_data(prob, 'adjoint.coll', 'data', 'uidx');
+  % Read index data equilibrium points
+  [data_x0, uidx_x0] = coco_get_func_data(prob, 'x0.ep',   'data', 'uidx');
 
   % Read index mappings from data
   maps = data.coll_seg.maps;
+  % maps_var = data_var.coll_var;
+  maps_x0 = data_x0.ep_eqn;
 
   % Dimensions of original structure
-  xdim = 0.5 * data.xdim;
-  pdim = data.pdim - 2;
+  xdim = data_x0.xdim;
+  pdim = data_x0.pdim;
 
-  % Save dimensions to be called in boundary condition functions
-  dim_data.xdim = xdim;
-  dim_data.pdim = pdim;
+  %-------------------------%
+  %     Glue Parameters     %
+  %-------------------------%
+  prob = coco_add_glue(prob, 'glue_p1', uidx(maps.p_idx(1:pdim)), uidx_x0(maps_x0.p_idx));
 
   %-----------------------------------%
   %     Apply Boundary Conditions     %
   %-----------------------------------%
   % Apply periodic orbit boundary conditions
-  prob = coco_add_func(prob, 'bcs_po', bcs_funcs_in.bcs_PO{:}, dim_data, 'zero', 'uidx', ...
+  prob = coco_add_func(prob, 'bcs_po', bcs_funcs_in.bcs_PO{:}, data_x0, 'zero', 'uidx', ...
                        uidx([maps.x0_idx(1:xdim); ...
                              maps.x1_idx(1:xdim); ...
                              maps.p_idx(1:pdim)]));
 
   % Apply adjoint boundary conditions
-  prob = coco_add_func(prob, 'bcs_adjoint', bcs_funcs_in.bcs_VAR{:}, dim_data, 'zero', 'uidx', ...
+  prob = coco_add_func(prob, 'bcs_adjoint', bcs_funcs_in.bcs_VAR{:}, data_x0, 'zero', 'uidx', ...
                        uidx([maps.x0_idx(xdim+1:end); ...
                              maps.x1_idx(xdim+1:end); ...
                              maps.p_idx(end-1:end)]));

@@ -36,8 +36,12 @@ function bcs_coco_out = bcs_isochron_symbolic()
   %     List of CoCo-ified symbolic functions for the boundary conditions
   %     Jacobian, and Hessian.
 
+  %============================================================================%
+  %                          CHANGE THESE PARAMETERS                           %
+  %============================================================================%
   % State-space dimension
   xdim = 2;
+  pdim = 2;
   % Symbolic vector field function
   field = @winfree_symbolic_field;
 
@@ -80,8 +84,7 @@ function bcs_coco_out = bcs_isochron_symbolic()
   %     Input: Parameters     %
   %---------------------------%
   % System parameters
-  syms a omega
-  p_sys = [a; omega];
+  p_sys = sym('p', [pdim, 1]);
 
   % Phase resetting parameters
   syms k theta_old theta_new
@@ -91,6 +94,18 @@ function bcs_coco_out = bcs_isochron_symbolic()
           mu_s; eta;
           d_x; d_y];
 
+  % Perturbation vector
+  d_vec = [d_x; d_y];
+
+  % If xdim == 3, add another dimension to the perturbation vector
+  if xdim == 3
+    % Update parameter vector
+    syms d_z
+    p_PR = [p_PR; d_z];
+
+    % Perturbation vector
+    d_vec = [d_x; d_y; d_z];
+  end
   %============================================================================%
   %                         BOUNDARY CONDITION ENCODING                        %
   %============================================================================%
@@ -120,20 +135,23 @@ function bcs_coco_out = bcs_isochron_symbolic()
   %-------------------%
   %     Segment 4     %
   %-------------------%
-  % Perturbation vector
-  d_vec = [d_x; d_y];
-
   % Boundary Conditions - Segment 4
   bcs_seg4_1 = x0_seg4 - x0_seg3 - d_vec;
   bcs_seg4_2 = dot(x1_seg4 - x0_seg2, w0_seg2);
-  % bcs_seg4_3 = norm(x1_seg4 - x0_seg2) - eta;
 
   % The last boundary condition has a singularity in the Jacobian for the initial
   % vector, as the norm is zero. We then redfine this boundary condition as the
   % square.
+  % bcs_seg4_3 = norm(x1_seg4 - x0_seg2) - eta;
+  
+  % Calculate difference vector
   diff_vec = x1_seg4 - x0_seg2;
-  bcs_seg4_3 = (diff_vec(1) ^ 2) + (diff_vec(2) ^ 2) - eta;
-  % bcs_seg4_3 = ((x1_seg4(1) - x0_seg2(1)) ^ 2) + ((x1_seg4(2) - x0_seg2(2)) ^ 2) + ((x1_seg4(3) - x0_seg2(3)) ^ 2) - eta;
+  % Cycle through and calculate the boundary condition
+  % bcs_seg4_3 = (diff_vec(1) ^ 2) + (diff_vec(2) ^ 2) - eta;
+  bcs_seg4_3 = -eta;
+  for idx = 1 : xdim
+    bcs_seg4_3 = bcs_seg4_3 + (diff_vec(idx) ^ 2);
+  end
 
   %============================================================================%
   %                                   OUTPUT                                   %

@@ -1,8 +1,23 @@
 function F_out = winfree_symbolic_field(x_in, p_in)
   % F_out = winfree_symbolic_field(x_in, p_in)
   %
-  % Symbolic notation of the Winfree vector field in the transformed axes.
+  % Symbolic notation of the Winfree model vector field.
+  %
+  % Parameters
+  % ----------
+  % x_in : array, float
+  %     State vector.
+  % p_in : array, float
+  %     Array of parameter values
+  %
+  % Returns
+  % -------
+  % F_out : array, float
+  %     Symbolic vector field.
 
+  %---------------%
+  %     Input     %
+  %---------------%
   % Grab the state-space variables from x_in
   x1    = x_in(1);
   x2    = x_in(2);

@@ -1,16 +1,32 @@
-function plot_initial_periodic_orbit()
-  % plot_initial_periodic_orbit()
+function plot_initial_PO(run_in, label_in)
+  % plot_initial_PO(run_in, label_in)
   %
   % Plots the initial periodic orbit from the 'coll' toolbox run.
   % along with the three stationary points ('q', 'p', and 'o'),
   % and the one-dimensional stable manifold of point 'q'. The data
   % is read from the file './data/initial_PO.mat'.
+  %
+  % Parameters
+  % ----------
+  % run_in : character
+  %    String identifier for the COCO run.
+  % label_in : double
+  %    Index label for the solution to plot
 
   %-------------------%
   %     Read Data     %
   %-------------------%
-  % Load data matrix
-  load('./data_mat/initial_PO.mat');
+  % Read 'COLL' data
+  [sol_PO, data_PO] = coll_read_solution('initial_PO', run_in, label_in);
+
+  % State-space solution
+  xbp_PO = sol_PO.xbp;
+
+  % Read 'EP' data
+  [sol_EP, data_EP] = ep_read_solution('x0', run_in, label_in);
+
+  % Equilibrium point
+  x0 = sol_EP.x;
 
   %--------------------------------------%
   %     Plot Initial Periodic Orbits     %

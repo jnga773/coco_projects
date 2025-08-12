@@ -1,9 +1,21 @@
 function y_out = winfree(x_in, p_in)
   % y_out = winfree(x_in, p_in)
   %
-  % Winfree model in Eculiadean coordinates, from 
+  % Winfree model in Euclidean coordinates, from 
   % "A Continuation Approach to Computing Phase Resetting Curves" by
   % Langfield et al.
+  %
+  % Parameters
+  % ----------
+  % x_in : array, float
+  %     State vector.
+  % p_in : array, float
+  %     Array of parameter values
+  %
+  % Returns
+  % -------
+  % y_out : array, float
+  %     Array of the vector field encoding.
 
   %--------------------------%
   %     Input Parameters     %

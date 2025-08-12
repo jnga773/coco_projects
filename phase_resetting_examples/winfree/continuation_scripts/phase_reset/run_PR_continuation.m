@@ -60,8 +60,8 @@ function run_PR_continuation(run_new, run_old, label_old, data_PR, bcs_funcs, co
     label_old double
     data_PR struct
     bcs_funcs struct
-    continuation_parameters cell
-    parameter_range cell
+    continuation_parameters cell = {'theta_old', 'theta_new', 'eta', 'mu_s'};
+    parameter_range cell = {[0.0, 2.0], [], [-1e-4, 1e-2], [0.99, 1.01]};
 
     % Optional arguments
     options.SP_parameter string = ''
@@ -135,6 +135,12 @@ function run_PR_continuation(run_new, run_old, label_old, data_PR, bcs_funcs, co
   prob = ode_coll2coll(prob, 'seg3', run_old, label_old);
   % Segment 4
   prob = ode_coll2coll(prob, 'seg4', run_old, label_old);
+
+  %-----------------------------------------%
+  %     Continue from Equilibrium Point     %
+  %-----------------------------------------%
+  % Add EP segment
+  prob = ode_ep2ep(prob, 'x0', run_old, label_old);
 
   %------------------------------------------------%
   %     Apply Boundary Conditions and Settings     %

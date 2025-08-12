@@ -1,9 +1,13 @@
 function F_coco_out = winfree_symbolic()
   % F_coco_out = winfree_symbolic()
   %
-  % Creates a CoCo-compatible function encoding of the
-  % Yamada model vector field using MATLAB's 
-  % Symbolic Toolbox.
+  % Creates a CoCo-compatible function encoding of the Winfree model vector
+  % field using SymCOCO.
+  %
+  % Returns
+  % -------
+  % F_coco_out : array, float
+  %     Cell of all of the functions and derivatives.
 
   %---------------%
   %     Input     %
@@ -13,11 +17,11 @@ function F_coco_out = winfree_symbolic()
   syms a omega
 
   % Variable arrays
-  xvec = [x1; x2];
-  pvec = [a; omega];
+  x_vec = [x1; x2];
+  p_vec = [a; omega];
   
   % Symbolic vector field
-  F_vec = winfree_symbolic_field(xvec, pvec);
+  F_vec = winfree_symbolic_field(x_vec, p_vec);
 
   %-----------------%
   %     SymCOCO     %
@@ -26,7 +30,7 @@ function F_coco_out = winfree_symbolic()
   filename_out = './functions/symcoco/F_winfree';
 
   % COCO Function encoding
-  F_coco = sco_sym2funcs(F_vec, {xvec, pvec}, {'x', 'p'}, 'filename', filename_out);
+  F_coco = sco_sym2funcs(F_vec, {x_vec, p_vec}, {'x', 'p'}, 'filename', filename_out);
 
   % List of functions
   func_list = {F_coco(''), ...

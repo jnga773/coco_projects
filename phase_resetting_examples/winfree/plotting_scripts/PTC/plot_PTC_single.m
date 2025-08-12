@@ -1,4 +1,4 @@
-function plot_phase_transition_curve(run_in)
+function plot_PTC_single(run_in)
   %-------------------%
   %     Read Data     %
   %-------------------%

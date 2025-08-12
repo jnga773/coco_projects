@@ -3,6 +3,18 @@ function J_out = winfree_DFDX(x_in, p_in)
   %
   % COCO encoding of the state-space Jacobian of the Winfree model
   % vector field.
+  %
+  % Parameters
+  % ----------
+  % x_in : array, float
+  %     State vector.
+  % p_in : array, float
+  %     Array of parameter values
+  %
+  % Returns
+  % -------
+  % J_out : array, float
+  %     Matrix of the state-space derivative Jacobian.
 
   %--------------------------%
   %     Input Parameters     %

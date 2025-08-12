@@ -55,7 +55,7 @@ function [data_in, y_out] = bcs_isochron(prob_in, data_in, u_in)
   % Parameter maps
   p_maps = data_in.p_maps;
   % Vector field
-  field = @winfree;
+  field  = data_in.fhan;
 
   %============================================================================%
   %                              INPUT PARAMETERS                              %
@@ -112,13 +112,21 @@ function [data_in, y_out] = bcs_isochron(prob_in, data_in, u_in)
   mu_s          = parameters(p_maps.mu_s);
   % Distance from pertured segment to \Gamma
   eta           = parameters(p_maps.eta);
-  % Size of perturbation
-  % A_perturb     = parameters(p_maps.A_perturb);
-  % Angle of perturbation
-  % theta_perturb = parameters(p_maps.theta_perturb);
   % Perturbation vector components
   d_x = parameters(p_maps.d_x);
   d_y = parameters(p_maps.d_y);
+
+  % Perturbation vector
+  d_vec = [d_x; d_y];
+
+  % If xdim == 3, add another dimension to the perturbation vector
+  if xdim == 3
+    % Update parameter vector
+    d_z = parameters(p_maps.d_z);
+
+    % Perturbation vector
+    d_vec = [d_x; d_y; d_z];
+  end
 
   %============================================================================%
   %                         BOUNDARY CONDITION ENCODING                        %
@@ -150,9 +158,6 @@ function [data_in, y_out] = bcs_isochron(prob_in, data_in, u_in)
   %-------------------%
   %     Segment 4     %
   %-------------------%
-  % Perturbation vector
-  d_vec = [d_x; d_y];
-
   % Boundary Conditions - Segment 4
   bcs_seg4_1 = x0_seg4 - x0_seg3 - d_vec;
   bcs_seg4_2 = dot(x1_seg4 - x0_seg2, w0_seg2);

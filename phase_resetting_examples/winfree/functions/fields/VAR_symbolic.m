@@ -1,55 +1,86 @@
-function F_coco_out = fhn_VAR_symbolic()
-  % F_coco_out = fhn_VAR_symbolic()
+function F_coco_out = VAR_symbolic()
+  % F_coco_out = VAR_symbolic()
   %
   % Creates a CoCo-compatible function encoding for the adjoint
   % equation that computes the Floquet bundle.
+  %
+  % Returns
+  % -------
+  % F_coco_out : cell of function handles
+  %    List of CoCo-encoded symbolic functions for the segment 1 vector field,
+  %    and its Jacobians and Hessians.
 
+  %============================================================================%
+  %                          CHANGE THESE PARAMETERS                           %
+  %============================================================================%
   % State space dimension
-  xdim = 2;
-  % Vector field
+  xdim  = 2;
+  pdim  = 2;
+  % Symbolic vector field function
   field = @winfree_symbolic_field;
 
-  %---------------%
-  %     Input     %
-  %---------------%
+  %============================================================================%
+  %                              INPUT PARAMETERS                              %
+  %============================================================================%
+  %--------------------------------------%
+  %     Input: State-Space Variables     %
+  %--------------------------------------%
   % State-space variables
-  xvec = sym('x', [xdim, 1]);
-
+  x_vec = sym('x', [xdim, 1]);
   % Adjoint equation variables
-  wvec = sym('w', [xdim, 1]);
+  w_vec = sym('w', [xdim, 1]);
 
+  %---------------------------%
+  %     Input: Parameters     %
+  %---------------------------%
   % System parameters
-  syms a omega
-  p_sys = [a; omega];
+  p_sys = sym('p', [pdim, 1]);
 
   % Phase resetting parameters
   syms mu_s w_norm
 
-  % Total vectors
-  uvec = [xvec; wvec];
-  pvec = [p_sys; mu_s; w_norm];
-
-  %--------------------------%
-  %     Calculate Things     %
-  %--------------------------%
+  %============================================================================%
+  %                           VECTOR FIELD ENCODING                            %
+  %============================================================================%
+  %----------------------%
+  %     Vector Field     %
+  %----------------------%
   % Vector field
-  F_vec = field(xvec, p_sys);
+  F_vec = field(x_vec, p_sys);
 
   % Vector field equations
-  F_eqn = F_vec;
+  vec_eqn = F_vec;
 
+  %-----------------------------%
+  %     Variational Problem     %
+  %-----------------------------%
   % Calculate tranpose of Jacobian at point xvec
-  J_T = transpose(jacobian(F_vec, xvec));
+  J_T = transpose(jacobian(F_vec, x_vec));
 
   % Adjoint equation
-  adj_eqn = -J_T * wvec;
+  adj_eqn = -J_T * w_vec;
 
+  %============================================================================%
+  %                                   OUTPUT                                   %
+  %============================================================================%
+  %-----------------------%
+  %     Total Vectors     %
+  %-----------------------%
+  % Total vectors
+  u_vec = [x_vec, w_vec];
+  p_vec = [p_sys; mu_s; w_norm];
+  
   % Total equation
-  F_seg = [F_eqn; adj_eqn];
+  F_seg = [vec_eqn; adj_eqn];
 
-  % CoCo-compatible encoding
+  %-----------------%
+  %     SymCOCO     %
+  %-----------------%
+  % Filename for output functions
   filename_out = './functions/symcoco/F_VAR';
-  F_coco = sco_sym2funcs(F_seg, {uvec, pvec}, {'x', 'p'}, 'filename', filename_out);
+
+  % COCO Function encoding
+  F_coco = sco_sym2funcs(F_seg, {u_vec, p_vec}, {'x', 'p'}, 'filename', filename_out);
 
   %----------------%
   %     Output     %
@@ -58,8 +89,7 @@ function F_coco_out = fhn_VAR_symbolic()
   func_list = {F_coco(''), ...
                F_coco('x'), F_coco('p'), ...
                F_coco({'x', 'x'}), F_coco({'x', 'p'}), F_coco({'p', 'p'})};
-  
-  % Output
+
   F_coco_out = func_list;
 
 end

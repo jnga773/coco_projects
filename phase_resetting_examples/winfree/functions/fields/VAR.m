@@ -1,69 +1,96 @@
-function y_out = fhn_VAR(u_in, p_in)
-  % y_out = fhn_VAR(u_in, p_in)
+function y_out = VAR(u_in, p_in)
+  % y_out = VAR(u_in, p_in)
   %
-  % Adjoint function to calculate the Floquet bundle I guess?
-  
-  % Original vector field dimensions (CHANGE THESE)
-  xdim = 2;
-  pdim = 2;
+  % Creates a CoCo-compatible function encoding for the adjoint
+  % equation that computes the Floquet bundle.
+  %
+  % Parameters
+  % ----------
+  % x_in : array, double
+  %     State vector for the periodic orbit (x) and perpendicular
+  %     vector (w).
+  % p_in : array, double
+  %     Array of parameter values
+  %
+  % Returns
+  % -------
+  % y_out : array, double
+  %     Array of the vector field of the periodic orbit segment
+  %     and the corresponding adjoint equation for the perpendicular
+  %     vector.
+
+  %============================================================================%
+  %                          CHANGE THESE PARAMETERS                           %
+  %============================================================================%
+  % State space dimension
+  xdim       = 2;
+  pdim       = 2;
   % Original vector field function
   field      = @winfree;
   field_DFDX = @winfree_DFDX;
 
-  %---------------%
-  %     Input     %
-  %---------------%
+  %============================================================================%
+  %                              INPUT PARAMETERS                              %
+  %============================================================================%
+  %--------------------------------------%
+  %     Input: State-Space Variables     %
+  %--------------------------------------%
   % State vector
-  x          = u_in(1 : xdim, :);
-
+  x_vec = u_in(1 : xdim, :);
   % Adjoint perpendicular vector (I think)
-  w          = u_in(xdim+1 : 2*xdim, :);
-
-  % Parameters
-  parameters = p_in(1:end, :);
+  w_vec = u_in(xdim+1 : 2*xdim, :);
   
+  %---------------------------%
+  %     Input: Parameters     %
+  %---------------------------%
   % System parameters
-  p_system = parameters(1:pdim, :);
+  p_sys = p_in(1:pdim, :);
 
   % Floquet eigenvalue
-  mu_s  = parameters(pdim+1, :);
+  mu_s  = p_in(pdim+1, :);
   % Norm w-vector
-  wnorm = parameters(pdim+2, :);
+  wnorm = p_in(pdim+2, :);
 
-  %--------------------------%
-  %     Calculate Things     %
-  %--------------------------%
+  %============================================================================%
+  %                           VECTOR FIELD ENCODING                            %
+  %============================================================================%
+  %----------------------%
+  %     Vector Field     %
+  %----------------------%
   % Vector field
-  vec_field = field(x, p_system);
+  vec_field = field(x_vec, p_sys);
 
   % Jacobian
-  J = field_DFDX(x, p_system);
+  J = field_DFDX(x_vec, p_sys);
 
   % Vector field equations
   vec_eqn = vec_field;
 
-  % Length of u_in
-  ll = length(x(1, :));
+  %-----------------------------%
+  %     Variational Problem     %
+  %-----------------------------%
+  % Calculate adjoint equations
+  % Jacobian at the zero-phase point
+  J = field_DFDX(x_vec, p_sys);
 
-  % Empty array for adjoint equations
-  adj_eqn = zeros(xdim, ll);
+  % Cycle through each variable in x1 and calculate
+  % adjoint equation components
+  for i = 1 : numel(x_vec(1, :))
+    % Transpose of Jacobian
+    J_transpose(:, :, i) = transpose(J(:, :, i));
 
-  % The adjoint equation
-  % d/dt w = -J^T(\gamma) * w
-  for i = 1 : ll
-    % Transpose of the Jacobian
-    J_transpose = transpose(J(:, :, i));
+    % Calculate some things
+    temp(:, :, i) = -J_transpose(:, :, i);
 
-    % Adjoint equation
-    adj_eqn(:, i) = -J_transpose * w(:, i);
-
+    % Save to array
+    adj_eqn(:, :, i) = temp(:, :, i) * w_vec(:, i);
   end
 
-  %----------------%
-  %     Output     %
-  %----------------%  
+  %============================================================================%
+  %                                   OUTPUT                                   %
+  %============================================================================%
   % Vector field
-  y_out(1:xdim, :) = vec_eqn(:, :);
+  y_out(1:xdim, :)        = vec_eqn(:, :);
   % Adjoint equation
   y_out(xdim+1:2*xdim, :) = adj_eqn(:, :);
 

@@ -69,6 +69,14 @@ function prob_out = apply_boundary_conditions_PR(prob_in, data_in, bcs_funcs_in,
   maps3 = data3.coll_seg.maps;
   maps4 = data4.coll_seg.maps;
 
+  % Read index data equilibrium points
+  [data_x0, uidx_x0] = coco_get_func_data(prob, 'x0.ep',   'data', 'uidx');
+  % Grab the indices from the equilibrium point
+  maps_x0 = data_x0.ep_eqn;
+
+  % Add function handle to dim_data
+  dim_data.fhan = data_x0.fhan;
+
   %----------------------------------------%
   %     Glue Trajectory Segment Things     %
   %----------------------------------------%
@@ -80,6 +88,8 @@ function prob_out = apply_boundary_conditions_PR(prob_in, data_in, bcs_funcs_in,
   prob = coco_add_glue(prob, 'glue_pars', ...
                        [uidx1(maps1.p_idx); uidx1(maps1.p_idx); uidx1(maps1.p_idx)], ...
                        [uidx2(maps2.p_idx); uidx3(maps3.p_idx); uidx4(maps4.p_idx)]);
+  % "Glue" segment and equilibrium point parameters together
+  prob = coco_add_glue(prob, 'glue_x0', uidx1(maps1.p_idx(1:pdim)), uidx_x0(maps_x0.p_idx));
 
   %---------------------------------%
   %     Add Boundary Conditions     %

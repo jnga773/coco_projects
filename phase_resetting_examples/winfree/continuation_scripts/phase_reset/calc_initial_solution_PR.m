@@ -1,5 +1,5 @@
 function data_out = calc_initial_solution_PR(run_in, label_in, k_in, theta_perturb_in, options)
-  % data_out = calc_initial_solution_PR(run_in, label_in, k_in, theta_perturb_in, options)
+  % data_out = calc_initial_solution_PR(run_in, label_in, k_in, theta_perturb_in, phi_perturb_in)
   %
   % Reads data from previous run solution and calculates the 
   % initial conditions for the various different trajectory segments.
@@ -14,6 +14,8 @@ function data_out = calc_initial_solution_PR(run_in, label_in, k_in, theta_pertu
   %     Integer for the periodicity.
   % theta_perturb_in : float
   %     Angle at which perturbation is applied.
+  % phi_perturb_in : float
+  %     Azimuthal angle at which perturbation is applied.
   % isochron : boolean
   %     Flag to determine if the isochron is being calculated.
   %
@@ -48,25 +50,34 @@ function data_out = calc_initial_solution_PR(run_in, label_in, k_in, theta_pertu
     label_in double
     k_in double             = 25
     theta_perturb_in double = 0.0
-    phi_perturb_in double   = 0.0
 
     % Optional arguments
-    options.isochron        = false;
+    options.phi_perturb_in double = 0.5;
+    options.isochron              = false;
   end
 
   %-----------------------------------------------------------------------%
   %                            Read Data                                  %
   %-----------------------------------------------------------------------%
-  %-------------------%
-  %     Read Data     %
-  %-------------------%
-  % Read COCO solution
-  [sol, data] = coll_read_solution('adjoint', run_in, label_in);
+  %--------------------------------------%
+  %     Read Data: Equilibrium Point     %
+  %--------------------------------------%
+  % Read previous solution
+  [sol_EP, data_EP] = ep_read_solution('x0', run_in, label_in);
+
+  % Equilibrium point
+  x0 = sol_EP.x;
 
   % Original dimension of state space
-  xdim = 0.5 * data.xdim;
+  xdim = data_EP.xdim;
   % Original dimension of parameter space
-  pdim = data.pdim - 2;
+  pdim = data_EP.pdim;
+
+  %-----------------------------------%
+  %     Read Data: Periodic Orbit     %
+  %-----------------------------------%
+  % Read COCO solution
+  [sol, data] = coll_read_solution('adjoint', run_in, label_in);
 
   % State space solution
   xbp_read = sol.xbp;
@@ -118,9 +129,12 @@ function data_out = calc_initial_solution_PR(run_in, label_in, k_in, theta_pertu
   A_perturb     = 0.0;
   % Angle at which perturbation is applied?
   theta_perturb = theta_perturb_in;
+  % Azimuthal angle at which perturbation is applied
+  phi_perturb   = options.phi_perturb_in;
   % Perturbation vector components
   d_x           = 0.0;
   d_y           = 0.0;
+  d_z           = 0.0;
 
   %---------------------------%
   %     Parameter Indices     %
@@ -137,9 +151,15 @@ function data_out = calc_initial_solution_PR(run_in, label_in, k_in, theta_pertu
   if ~options.isochron
     p_maps.A_perturb     = pdim + 6;
     p_maps.theta_perturb = pdim + 7;
+    if xdim == 3
+      p_maps.phi_perturb   = pdim + 8;
+    end
   else
     p_maps.d_x           = pdim + 6;
     p_maps.d_y           = pdim + 7;
+    if xdim == 3
+      p_maps.d_z           = pdim + 8;
+    end
   end
 
   %------------------------%
@@ -157,9 +177,15 @@ function data_out = calc_initial_solution_PR(run_in, label_in, k_in, theta_pertu
   if ~options.isochron
     p0_out(p_maps.A_perturb)     = A_perturb;
     p0_out(p_maps.theta_perturb) = theta_perturb;
+    if xdim == 3
+      p0_out(p_maps.phi_perturb)   = phi_perturb;
+    end
   else
     p0_out(p_maps.d_x)           = d_x;
     p0_out(p_maps.d_y)           = d_y;
+    if xdim == 3
+      p0_out(p_maps.d_z)           = d_z;
+    end
   end
 
   %-------------------------%
@@ -176,9 +202,15 @@ function data_out = calc_initial_solution_PR(run_in, label_in, k_in, theta_pertu
   if ~options.isochron
     pnames_PR{p_maps.A_perturb}     = 'A_perturb';
     pnames_PR{p_maps.theta_perturb} = 'theta_perturb';
+    if xdim == 3
+      pnames_PR{p_maps.phi_perturb}   = 'phi_perturb';
+    end
   else
     pnames_PR{p_maps.d_x}           = 'd_x';
     pnames_PR{p_maps.d_y}           = 'd_y';
+    if xdim == 3
+      pnames_PR{p_maps.d_z}           = 'd_z';
+    end
   end
 
   %----------------------------------------------%
@@ -225,6 +257,9 @@ function data_out = calc_initial_solution_PR(run_in, label_in, k_in, theta_pertu
   % Original vector field dimensions
   data_out.xdim       = xdim;
   data_out.pdim       = pdim;
+
+  % Equilibrium point
+  data_out.x0         = x0;
 
   % Parameters
   data_out.p0         = p0_out;

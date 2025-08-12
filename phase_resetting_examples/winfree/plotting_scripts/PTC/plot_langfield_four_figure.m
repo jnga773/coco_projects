@@ -17,9 +17,8 @@ function plot_langfield_four_figure(run_in)
   % Plot labels
   SP_labels = sort(coco_bd_labs(bd, 'SP'));
 
-  SP1_point = [coco_bd_val(bd, SP_labels(1), 'A_perturb'); coco_bd_val(bd, SP_labels(1), 'theta_new')];
-  SP2_point = [coco_bd_val(bd, SP_labels(2), 'A_perturb'); coco_bd_val(bd, SP_labels(2), 'theta_new')];
-  SP3_point = [coco_bd_val(bd, SP_labels(3), 'A_perturb'); coco_bd_val(bd, SP_labels(3), 'theta_new')];
+  SP_A = coco_bd_val(bd, SP_labels, 'A_perturb');
+  SP_N = coco_bd_val(bd, SP_labels, 'theta_new');
 
   %-------------------%
   %     Plot Data     %
@@ -47,13 +46,7 @@ function plot_langfield_four_figure(run_in)
   plot(ax(1), A_perturb_data, theta_new_data, Color=colours(1, :));
 
   % Plot points
-  plot(ax(1), SP1_point(1), SP1_point(2), LineStyle='none', Marker='o', MarkerSize=10, ...
-       MarkerEdgeColor=colours(2, :), MarkerFaceColor=colours(2, :));
-       
-  plot(ax(1), SP2_point(1), SP2_point(2), LineStyle='none', Marker='o', MarkerSize=10, ...
-       MarkerEdgeColor=colours(2, :), MarkerFaceColor=colours(2, :));
-       
-  plot(ax(1), SP3_point(1), SP3_point(2), LineStyle='none', Marker='o', MarkerSize=10, ...
+  plot(ax(1), SP_A, SP_N, LineStyle='none', Marker='o', MarkerSize=10, ...
        MarkerEdgeColor=colours(2, :), MarkerFaceColor=colours(2, :));
 
   % Hold axes
@@ -96,7 +89,7 @@ function plot_langfield_four_figure(run_in)
   hold(ax(2), 'on');
 
   % Plot phase space solution
-  plot_phase_reset_phase_space_template(ax(2), run_in, SP_labels(1));
+  plot_PR_phase_template(ax(2), run_in, SP_labels(1));
 
   % Hold axes
   hold(ax(2), 'off');
@@ -111,7 +104,7 @@ function plot_langfield_four_figure(run_in)
   hold(ax(3), 'on');
 
   % Plot phase space solution
-  plot_phase_reset_phase_space_template(ax(3), run_in, SP_labels(2));
+  plot_PR_phase_template(ax(3), run_in, SP_labels(2));
 
   % Hold axes
   hold(ax(3), 'off');
@@ -126,9 +119,17 @@ function plot_langfield_four_figure(run_in)
   hold(ax(4), 'on');
 
   % Plot phase space solution
-  plot_phase_reset_phase_space_template(ax(4), run_in, SP_labels(3));
+  plot_PR_phase_template(ax(4), run_in, SP_labels(3));
 
   % Hold axes
   hold(ax(4), 'off');
+
+  for idx = 2 : 4
+    grid(ax(idx), 'on');
+    box(ax(idx), 'on');
+
+    xlim(ax(idx), [-1.05, 1.05]);
+    ylim(ax(idx), [-1.05, 1.05]);
+  end
 
 end

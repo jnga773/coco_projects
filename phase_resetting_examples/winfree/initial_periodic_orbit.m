@@ -231,7 +231,6 @@ prob = ode_ep2ep(prob, 'x0', run_old, label_old);
 %------------------------------------------------%
 % Glue parameters and apply boundary condition
 prob = apply_boundary_conditions_PO(prob, bcs_funcs.bcs_PO);
-% prob = apply_boundary_conditions_PO(prob, {@bcs_PO});
 
 %------------------------%
 %     Add COCO Event     %
@@ -252,12 +251,11 @@ coco(prob, run_new, [], 1, {'a', 'omega'});
 label_plot = coco_bd_labs(coco_bd_read(run_new), 'PO_PT');
 label_plot = label_plot(1);
 
-% Calculate stable manifold of saddle point 'q' and save data to .mat in 
-% ./data_mat/ directory
-save_data_PO(run_new, label_plot, './data_mat/initial_PO.mat');
-
 % Plot solution
-plot_initial_periodic_orbit();
+plot_initial_PO(run_new, label_plot);
+
+% % Save solution to .mat to be read in phase resetting codes
+% save_data_PO(run_new, label_plot, './solution_PO.mat');
 
 %=========================================================================%
 %%               Compute Floquet Bundle at Zero Phase Point              %%
@@ -328,10 +326,11 @@ prob = coco_set(prob, 'coll', 'MXCL', 'off');
 
 % Add segment as initial solution
 prob = ode_isol2coll(prob, 'adjoint', funcs.VAR{:}, ...
-                     data_VAR.t0, data_VAR.x0, ...
+                     data_VAR.tbp_init, data_VAR.xbp_init, ...
                      data_VAR.pnames, data_VAR.p0);
 
-                  
+% Add equilibrium points for non trivial steady states
+prob = ode_ep2ep(prob, 'x0', run_old, label_old);
 
 %------------------------------------------------%
 %     Apply Boundary Conditions and Settings     %
@@ -399,6 +398,9 @@ prob = coco_set(prob, 'cont', 'PtMX', 250);
 prob = ode_coll2coll(prob, 'adjoint', run_old, label_old);
 prob = coco_set(prob, 'cont', 'branch', 'switch');
 
+% Add equilibrium points for non trivial steady states
+prob = ode_ep2ep(prob, 'x0', run_old, label_old);
+
 %------------------------------------------------%
 %     Apply Boundary Conditions and Settings     %
 %------------------------------------------------%
@@ -422,8 +424,8 @@ coco(prob, run_new, [], 1, {'w_norm', 'mu_s', 'T'}, [0.0, 1.1]);
 %-------------------%
 label_plot = coco_bd_labs(coco_bd_read(run_new), 'NORM1');
 
-% Save solution to .mat to be read in phase resetting codes
-save_data_VAR(run_new, label_plot, './data_mat/solution_VAR.mat');
+% % Save solution to .mat to be read in phase resetting codes
+% save_data_VAR(run_new, label_plot, './solution_VAR.mat');
 
 %=========================================================================%
 %                               END OF FILE                               %
