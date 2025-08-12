@@ -43,13 +43,10 @@ function [data_in, y_out] = bcs_VAR(prob_in, data_in, u_in)
   w1     = u_in(xdim+1 : 2 * xdim);
 
   % Eigenvector
-  mu_s   = u_in(end-2);
+  mu_s   = u_in(end-1);
   
   % Norm of w
-  w_norm = u_in(end-1);
-
-  % Period
-  T      = u_in(end);
+  w_norm = u_in(end);
 
   %--------------------------%
   %     Calculate Things     %

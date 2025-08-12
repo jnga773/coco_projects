@@ -23,7 +23,8 @@ function plot_all_isochrons(run_in)
   hold(ax, 'on');
 
   % Plot base solution
-  plot_base_periodic_orbit(ax);
+  run_sub = {run_in, 'run_01'};
+  plot_base_periodic_orbit(ax, run_sub);
 
   % Read and plot isochrons
   template_plot_isochrons(ax, run_in)

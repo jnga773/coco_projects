@@ -28,7 +28,7 @@ function bcs_coco_out = bcs_PR_segs_symbolic()
   %            u_in(19:20) - w(1) of segment 2,
   %            u_in(21:22) - x(1) of segment 3,
   %            u_in(23:24) - x(1) of segment 4,
-  %            u_in(25:37) - Parameters.
+  %            u_in(25:34) - Parameters.
   %
   % Output
   % ----------
@@ -36,8 +36,12 @@ function bcs_coco_out = bcs_PR_segs_symbolic()
   %     List of CoCo-ified symbolic functions for the boundary conditions
   %     Jacobian, and Hessian.
 
+  %============================================================================%
+  %                          CHANGE THESE PARAMETERS                           %
+  %============================================================================%
   % State-space dimension
   xdim = 2;
+  pdim = 4;
   % Symbolic vector field function
   field = @fhn_symbolic_field;
 
@@ -80,16 +84,31 @@ function bcs_coco_out = bcs_PR_segs_symbolic()
   %     Input: Parameters     %
   %---------------------------%
   % System parameters
-  syms c a b z
-  p_sys = [c; a; b; z];
+  p_sys = sym('p', [pdim, 1]);
 
   % Phase resetting parameters
-  syms T k theta_old theta_new
+  syms k theta_old theta_new
   syms mu_s eta
   syms A_perturb theta_perturb
-  p_PR = [T; k; theta_old; theta_new;
+  p_PR = [k; theta_old; theta_new;
           mu_s; eta;
           A_perturb; theta_perturb];
+
+  % Perturbation vector
+  d_vec = [cos(theta_perturb * (2 * pi));
+           sin(theta_perturb* (2 * pi))];
+
+  % If xdim == 3, add another dimension to the perturbation vector
+  if xdim == 3
+    % Update parameter vector
+    syms phi_perturb
+    p_PR = [p_PR; phi_perturb];
+
+    % Perturbation vector
+    d_vec = [cos(theta_perturb* (2 * pi)) * sin(phi_perturb * pi);
+             sin(theta_perturb* (2 * pi)) * sin(phi_perturb) * pi;
+             cos(phi_perturb * pi)];
+  end
 
   %============================================================================%
   %                         BOUNDARY CONDITION ENCODING                        %
@@ -120,9 +139,6 @@ function bcs_coco_out = bcs_PR_segs_symbolic()
   %-------------------%
   %     Segment 4     %
   %-------------------%
-  d_vec = [cos(theta_perturb);
-           sin(theta_perturb)];
-
   % Boundary Conditions - Segment 4
   bcs_seg4_1 = x0_seg4 - x0_seg3 - (A_perturb * d_vec);
   bcs_seg4_2 = dot(x1_seg4 - x0_seg2, w0_seg2);
@@ -131,41 +147,51 @@ function bcs_coco_out = bcs_PR_segs_symbolic()
   % vector, as the norm is zero. We then redfine this boundary condition as the
   % square.
   % bcs_seg4_3 = norm(x1_seg4 - x0_seg2) - eta;
+  
+  % Calculate difference vector
   diff_vec = x1_seg4 - x0_seg2;
-  bcs_seg4_3 = (diff_vec(1) ^ 2) + (diff_vec(2) ^ 2) - eta;
+  % Cycle through and calculate the boundary condition
+  % bcs_seg4_3 = (diff_vec(1) ^ 2) + (diff_vec(2) ^ 2) - eta;
+  bcs_seg4_3 = -eta;
+  for idx = 1 : xdim
+    bcs_seg4_3 = bcs_seg4_3 + (diff_vec(idx) ^ 2);
+  end
 
   %============================================================================%
   %                                   OUTPUT                                   %
   %============================================================================%
+  %-----------------------%
+  %     Total Vectors     %
+  %-----------------------%
+  % Combined vector
+  u_vec   = [x0_seg1; w0_seg1; x0_seg2; w0_seg2; x0_seg3; x0_seg4;
+             x1_seg1; w1_seg1; x1_seg2; w1_seg2; x1_seg3; x1_seg4;
+             p_sys; p_PR];
+
+  % Boundary conditions vector
+  bcs_vec = [bcs_seg12_1;  bcs_seg12_2; bcs_seg12_3;
+             a_bcs_seg12_1; a_bcs_seg12_2; a_bcs_seg12_3;
+             bcs_seg3;
+             bcs_seg4_1; bcs_seg4_2; bcs_seg4_3];
+
   %-----------------%
   %     SymCOCO     %
   %-----------------%
-  % Combined vector
-  uvec = [x0_seg1; w0_seg1; x0_seg2; w0_seg2; x0_seg3; x0_seg4;
-          x1_seg1; w1_seg1; x1_seg2; w1_seg2; x1_seg3; x1_seg4;
-          p_sys; p_PR];
-
-  % Boundary conditions vector
-  bcs =  [bcs_seg12_1;  bcs_seg12_2; bcs_seg12_3;
-          a_bcs_seg12_1; a_bcs_seg12_2; a_bcs_seg12_3;
-          bcs_seg3;
-          bcs_seg4_1; bcs_seg4_2; bcs_seg4_3];
-
   % Filename for output functions
   filename_out = './functions/symcoco/F_bcs_PR';
 
   % COCO Function encoding
-  bcs_coco = sco_sym2funcs(bcs, {uvec}, {'u'}, 'filename', filename_out);
+  bcs_coco = sco_sym2funcs(bcs_vec, {u_vec}, {'u'}, 'filename', filename_out);
 
   % Function to "CoCo-ify" function outputs: [data_in, y_out] = f(prob_in, data_in, u_in)
   cocoify = @(func_in) @(prob_in, data_in, u_in) deal(data_in, func_in(u_in));
 
-  % List of functions
-  func_list = {cocoify(bcs_coco('')), cocoify(bcs_coco('u')), cocoify(bcs_coco({'u', 'u'}))};
-
   %----------------%
   %     Output     %
   %----------------%
+  % List of functions
+  func_list = {cocoify(bcs_coco('')), cocoify(bcs_coco('u')), cocoify(bcs_coco({'u', 'u'}))};
+
   bcs_coco_out = func_list;
 
 end

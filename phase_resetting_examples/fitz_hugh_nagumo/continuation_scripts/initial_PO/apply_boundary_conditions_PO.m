@@ -30,28 +30,28 @@ function prob_out = apply_boundary_conditions_PO(prob_in, bcs_PO_in)
   %     Read Data     %
   %-------------------%
   % Read index data for periodic orbit segment
-  [data, uidx] = coco_get_func_data(prob, 'initial_PO.coll', 'data', 'uidx');
+  [data_PO, uidx_PO] = coco_get_func_data(prob, 'initial_PO.coll', 'data', 'uidx');
 
   % Read index data for equilibrium points
-  [data1, uidx1] = coco_get_func_data(prob, 'x0.ep', 'data', 'uidx');
+  [data_x0, uidx_x0] = coco_get_func_data(prob, 'x0.ep', 'data', 'uidx');
 
   % Index mapping
-  maps     = data.coll_seg.maps;
-  maps1    = data1.ep_eqn;
+  maps_PO = data_PO.coll_seg.maps;
+  maps_x0 = data_x0.ep_eqn;
 
   %-------------------------%
   %     Glue Parameters     %
   %-------------------------%
-  prob = coco_add_glue(prob, 'glue_p1', uidx(maps.p_idx), uidx1(maps1.p_idx));
+  prob = coco_add_glue(prob, 'glue_p1', uidx_PO(maps_PO.p_idx), uidx_x0(maps_x0.p_idx));
 
   %-----------------------------%
   %     Boundary Conditions     %
   %-----------------------------%
   % Apply periodic orbit boundary conditions and special phase condition
-  prob = coco_add_func(prob, 'bcs_po', bcs_PO_in{:}, data, 'zero', 'uidx', ...
-                       uidx([maps.x0_idx(1:data.xdim); ...
-                             maps.x1_idx(1:data.xdim); ...
-                             maps.p_idx(1:data.pdim)]));
+  prob = coco_add_func(prob, 'bcs_po', bcs_PO_in{:}, data_PO, 'zero', 'uidx', ...
+                       uidx_PO([maps_PO.x0_idx; ...
+                                maps_PO.x1_idx; ...
+                                maps_PO.p_idx]));
   
   %----------------%
   %     Output     %

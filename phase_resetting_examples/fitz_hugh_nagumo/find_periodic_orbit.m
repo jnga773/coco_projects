@@ -1,5 +1,5 @@
 %=========================================================================%
-%                     WINFREE MODEL (Phase Resetting)                     %
+%            FITZ-HUGH-NAGUMO (Phase Resetting Periodic Orbit)            %
 %=========================================================================%
 % Doing an exmaple from this paper "A Continuation Approach to Calculating
 % Phase Resetting Curves" by Langfield et al.
@@ -22,31 +22,28 @@ addpath('./functions/symcoco/');
 
 % Add continuation scripts
 addpath('./continuation_scripts/initial_PO/');
+
 % Add plotting scripts
 addpath('./plotting_scripts/initial_PO');
 
 %--------------------%
 %     Parameters     %
 %--------------------%
-% Set parameters to the same thing as in the paper
-a = 0;
-omega = -0.5;
+% Parameters
+c = 2.5;
+a = 0.7;
+b = 0.8;
+z = -0.4;
 
 %-----------------------%
 %     Problem Setup     %
 %-----------------------%
-% Parameter names
-pnames = {'a', 'omega'};
+p0 = [c; a; b; z];
+pnames = {'c'; 'a'; 'b'; 'z'};
 
-% Initial parameter values
-p0 = [a; omega];
-
-% Initial state values
-x0 = [0; 0];
-
-% % Parameter ranges
-a_range = [-2.0, 2.0];
-omega_range = [-5.0, 5.0];
+% Initial state vector
+x0 = [0.9066; -0.2582];
+% x0 = [0.2729; 0.5339];
 
 % State dimensions
 pdim = length(p0);
@@ -56,8 +53,8 @@ xdim = length(x0);
 %     Functions Lists     %
 %-------------------------%
 % Vector field: Functions
-% funcs.field = {@winfree, @winfree_DFDX, @winfree_DFDP};
-funcs.field = winfree_symbolic();
+% funcs.field = {@fhn, @fhn_DFDX, @fhn_DFDP};
+funcs.field = fhn_symbolic();
 
 % Boundary conditions: Periodic orbit
 % bcs_funcs.bcs_PO = {@bcs_PO};
@@ -82,82 +79,193 @@ bcs_funcs.bcs_VAR = bcs_VAR_symbolic();
 % We then verify this solution using the 'COLL' toolbox.
 
 %-------------------------------------------------------------------------%
-%%                    Compute Initial Periodic Orbit                     %%
+%%                   Compute Initial Equilibrium Point                   %%
 %-------------------------------------------------------------------------%
-% We compute and continue an initial periodic orbit from a guess solution
-% found by using ode45.
+% We compute and continue the equilibrium point of the model using
+% the 'EP' toolbox constructor 'ode_isol2ep'.
 
 %------------------%
 %     Run Name     %
 %------------------%
 % Current run name
-run_names.initial_PO_ODE45 = 'run01_initial_PO_ODE45';
-run_new = run_names.initial_PO_ODE45;
+run_names.initial_EP = 'run01_initial_EP';
+run_new = run_names.initial_EP;
 
 %--------------------------%
 %     Print to Console     %
 %--------------------------%
 fprintf(' =====================================================================\n');
 fprintf(' Initial Periodic Orbit: First Run\n');
-fprintf(' Find new periodic orbit\n');
+fprintf(' Initial continuation from equilibrium point x0\n');
 fprintf(' ---------------------------------------------------------------------\n');
 fprintf(' This run name           : %s\n', run_new);
-fprintf(' Continuation parameters : %s\n', 'a, omega');
+fprintf(' Continuation parameters : %s\n', 'c');
 fprintf(' =====================================================================\n');
-
-%------------------------------------%
-%     Calculate Initial Solution     %
-%------------------------------------%
-data_ode45 = calc_initial_solution_ODE45([10; 10], p0, funcs.field);
-
-%-------------------------------%
-%     Continuation Settings     %
-%-------------------------------%
-% Set up the COCO problem
-prob = coco_prob();
-
-% The value of 10 for 'NAdapt' implied that the trajectory discretisation
-% is changed adaptively ten times before the solution is accepted.
-prob = coco_set(prob, 'coll', 'NTST', 30);
-
-% Set adaptive t mesh
-prob = coco_set(prob, 'cont', 'NAdapt', 1);
-
-% Turn off MXCL?
-prob = coco_set(prob, 'coll', 'MXCL', false);
-
-% Set upper bound of continuation steps in each direction along solution
-PtMX = 100;
-prob = coco_set(prob, 'cont', 'PtMX', PtMX);
-
-% Set norm
-prob = coco_set(prob, 'cont', 'norm', inf);
 
 %----------------------------%
 %     Setup Continuation     %
 %----------------------------%
-% Continue periodic orbit from initial solution
-prob = ode_isol2po(prob, '', funcs.field{:}, ...
-                   data_ode45.t, data_ode45.x, pnames, p0);
+% Set up COCO problem
+prob = coco_prob();
 
-% Add equilibrium points for non trivial steady states
-prob = ode_isol2ep(prob, 'x0', funcs.field{1}, ...
-                   data_ode45.x0, p0);
+% Set upper bound of continuation steps in each direction along solution
+prob = coco_set(prob, 'cont', 'PtMX', 50);
 
-% Glue parameters
-prob = glue_parameters_PO(prob);
-
-%------------------------%
-%     Add COCO Event     %
-%------------------------%
-% Add event for a = 0
-prob = coco_add_event(prob, 'PO_PT', 'a', 0.0);
+% Set up isol2ep problem
+prob = ode_isol2ep(prob, '', funcs.field{:}, x0, pnames, p0);
 
 %------------------%
 %     Run COCO     %
 %------------------%
-% Run continuation
-coco(prob, run_new, [], 1, {'a', 'omega'}, [-2.0, 2.0]);
+% Run COCO continuation
+coco(prob, run_new, [], 1, 'c', [-4.0, 4.0]);
+
+%-------------------------------------------------------------------------%
+%%                           Move Hopf z Value                           %%
+%-------------------------------------------------------------------------%
+% Continuing from a Hopf bifurcation with 'ode_HB2HB', we vary
+% the 'A' parameter to A = 7.3757
+
+%------------------%
+%     Run Name     %
+%------------------%
+% Current run name
+run_names.move_hopf = 'run02_move_hopf';
+run_new = run_names.move_hopf;
+% Which run this continuation continues from
+run_old = run_names.initial_EP;
+
+% Continuation point
+label_old = sort(coco_bd_labs(coco_bd_read(run_old), 'HB'));
+label_old = label_old(1);
+
+%--------------------------%
+%     Print to Console     %
+%--------------------------%
+fprintf(' =====================================================================\n');
+fprintf(' Initial Periodic Orbit: Second Run\n');
+fprintf(' Move the z value\n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Previous run name       : %s\n', run_old);
+fprintf(' Previous solution label : %d\n', label_old);
+fprintf(' Continuation parameters : %s\n', 'z, c');
+fprintf(' =====================================================================\n');
+
+%----------------------------%
+%     Setup Continuation     %
+%----------------------------%
+% Set up the COCO problem
+prob = coco_prob();
+
+% Set upper bound of continuation steps in each direction along solution
+PtMX = 100;
+prob = coco_set(prob, 'cont', 'PtMX', [PtMX, 0]);
+
+% Initial solution to periodic orbit (COLL Toolbox)
+prob = ode_HB2HB(prob, '', run_old, label_old);
+
+%-------------------------%
+%     Add COCO Events     %
+%-------------------------%
+% Saved-point solution for z = -0.8
+prob = coco_add_event(prob, 'H_PT', 'z', -0.8);
+
+%------------------%
+%     Run COCO     %
+%------------------%
+% Parameter range
+p_range = {[-1.0, 1.0], [-4.0, 4.0]};
+% Run COCO continuation
+coco(prob, run_new, [], 1, {'z', 'c'}, p_range);
+
+%-------------------------------------------------------------------------%
+%%                        Hopf to Periodic Orbit                         %%
+%-------------------------------------------------------------------------%
+% Continue a family of periodic orbits emanating from the Hopf
+% bifurcation with 'ode_HB2po'.
+
+%------------------%
+%     Run Name     %
+%------------------%
+% Current run name
+run_names.hopf_to_PO = 'run03_hopf_to_PO';
+run_new = run_names.hopf_to_PO;
+% Which run this continuation continues from
+run_old = run_names.move_hopf;
+
+% Continuation point
+label_old = coco_bd_labs(coco_bd_read(run_old), 'H_PT');
+
+%--------------------------%
+%     Print to Console     %
+%--------------------------%
+fprintf(' =====================================================================\n');
+fprintf(' Initial Periodic Orbit: Third Run\n');
+fprintf(' Periodic orbits from Hopf bifurcation\n');
+fprintf(' ---------------------------------------------------------------------\n');
+fprintf(' This run name           : %s\n', run_new);
+fprintf(' Previous run name       : %s\n', run_old);
+fprintf(' Previous solution label : %d\n', label_old);
+fprintf(' Continuation parameters : %s\n', 'c, z');
+fprintf(' =====================================================================\n');
+
+%--------------------------%
+%     Calculate Things     %
+%--------------------------%
+% Read previous solution
+sol = ep_read_solution('', run_old, label_old);
+
+%----------------------------%
+%     Setup Continuation     %
+%----------------------------%
+% Set up the COCO problem
+prob = coco_prob();
+
+% Set NTST mesh 
+prob = coco_set(prob, 'coll', 'NTST', 25);
+
+% Set NAdpat
+prob = coco_set(prob, 'cont', 'NAdapt', 1);
+
+% Turn off MXCL
+prob = coco_set(prob, 'coll', 'MXCL', false);
+
+% Set PtMX steps
+PtMX = 200;
+prob = coco_set(prob, 'cont', 'PtMX', PtMX);
+
+% % Set step sizes
+% h_size = 1e0;
+% prob = coco_set(prob, 'cont', 'h_min', h_size, 'h0', h_size, 'h_max', h_size);
+
+% Set frequency of saved solutions
+prob = coco_set(prob, 'cont', 'NPR', 50);
+
+% Continue from Hopf bifurcation
+prob = ode_HB2po(prob, '', run_old, label_old);
+
+% Follow non trivial solutions
+prob = ode_isol2ep(prob, 'x0',   funcs.field{:}, ...
+                   sol.x, sol.p);
+
+%---------------------------------%
+%     Glue Segment Parameters     %
+%---------------------------------%
+% Glue parameters (defined in './continuation_scripts/glue_parameters.m')
+prob = glue_parameters_PO(prob);
+
+%-------------------------%
+%     Add COCO Events     %
+%-------------------------%
+% Saved point for solution
+prob = coco_add_event(prob, 'PO_PT', 'c', 1.0);
+
+%------------------%
+%     Run COCO     %
+%------------------%
+% Run COCO continuation
+coco(prob, run_new, [], 1, {'c', 'z'}, [sol.p(1), 2.0]);
 
 %-------------------------------------------------------------------------%
 %%                   Re-Solve for Rotated Perioid Orbit                  %%
@@ -169,10 +277,10 @@ coco(prob, run_new, [], 1, {'a', 'omega'}, [-2.0, 2.0]);
 %     Run Name     %
 %------------------%
 % Current run name
-run_names.initial_PO_COLL = 'run02_initial_PO_COLL';
+run_names.initial_PO_COLL = 'run04_initial_PO_COLL';
 run_new = run_names.initial_PO_COLL;
 % Which run this continuation continues from
-run_old = run_names.initial_PO_ODE45;
+run_old = run_names.hopf_to_PO;
 
 % Continuation point
 label_old = coco_bd_labs(coco_bd_read(run_old), 'PO_PT');
@@ -182,13 +290,13 @@ label_old = label_old(1);
 %     Print to Console     %
 %--------------------------%
 fprintf(' =====================================================================\n');
-fprintf(' Initial Periodic Orbit: Second Run\n');
+fprintf(' Initial Periodic Orbit: Fourth Run\n');
 fprintf(' Rotate periodic orbit\n');
 fprintf(' ---------------------------------------------------------------------\n');
 fprintf(' This run name           : %s\n', run_new);
 fprintf(' Previous run name       : %s\n', run_old);
 fprintf(' Previous solution label : %d\n', label_old);
-fprintf(' Continuation parameters : %s\n', 'a, omega');
+fprintf(' Continuation parameters : %s\n', 'z, c');
 fprintf(' =====================================================================\n');
 
 %----------------------------%
@@ -236,13 +344,14 @@ prob = apply_boundary_conditions_PO(prob, bcs_funcs.bcs_PO);
 %     Add COCO Event     %
 %------------------------%
 % Event for a = 0.0
-prob = coco_add_event(prob, 'PO_PT', 'a', 0.0);
+% prob = coco_add_event(prob, 'PO_PT', 'c', 0.0);
+prob = coco_add_event(prob, 'PO_PT', 'z', -0.8);
 
 %------------------%
 %     Run COCO     %
 %------------------%
 % Run COCO continuation
-coco(prob, run_new, [], 1, {'a', 'omega'});
+coco(prob, run_new, [], 1, {'z', 'c'});
 
 %----------------------%
 %    Testing Plots     %
@@ -422,7 +531,7 @@ coco(prob, run_new, [], 1, {'w_norm', 'mu_s', 'T'}, [0.0, 1.1]);
 %-------------------%
 %     Save Data     %
 %-------------------%
-label_plot = coco_bd_labs(coco_bd_read(run_new), 'NORM1');
+% label_plot = coco_bd_labs(coco_bd_read(run_new), 'NORM1');
 
 % % Save solution to .mat to be read in phase resetting codes
 % save_data_VAR(run_new, label_plot, './solution_VAR.mat');

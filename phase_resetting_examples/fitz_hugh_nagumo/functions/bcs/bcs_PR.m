@@ -22,19 +22,19 @@ function [data_in, y_out] = bcs_PR(prob_in, data_in, u_in)
   % u_in : array (floats?)
   %     Total u-vector of the continuation problem. This function
   %     only utilises the following (as imposed by coco_add_func):
-  %            u_in(1:3)   - x(0) of segment 1,
-  %            u_in(4:6)   - w(0) of segment 1,
-  %            u_in(7:9)   - x(0) of segment 2,
-  %            u_in(10:12) - w(0) of segment 2,
-  %            u_in(13:15) - x(0) of segment 3,
-  %            u_in(16:18) - x(0) of segment 4,
-  %            u_in(19:21) - x(1) of segment 1,
-  %            u_in(22:24) - w(1) of segment 1,
-  %            u_in(25:27) - x(1) of segment 2,
-  %            u_in(28:30) - w(1) of segment 2,
-  %            u_in(31:33) - x(1) of segment 3,
-  %            u_in(34:36) - x(1) of segment 4,
-  %            u_in(37:50) - Parameters.
+  %            u_in(1:2)   - x(0) of segment 1,
+  %            u_in(3:4)   - w(0) of segment 1,
+  %            u_in(5:6)   - x(0) of segment 2,
+  %            u_in(7:8)   - w(0) of segment 2,
+  %            u_in(9:10)  - x(0) of segment 3,
+  %            u_in(11:12) - x(0) of segment 4,
+  %            u_in(13:14) - x(1) of segment 1,
+  %            u_in(15:16) - w(1) of segment 1,
+  %            u_in(17:18) - x(1) of segment 2,
+  %            u_in(19:20) - w(1) of segment 2,
+  %            u_in(21:22) - x(1) of segment 3,
+  %            u_in(23:24) - x(1) of segment 4,
+  %            u_in(25:34) - Parameters.
   %
   % Output
   % ----------
@@ -51,7 +51,7 @@ function [data_in, y_out] = bcs_PR(prob_in, data_in, u_in)
   % Parameter maps
   p_maps = data_in.p_maps;
   % Vector field
-  field = @fhn;
+  field  = data_in.fhan;
 
   %============================================================================%
   %                              INPUT PARAMETERS                              %
@@ -95,11 +95,9 @@ function [data_in, y_out] = bcs_PR(prob_in, data_in, u_in)
   parameters    = u_in(12*xdim+1 : end);
 
   % System parameters
-  p_system     = parameters(1 : pdim);
+  p_sys         = parameters(1 : pdim);
 
   % Phase resetting parameters
-  % Period of the segment
-  % T             = parameters(p_maps.T);
   % Integer for period
   % k             = parameters(p_maps.k);
   % Phase where perturbation starts
@@ -114,9 +112,21 @@ function [data_in, y_out] = bcs_PR(prob_in, data_in, u_in)
   A_perturb     = parameters(p_maps.A_perturb);
   % Angle of perturbation
   theta_perturb = parameters(p_maps.theta_perturb);
-  % Perturbation vector components
-  % d_x = parameters(p_maps.d_x);
-  % d_y = parameters(p_maps.d_y);
+
+  % Perturbation vector
+  d_vec = [cos(theta_perturb * (2 * pi));
+           sin(theta_perturb* (2 * pi))];
+
+  % If xdim == 3, add another dimension to the perturbation vector
+  if xdim == 3
+    % Update parameter vector
+    phi_perturb = parameters(p_maps.phi_perturb);
+
+    % Perturbation vector
+    d_vec = [cos(theta_perturb* (2 * pi)) * sin(phi_perturb * pi);
+             sin(theta_perturb* (2 * pi)) * sin(phi_perturb) * pi;
+             cos(phi_perturb * pi)];
+  end
 
   %============================================================================%
   %                         BOUNDARY CONDITION ENCODING                        %
@@ -132,7 +142,7 @@ function [data_in, y_out] = bcs_PR(prob_in, data_in, u_in)
   % Boundary Conditions - Segments 1 and 2
   bcs_seg12_1   = x0_seg1 - x1_seg2;
   bcs_seg12_2   = x1_seg1 - x0_seg2;
-  bcs_seg12_3   = e1 * field(x0_seg1, p_system);
+  bcs_seg12_3   = e1 * field(x0_seg1, p_sys);
 
   % Adjoint Boundary Conditions - Segments 1 and 2
   a_bcs_seg12_1 = w0_seg1 - w1_seg2;
@@ -148,9 +158,6 @@ function [data_in, y_out] = bcs_PR(prob_in, data_in, u_in)
   %-------------------%
   %     Segment 4     %
   %-------------------%
-  % Perturbation vector
-  d_vec = [cos(theta_perturb); sin(theta_perturb)];
-
   % Boundary Conditions - Segment 4
   bcs_seg4_1 = x0_seg4 - x0_seg3 - (A_perturb * d_vec);
   bcs_seg4_2 = dot(x1_seg4 - x0_seg2, w0_seg2);

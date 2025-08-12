@@ -34,7 +34,7 @@ function plot_single_isochron(run_in)
   hold(ax, 'on');
 
   % Plot base solution
-  plot_base_periodic_orbit(ax);
+  plot_base_periodic_orbit(ax, run_in);
 
   % Plot single isochron
   plot(ax, iso1, iso2, Color=colours(1, :), LineStyle='-', ...

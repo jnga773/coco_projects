@@ -2,6 +2,18 @@ function F_out = fhn_symbolic_field(x_in, p_in)
   % F_out = fhn_symbolic_field()
   %
   % Symbolic notation of the FHN vector field in the transformed axes.
+  %
+  % Parameters
+  % ----------
+  % x_in : array, float
+  %     State vector.
+  % p_in : array, float
+  %     Array of parameter values
+  %
+  % Returns
+  % -------
+  % F_out : array, float
+  %     Symbolic vector field.
 
   % Grab the state-space variables from x_in
   x1 = x_in(1);

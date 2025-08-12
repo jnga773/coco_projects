@@ -1,4 +1,26 @@
-function save_PTC_scan_data(PTC_run_in, filename_in)
+function save_data_PTC_scan(PTC_run_in, filename_in)
+  % save_data_PTC_scan(isochron_run_in, filename_in)
+  %
+  % Saves the PTC data from the specified run directory into a .mat file.
+  %
+  % Input
+  % -----
+  % PTC_run_in : string
+  %     Name of the run directory containing the PTC scan data.
+  % filename_in : string
+  %     Name of the output .mat file to save the data to.
+  %
+  % See Also
+  % --------
+  % coco_bd_read, coco_bd_col, coco_bd_val
+
+  %-------------------%
+  %     Arguments     %
+  %-------------------%
+  arguments
+    PTC_run_in string
+    filename_in string
+  end
 
   %------------------------%
   %     Read Data: PTCs    %

@@ -1,5 +1,5 @@
-function plot_all_PTC(run_in)
-  % plot_all_PTC(run_in)
+function plot_PTC_multi(run_in)
+  % plot_PTC_multi(run_in)
   %
   % Plot Phase Transition Curves (PTCs) for all of the sub-runs in
   % [run_in].

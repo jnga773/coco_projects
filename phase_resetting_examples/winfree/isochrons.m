@@ -94,9 +94,9 @@ bcs_funcs.bcs_VAR = bcs_VAR_symbolic();
 % bcs_funcs.bcs_PR = {@bcs_isochron};
 bcs_funcs.bcs_PR = bcs_isochron_symbolic();
 
-% Boundary conditions: Isochron phase
-% bcs_funcs.bcs_iso_phase = {@bcs_isochron_phase};
-bcs_funcs.bcs_iso_phase = bcs_isochron_phase_symbolic();
+% % Boundary conditions: Isochron phase
+% % bcs_funcs.bcs_iso_phase = {@bcs_isochron_phase};
+% bcs_funcs.bcs_iso_phase = bcs_isochron_phase_symbolic();
 
 %=========================================================================%
 %                    CALCULATE INITIAL PERIODIC ORBIT                     %

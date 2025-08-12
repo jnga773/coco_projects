@@ -3,17 +3,17 @@ function y_out = fhn(x_in, p_in)
   %
   % CoCo vectorised encoding of the Fitz-Hugh-Nagumo model
   %
-  % Input
+  % Parameters
   % ----------
   % x_in : array, float
-  %     State vector
+  %     State vector.
   % p_in : array, float
   %     Array of parameter values
   %
-  % Output
-  % ----------
+  % Returns
+  % -------
   % y_out : array, float
-  %     The vector field.
+  %     Array of the vector field encoding.
 
   %--------------------------%
   %     Input Parameters     %

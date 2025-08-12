@@ -4,17 +4,17 @@ function J_out = fhn_DFDP(x_in, p_in)
   % COCO encoding of the parameter-space Jacobian of the Fitz-Hugh-Nagumo
   % model vector field.
   %
-  % Input
+  % Parameters
   % ----------
   % x_in : array, float
-  %     State vector
+  %     State vector.
   % p_in : array, float
   %     Array of parameter values
   %
-  % Output
-  % ----------
-  % J_out : matrix, float
-  %     The parameter-space Jacobian matrix.
+  % Returns
+  % -------
+  % y_out : array, float
+  %     Matrix of the parameter-space derivative Jacobian.
 
   %--------------------------%
   %     Input Parameters     %

@@ -156,35 +156,38 @@ function bcs_coco_out = bcs_isochron_symbolic()
   %============================================================================%
   %                                   OUTPUT                                   %
   %============================================================================%
+  %-----------------------%
+  %     Total Vectors     %
+  %-----------------------%
+  % Combined vector
+  u_vec   = [x0_seg1; w0_seg1; x0_seg2; w0_seg2; x0_seg3; x0_seg4;
+             x1_seg1; w1_seg1; x1_seg2; w1_seg2; x1_seg3; x1_seg4;
+             p_sys; p_PR];
+
+  % Boundary conditions vector
+  bcs_vec = [bcs_seg12_1;  bcs_seg12_2; bcs_seg12_3;
+             a_bcs_seg12_1; a_bcs_seg12_2; a_bcs_seg12_3;
+             bcs_seg3;
+             bcs_seg4_1; bcs_seg4_2; bcs_seg4_3];
+
   %-----------------%
   %     SymCOCO     %
   %-----------------%
-  % Combined vector
-  uvec = [x0_seg1; w0_seg1; x0_seg2; w0_seg2; x0_seg3; x0_seg4;
-          x1_seg1; w1_seg1; x1_seg2; w1_seg2; x1_seg3; x1_seg4;
-          p_sys; p_PR];
-
-  % Boundary conditions vector
-  bcs =  [bcs_seg12_1;  bcs_seg12_2; bcs_seg12_3;
-          a_bcs_seg12_1; a_bcs_seg12_2; a_bcs_seg12_3;
-          bcs_seg3;
-          bcs_seg4_1; bcs_seg4_2; bcs_seg4_3];
-
   % Filename for output functions
   filename_out = './functions/symcoco/F_bcs_isochron';
 
   % COCO Function encoding
-  bcs_coco = sco_sym2funcs(bcs, {uvec}, {'u'}, 'filename', filename_out);
+  bcs_coco = sco_sym2funcs(bcs_vec, {u_vec}, {'u'}, 'filename', filename_out);
 
   % Function to "CoCo-ify" function outputs: [data_in, y_out] = f(prob_in, data_in, u_in)
   cocoify = @(func_in) @(prob_in, data_in, u_in) deal(data_in, func_in(u_in));
 
-  % List of functions
-  func_list = {cocoify(bcs_coco('')), cocoify(bcs_coco('u')), cocoify(bcs_coco({'u', 'u'}))};
-
   %----------------%
   %     Output     %
   %----------------%
+  % List of functions
+  func_list = {cocoify(bcs_coco('')), cocoify(bcs_coco('u')), cocoify(bcs_coco({'u', 'u'}))};
+
   bcs_coco_out = func_list;
 
 end

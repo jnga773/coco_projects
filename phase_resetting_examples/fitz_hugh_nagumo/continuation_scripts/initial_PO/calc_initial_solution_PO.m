@@ -1,11 +1,9 @@
 function data_out = calc_initial_solution_PO(run_in, label_in)
   % data_out = calc_initial_solution_PO(run_in, label_in)
   %
-  % Calculate the initial periodic solution using ode45.
-  %
-  % This function reads the previous solution data for the periodic orbit and equilibrium points,
-  % calculates the initial periodic solution, and shifts the solution to start at the maximum of
-  % the first component.
+  % This function reads the previous solution data for the periodic orbit
+  % and equilibrium points, calculates the initial periodic solution, and
+  % shifts the solution to start at the maximum of the first component.
   %
   % Parameters
   % ----------
@@ -37,8 +35,8 @@ function data_out = calc_initial_solution_PO(run_in, label_in)
   % Read previous solution
   [sol, data] = coll_read_solution('po.orb', run_in, label_in);
 
-  % % Initial period
-  % T_sol    = sol.T;
+  % Initial period
+  T_sol    = sol.T;
   % Parameters
   p_sol    = sol.p;
   % Read time data
@@ -77,6 +75,6 @@ function data_out = calc_initial_solution_PO(run_in, label_in)
   data_out.pnames = pnames;
   data_out.t      = t0;
   data_out.x      = xbp_shifted;
-  data_out.x0     = x0; 
+  data_out.x0     = x0;
 
 end

@@ -1,9 +1,13 @@
 function F_coco_out = fhn_symbolic()
   % F_coco_out = fhn_symbolic()
   %
-  % Creates a CoCo-compatible function encoding of the
-  % Yamada model vector field using MATLAB's 
-  % Symbolic Toolbox.
+  % Creates a CoCo-compatible function encoding of the FitzHugh-Nagumo
+  % model vector field using SymCOCO.
+  %
+  % Returns
+  % -------
+  % F_coco_out : array, float
+  %     Cell of all of the functions and derivatives.
 
   %---------------%
   %     Input     %
@@ -13,11 +17,11 @@ function F_coco_out = fhn_symbolic()
   syms c a b z
 
   % Variable arrays
-  xvec = [x1; x2];
-  pvec = [c; a; b; z];
+  x_vec = [x1; x2];
+  p_vec = [c; a; b; z];
   
   % Symbolic vector field
-  F_vec = fhn_symbolic_field(xvec, pvec);
+  F_vec = fhn_symbolic_field(x_vec, p_vec);
 
   %-----------------%
   %     SymCOCO     %
@@ -26,7 +30,7 @@ function F_coco_out = fhn_symbolic()
   filename_out = './functions/symcoco/F_fhn';
 
   % COCO Function encoding
-  F_coco = sco_sym2funcs(F_vec, {xvec, pvec}, {'x', 'p'}, 'filename', filename_out);
+  F_coco = sco_sym2funcs(F_vec, {x_vec, p_vec}, {'x', 'p'}, 'filename', filename_out);
 
   % List of functions
   func_list = {F_coco(''), ...

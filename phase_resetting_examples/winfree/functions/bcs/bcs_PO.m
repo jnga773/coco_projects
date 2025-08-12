@@ -22,7 +22,7 @@ function [data_in, y_out] = bcs_PO(prob_in, data_in, u_in)
   %     only utilises the following (as imposed by coco_add_func):
   %          * u_in(1:2) - Initial point of the periodic orbit,
   %          * u_in(3:4) - Final point of the periodic orbit,
-  %          * u_in(5)   - Parameters.
+  %          * u_in(5:6) - Parameters.
   %
   % Output
   % ----------

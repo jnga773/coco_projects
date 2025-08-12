@@ -12,13 +12,17 @@ function [data_in, y_out] = bcs_PO(prob_in, data_in, u_in)
   % prob_in : COCO problem structure
   %     Continuation problem structure.
   % data_in : structure
-  %     Problem data structure contain with function data.
+  %     Problem data structure contain with function data. Utilises the
+  %     following fields:
+  %          * xdim   - Dimension of the state space,
+  %          * pdim   - Dimension of the parameter space,
+  %          * fhan   - Function handle for the vector field encoding.
   % u_in : array (floats?)
   %     Total u-vector of the continuation problem. This function
   %     only utilises the following (as imposed by coco_add_func):
   %          * u_in(1:2) - Initial point of the periodic orbit,
   %          * u_in(3:4) - Final point of the periodic orbit,
-  %          * u_in(5)   - Parameters.
+  %          * u_in(5:6) - Parameters.
   %
   % Output
   % ----------
@@ -29,10 +33,10 @@ function [data_in, y_out] = bcs_PO(prob_in, data_in, u_in)
   %     space.
 
   % Original vector field dimensions
-  xdim = data_in.xdim;
-  pdim = data_in.pdim;
+  xdim  = data_in.xdim;
+  pdim  = data_in.pdim;
   % Vector field
-  field = @fhn;
+  field = data_in.fhan;
 
   %---------------%
   %     Input     %
