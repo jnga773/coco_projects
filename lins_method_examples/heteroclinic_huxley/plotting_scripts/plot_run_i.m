@@ -1,4 +1,4 @@
-function plot_run_i(run_in, label_in, fig_num_in, save_figure)
+function plot_run_i(run_in, label_in, fig_num_in)
   % PLOT_RUN_I: Plots the solution calculating in run [run_in] for label
   % [label_in].
 
@@ -61,18 +61,5 @@ function plot_run_i(run_in, label_in, fig_num_in, save_figure)
 
   % Figure stuff
   box(ax, 'on');
-
-  % Save figure
-  if save_figure == true
-    % Filename extension
-    % png_or_pdf = 'png';
-    png_or_pdf = 'pdf';
-
-    % Filename
-    figname = sprintf('./images/homoclinic_trajectory_%s_%d.%s', run_in(1:5), label_in, png_or_pdf);
-
-    % Save figure
-    exportgraphics(fig, figname, ContentType='vector');
-  end
 
 end

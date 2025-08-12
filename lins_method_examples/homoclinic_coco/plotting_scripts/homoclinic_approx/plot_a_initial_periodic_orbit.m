@@ -1,4 +1,4 @@
-function plot_a_initial_periodic_orbit(run_in, save_figure)
+function plot_a_initial_periodic_orbit(run_in)
   % PLOT_A_INITIAL_PERIODIC_ORBIT: Plots the initial periodic orbit from
   % solution [run_in].
 
@@ -41,8 +41,4 @@ function plot_a_initial_periodic_orbit(run_in, save_figure)
   ax.GridLineWidth = 0.5;
   ax.GridColor = 'black';
   ax.GridAlpha = 0.25;
-
-  if save_figure == true
-    exportgraphics(fig, './images/(a) Initial Periodic Orbit.png', Resolution=800);
-  end
 end

@@ -28,8 +28,4 @@ function plot_f_new_solution(run_new, run_old, label_old)
   ax.GridLineWidth = 0.5;
   ax.GridColor = 'black';
   ax.GridAlpha = 0.25;
-
-  if save_figure == true
-    exportgraphics(fig, './images/(f) New Solution.png', Resolution=800);
-  end
 end

@@ -53,18 +53,16 @@ clc;
 
 % Add equation/functions to path
 addpath('./functions/');
+% Add vector field functions to path
+addpath('./functions/fields/');
 % Add boundary condition functions to path
-addpath('./boundary_conditions/');
+addpath('./functions/bcs/');
 
 % Add continuation scripts
 addpath('./continuation_scripts/');
 
 % Add plotting scripts
 addpath('./plotting_scripts/');
-
-% Save figures switch
-% save_figure = true;
-save_figure = false;
 
 %--------------------%
 %     Parameters     %
@@ -410,8 +408,8 @@ label_plot = coco_bd_labs(coco_bd_read(run_new), 'DelU');
 label_plot = label_plot(1);
 % label_plot = 1;
 
-plot_solutions(run_new, label_plot, data_lins, 1, save_figure);
-% plot_solutions(run_new, 1, 14, run7, p0_L, save_figure);
+plot_solutions(run_new, label_plot, data_lins, 1);
+% plot_solutions(run_new, 1, 14, run7, p0_L);
 
 %-------------------------------------------------------------------------%
 %%                     Grow Orbit in Stable Manifold                     %%
@@ -512,7 +510,7 @@ label_plot = sort(coco_bd_labs(coco_bd_read(run_new), 'DelS'));
 label_plot = label_plot(1);
 % label_plot = 1;
 
-plot_solutions(run_new, label_plot, data_lins, 2, save_figure);
+plot_solutions(run_new, label_plot, data_lins, 2);
 
 %-------------------------------------------------------------------------%
 %%                     Grow Orbit in Stable Manifold                     %%
@@ -617,10 +615,10 @@ label_plot = max(label_plot);
 % label_plot = 1;
 
 % Plot scan of stable manifold solutions
-plot_solutions_scan(run_new, label_plot, data_lins, 4, save_figure)
+plot_solutions_scan(run_new, label_plot, data_lins, 4)
 
 % Plot single solution
-plot_solutions(run_new, label_plot, data_lins, 5, save_figure);
+plot_solutions(run_new, label_plot, data_lins, 5);
 
 %-------------------------------------------------------------------------%
 %%                   Lin's Method: Closing the Lin Gap                   %%
@@ -732,7 +730,7 @@ coco(prob, run_new, [], 1, {'lingap', 'r', 'eps2', 'T1', 'T2'}, {[0.0, lingap], 
 label_plot = sort(coco_bd_labs(coco_bd_read(run_new), 'Lin0'));
 label_plot = label_plot(1);
 
-plot_solutions(run_new, label_plot, data_lins, 6, save_figure);
+plot_solutions(run_new, label_plot, data_lins, 6);
 
 %-------------------------------------------------------------------------%
 %%                      Two-Parameter Continuation                       %%
@@ -833,4 +831,4 @@ coco(prob, run_new, [], 1, {'s', 'r', 'eps1', 'eps2', 'T2'});
 %     Plot     %
 %--------------%
 % Plot two-parameter bifurcation diagram
-plot_bifurcation_diagram(run_new, save_figure);
+plot_bifurcation_diagram(run_new);

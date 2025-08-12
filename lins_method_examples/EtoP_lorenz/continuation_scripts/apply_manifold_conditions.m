@@ -17,7 +17,7 @@ function prob_out = apply_manifold_conditions(prob_in, data_in, bcs_funcs_in, ve
   % Finally, COCO events are added for when the trajectory segments
   % hit the \Sigma plane, i.e., when 'seg_u' or 'seg_s' = 0.
   %
-  % Input
+  % Parameters
   % ----------
   % prob_in : COCO problem structure
   %     Continuation problem structure.
@@ -28,10 +28,15 @@ function prob_out = apply_manifold_conditions(prob_in, data_in, bcs_funcs_in, ve
   % epsilon_in : array (floats)
   %     Array of separations at end points from orbit and equilibrium.
   %
-  % Output
-  % ----------
+  % Returns
+  % -------
   % prob_out : COCO problem structure
   %     Continuation problem structure.
+  %
+  % See Also
+  % --------
+  % coco_get_func_data, coco_add_glue, coco_add_func, coco_add_slot,
+  % coco_add_pars, coco_add_event, coco_save_data
 
   %---------------%
   %     Input     %

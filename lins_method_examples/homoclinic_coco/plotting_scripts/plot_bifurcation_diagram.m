@@ -1,4 +1,4 @@
- function plot_bifurcation_diagram(run_names_in, save_figure)
+ function plot_bifurcation_diagram(run_names_in)
   % PLOT_BIFURCATION_DIAGRAM: Plots the bifurcation data from all the runs
 
   %-------------------%
@@ -78,10 +78,5 @@
   % ax.GridLineWidth = 0.5;
   ax.GridColor = 'black';
   ax.GridAlpha = 0.25;
-
-  % Save figure
-  if save_figure == true
-    % exportgraphics(fig, './images/Region_II_bifurcations.png', Resolution=800);
-    exportgraphics(fig, './images/Region_II_bifurcations.pdf', ContentType='vector');
-  end
+  
 end

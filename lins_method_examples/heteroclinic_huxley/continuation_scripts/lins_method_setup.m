@@ -1,9 +1,30 @@
 function data_out = lins_method_setup(x0_u, x0_s, p_in, pnames_in)
-  % data_out = lins_method_setup()
+  % data_out = lins_method_setup(run_in, label_in)
   %
-  % Reads parameters and solution from previous approximate homoclinic
-  % run and sets the initialised parameters for the Lin's method
-  % problem.
+  % Calculates and saves the appropriate vectors and information
+  % needed to setup the Lin's method, such as the initial vectors
+  % of the unstable and stable manifolds, the initial displacements
+  % (epsilon), normal vector and point on the \Signa plane, etc.
+  %
+  % Input
+  % ----------
+  % run_in : str
+  %     The string identifier for the previous COCO run that we will
+  %     read information from. In this case, it will be for the family
+  %     of periodic orbits originating from the Hopf bifurcation.
+  % label_in : int
+  %     The solution label from the RUN_IN.
+  %
+  % Output
+  % ----------
+  % data_out : struct
+  %     The data structure containing all of the initialisation
+  %     information.
+  %
+  % See Also
+  % --------
+  % coll_read_solution, po_read_solution, calculate_stable_floquet,
+  % unstable_stable_eigenvectors
 
   % Parameter names
   pnames = pnames_in;

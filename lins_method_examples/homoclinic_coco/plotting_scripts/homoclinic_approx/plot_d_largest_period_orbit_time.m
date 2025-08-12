@@ -1,4 +1,4 @@
-function plot_d_largest_period_orbit_time(run_in, label_in, save_figure)
+function plot_d_largest_period_orbit_time(run_in, label_in)
 
   %-----------------------------------------------------%
   %     Plot: Panel (d) Largest Period Orbit (Time)     %
@@ -60,8 +60,4 @@ function plot_d_largest_period_orbit_time(run_in, label_in, save_figure)
   ax.GridLineWidth = 0.5;
   ax.GridColor = 'black';
   ax.GridAlpha = 0.25;
-
-  if save_figure == true
-    exportgraphics(fig, './images/(d) Largest Period Orbit (Time).png', Resolution=800);
-  end
 end

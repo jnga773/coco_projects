@@ -85,10 +85,6 @@ addpath('./plotting_scripts/');
 % addpath('./plotting_scripts/homoclinic_approx/');
 addpath('./plotting_scripts/lins_method/');
 
-% Save figures switch
-% save_figure = true;
-save_figure = false;
-
 %--------------------%
 %     Parameters     %
 %--------------------%
@@ -482,7 +478,7 @@ coco(prob, run_new, [], 1, {'seg_u', 'T1', 'p1'});
 label_plot = coco_bd_labs(coco_bd_read(run_new), 'DelU');
 label_plot = label_plot(1);
 
-plot_homoclinic_manifold_run(run_new, label_plot, data_lins.xbp_PO, 1, save_figure);
+plot_homoclinic_manifold_run(run_new, label_plot, data_lins.xbp_PO, 1);
 
 % %--------------------------%
 % %     Print to Console     %
@@ -577,7 +573,7 @@ coco(prob, run_new, [], 1, {'seg_s', 'T2', 'p1'});
 label_plot = coco_bd_labs(coco_bd_read(run_new), 'DelS');
 label_plot = label_plot(1);
 
-plot_homoclinic_manifold_run(run_new, label_plot, data_lins.xbp_PO, 2, save_figure);
+plot_homoclinic_manifold_run(run_new, label_plot, data_lins.xbp_PO, 2);
 
 % %--------------------------%
 % %     Print to Console     %
@@ -682,7 +678,7 @@ coco(prob, run_new, [], 1, {'lingap', 'T1', 'T2', 'theta', 'p1', 'seg_u'});
 label_plot = coco_bd_labs(coco_bd_read(run_new), 'Lin0');
 label_plot = label_plot(1);
 
-plot_homoclinic_manifold_run(run_new, label_plot, data_lins.xbp_PO, 3, save_figure);
+plot_homoclinic_manifold_run(run_new, label_plot, data_lins.xbp_PO, 3);
 
 % %--------------------------%
 % %     Print to Console     %
@@ -788,7 +784,7 @@ coco(prob, run_new, [], 1, {'eps1', 'T1', 'T2', 'theta', 'p1', 'seg_u'});
 label_plot = coco_bd_labs(coco_bd_read(run_new), 'EPS1');
 label_plot = label_plot(1);
 
-plot_homoclinic_manifold_run(run_new, label_plot, data_lins.xbp_PO, 4, save_figure);
+plot_homoclinic_manifold_run(run_new, label_plot, data_lins.xbp_PO, 4);
 
 % %--------------------------%
 % %     Print to Console     %
@@ -893,7 +889,7 @@ coco(prob, run_new, [], 1, {'eps2', 'T1', 'T2', 'theta', 'p1', 'seg_u'});
 label_plot = coco_bd_labs(coco_bd_read(run_new), 'EPS2');
 label_plot = label_plot(1);
 
-plot_homoclinic_manifold_run(run_new, label_plot, data_lins.xbp_PO, 5, save_figure);
+plot_homoclinic_manifold_run(run_new, label_plot, data_lins.xbp_PO, 5);
 
 % %--------------------------%
 % %     Print to Console     %
@@ -998,15 +994,15 @@ bdtest = coco(prob, run_new, [], 1, {'p1', 'p2', 'eps1', 'eps2', 'theta', 'seg_u
 % label_plot = label_plot(1);
 label_plot = 25;
 
-plot_homoclinic_manifold_run(run_new, label_plot, data_lins.xbp_PO, 6, save_figure);
+plot_homoclinic_manifold_run(run_new, label_plot, data_lins.xbp_PO, 6);
 
-% plot_temporal_solution_single(run_new, label_plot, 20, save_figure);
-% plot_temporal_solutions(run_new, 19, save_figure);
+% plot_temporal_solution_single(run_new, label_plot, 20);
+% plot_temporal_solutions(run_new, 19);
 
-compare_homoclinic_bifurcations(run_names, save_figure);
+compare_homoclinic_bifurcations(run_names);
 
 %-------------------------------------------------------------------------%
 %%                             Plot Things                               %%
 %-------------------------------------------------------------------------%
 % Plot bifurcation diagram
-plot_bifurcation_diagram(run_names, save_figure);
+plot_bifurcation_diagram(run_names);

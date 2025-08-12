@@ -1,4 +1,4 @@
-function plot_homoclinic_manifolds(run_approx_homoclinic_in, p0_in, save_figure)
+function plot_homoclinic_manifolds(run_approx_homoclinic_in, p0_in)
   %------------------------%
   %     Calculate Data     %
   %------------------------%
@@ -52,10 +52,5 @@ function plot_homoclinic_manifolds(run_approx_homoclinic_in, p0_in, save_figure)
   grid(ax, 'on');
 
   ax.GridLineWidth = 0.5; ax.GridColor = 'black'; ax.GridAlpha = 0.25;
-
-  if save_figure == true
-    % exportgraphics(fig, './images/homoclinic_manifolds.png', Resolution=800);
-    exportgraphics(fig, './images/homoclinic_manifolds.pdf', ContentType='vector');
-  end
 
 end

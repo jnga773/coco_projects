@@ -4,7 +4,7 @@ function prob_out = apply_lingap_conditions(prob_in, data_in, bcs_funcs_in, ling
   % Applies the Lin gap and Lin phase boundary conditions to the COCO problem.
   % The parameter [lingap] is then allowed to vary.
   %
-  % Input
+  % Parameters
   % ----------
   % prob_in : COCO problem structure
   %     Continuation problem structure.
@@ -15,10 +15,15 @@ function prob_out = apply_lingap_conditions(prob_in, data_in, bcs_funcs_in, ling
   % lingap_in : float
   %     Value of the Lin gap distance parameter.
   %
-  % Output
-  % ----------
+  % Returns
+  % -------
   % prob_out : COCO problem structure
   %     Continuation problem structure.
+  %
+  % See Also
+  % --------
+  % coco_get_func_data, coco_add_func, coco_add_event, coco_add_slot,
+  % coco_add_pars, coco_save_data
 
   %---------------%
   %     Input     %

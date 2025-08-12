@@ -1,4 +1,4 @@
-function plot_solutions_scan(run_in, label_in, data_in, fig_num_in, save_figure)
+function plot_solutions_scan(run_in, label_in, data_in, fig_num_in)
   %-------------------%
   %     Read Data     %
   %-------------------%
@@ -85,12 +85,5 @@ function plot_solutions_scan(run_in, label_in, data_in, fig_num_in, save_figure)
 
   ax.GridLineWidth = 0.5; ax.GridColor = 'black'; ax.GridAlpha = 0.25;
   view(45, 15.0);
-
-  if save_figure == true
-    % Filename
-    figname = sprintf('heteroclinc_trajectory_sweep_%s', run_in(1:5));
-    % exportgraphics(fig, ['./images/', figname, '.png'], Resolution=800);
-    exportgraphics(fig, ['./images/', figname, '.pdf'], ContentType='vector');
-  end
 
 end

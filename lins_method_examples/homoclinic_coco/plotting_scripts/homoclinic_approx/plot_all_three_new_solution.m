@@ -1,4 +1,4 @@
-function plot_all_three_new_solution(run_new, run_old, save_figure)
+function plot_all_three_new_solution(run_new, run_old)
   % PLOT_ALL_THREE_NEW_SOLUTION: Plots new solutions from [run_new] and
   % compares them to solutions from [run_old]
 
@@ -99,9 +99,5 @@ function plot_all_three_new_solution(run_new, run_old, save_figure)
   ax1.GridLineWidth = 0.5; ax1.GridColor = 'black'; ax1.GridAlpha = 0.25;
   ax2.GridLineWidth = 0.5; ax2.GridColor = 'black'; ax2.GridAlpha = 0.25;
   ax3.GridLineWidth = 0.5; ax3.GridColor = 'black'; ax3.GridAlpha = 0.25;
-
-  if save_figure == true
-    exportgraphics(fig, './images/new_solution.png', Resolution=800);
-    % exportgraphics(fig, './images/new_solution.pdf', ContentType='vector');
-  end 
+  
 end

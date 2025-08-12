@@ -81,10 +81,6 @@ addpath('./continuation_scripts/');
 % Add plotting scripts
 addpath('./plotting_scripts/');
 
-% Save figures switch
-% save_figure = true;
-save_figure = false;
-
 %--------------------%
 %     Parameters     %
 %--------------------%
@@ -206,8 +202,8 @@ coco(prob, run_new, [], 1, {'seg_u', 'T1', 'T2'});
 label_plot = coco_bd_labs(coco_bd_read(run_new), 'DelU');
 label_plot = label_plot(1);
 
-plot_run_i(run_new, 1, 1, save_figure);
-plot_run_i(run_new, label_plot, 2, save_figure);
+plot_run_i(run_new, 1, 1);
+plot_run_i(run_new, label_plot, 2);
 
 %-------------------------------------------------------------------------%
 %%                          Grow Stable Manifold                          %%
@@ -289,7 +285,7 @@ coco(prob, run_new, [], 1, {'seg_s', 'T2', 'p1'});
 label_plot = coco_bd_labs(coco_bd_read(run_new), 'DelS');
 label_plot = label_plot(1);
 
-plot_run_i(run_new, label_plot, 3, save_figure);
+plot_run_i(run_new, label_plot, 3);
 
 %-------------------------------------------------------------------------%
 %%                   Lin's Method: Closing the Lin Gap                   %%
@@ -381,7 +377,7 @@ coco(prob, run_new, [], 1, {'lingap', 'T1', 'T2', 'p1', 'seg_u'});
 label_plot = coco_bd_labs(coco_bd_read(run_new), 'Lin0');
 label_plot = label_plot(1);
 
-plot_run_i(run_new, label_plot, 1, save_figure);
+plot_run_i(run_new, label_plot, 1);
 
 %-------------------------------------------------------------------------%
 %%                        Close the Distance eps1                        %%
@@ -476,7 +472,7 @@ coco(prob, run_new, [], 1, {'eps1', 'T1', 'T2', 'p1', 'seg_u'});
 label_plot = coco_bd_labs(coco_bd_read(run_new), 'EPS1');
 label_plot = label_plot(1);
 
-plot_run_i(run_new, label_plot, 4, save_figure);
+plot_run_i(run_new, label_plot, 4);
 
 %-------------------------------------------------------------------------%
 %%                        Close the Distance eps2                        %%
@@ -570,7 +566,7 @@ coco(prob, run_new, [], 1, {'eps2', 'T1', 'T2', 'p1', 'seg_u'});
 label_plot = coco_bd_labs(coco_bd_read(run_new), 'EPS2');
 label_plot = label_plot(1);
 
-plot_homoclinic_manifold_run(run_new, label_plot, 5, save_figure);
+plot_homoclinic_manifold_run(run_new, label_plot, 5);
 
 %-------------------------------------------------------------------------%
 %%                     Parametrise the Heteroclinic                      %%
@@ -663,7 +659,7 @@ bdtest = coco(prob, run_new, [], 1, {'p1', 'p2', 'eps1', 'eps2', 'seg_u'});
 % label_plot = coco_bd_labs(coco_bd_read(run_new), 'Lin0');
 % label_plot = label_plot(1);
 
-plot_run_i(run_new, 5, 6, save_figure);
+plot_run_i(run_new, 5, 6);
 
 % Plot bifurcation diagram
-plot_bifurcation_diagram(run_new, save_figure);
+plot_bifurcation_diagram(run_new);

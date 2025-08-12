@@ -4,16 +4,20 @@ function data_out = find_lingap_vector(run_in)
   % Calculates the Lin gap vector, the distance between the unstable
   % and stable trajectories, and the Lin phase condition from [run_in].
   %
-  % Input
+  % Parameters
   % ----------
   % run_in : str
   %     The string identifier for the previous COCO run that we will
   %     read information from.
   %
-  % Output
-  % ----------
+  % Returns
+  % -------
   % data_out : structure
   %     Data structure containing the Lin gap vector, distance, and phase.
+  %
+  % See Also
+  % --------
+  % coll_read_solution, coco_bd_read, coco_bd_labs
 
   %------------------------------------------%
   %     Read Solution: Unstable Manifold     %

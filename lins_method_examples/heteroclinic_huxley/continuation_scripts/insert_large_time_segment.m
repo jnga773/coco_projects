@@ -8,7 +8,7 @@ function po_data_out = insert_large_time_segment(run_in, label_in)
   % With this point found, we insert a large time segment to
   % "trick" the periodic orbit into having a larger period.
   %
-  % Input
+  % Parameters
   % ----------
   % run_in: string
   %     The string identifier for the previous COCO run that we will
@@ -16,8 +16,8 @@ function po_data_out = insert_large_time_segment(run_in, label_in)
   % label_in: int
   %     The solution label we will read the data from
   %
-  % Output
-  % ----------
+  % Returns
+  % -------
   % po_data_out : data structure
   %     Contains the state space solution, temporal solution and
   %     parameters.

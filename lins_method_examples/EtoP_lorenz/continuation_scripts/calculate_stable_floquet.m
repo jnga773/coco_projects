@@ -1,6 +1,26 @@
 function [vec_out, lam_out] = calculate_stable_floquet(run_in, label_in)
-  % CALCULATE_STABLE_FLOQUET: Calculates the stable eigenvalue and eigenvector
-  % (Floquet stuff) of a periodic orbit from solution [label_in] of [run_in].
+  % [vec_out, lam_out] = calculate_stable_floquet(run_in, label_in)
+  %
+  % Calculates the stable eigenvalue and eigenvector (Floquet stuff) of a 
+  % periodic orbit from solution [label_in] of [run_in].
+  %
+  % Parameters
+  % ----------
+  % run_in : character
+  %    String identifier for the COCO run.
+  % label_in : double
+  %    Integer label for the solution to read.
+  %
+  % Returns
+  % -------
+  % vec_out : array (double)
+  %    Stable eigenvector.
+  % lam_out : double
+  %    Stable eigenvalue.
+  %
+  % See Also
+  % --------
+  % coco_read_solution
   
   %-------------------%
   %     Read Data     %

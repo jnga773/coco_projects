@@ -1,4 +1,4 @@
-function plot_b_increasing_period_periodic_orbits(run_in, label_in, save_figure)
+function plot_b_increasing_period_periodic_orbits(run_in, label_in)
   %--------------------------------------------%
   %     Plot: Panel (b) Increasing Periods     %
   %--------------------------------------------%
@@ -27,8 +27,4 @@ function plot_b_increasing_period_periodic_orbits(run_in, label_in, save_figure)
   ax.GridLineWidth = 0.5;
   ax.GridColor = 'black';
   ax.GridAlpha = 0.25;
-
-  if save_figure == true
-    exportgraphics(fig, './images/(b) Increasing Periods.png', Resolution=800);
-  end
 end

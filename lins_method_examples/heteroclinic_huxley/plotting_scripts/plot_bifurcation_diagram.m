@@ -1,4 +1,4 @@
-function plot_bifurcation_diagram(run_in, save_figure)
+function plot_bifurcation_diagram(run_in)
   % PLOT_BIFURCATION_DIAGRAM: Plots the two-parameter continuation bifurcation
   % diagram with data from run "run_in".
   %-------------------%
@@ -52,10 +52,5 @@ function plot_bifurcation_diagram(run_in, save_figure)
   ax.GridLineWidth = 0.5;
   ax.GridColor = 'black';
   ax.GridAlpha = 0.25;
-
-  % Save figure
-  if save_figure == true
-    % exportgraphics(fig, './images/bifurcation_diagram.png', Resolution=800);
-    exportgraphics(fig, './images/bifurcation_diagram.pdf', ContentType='vector');
-  end
+  
 end

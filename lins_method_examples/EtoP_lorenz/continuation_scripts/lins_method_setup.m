@@ -20,6 +20,12 @@ function data_out = lins_method_setup(run_in, label_in)
   % data_out : struct
   %     The data structure containing all of the initialisation
   %     information.
+  %
+  % See Also
+  % --------
+  % coll_read_solution, po_read_solution, calculate_stable_floquet,
+  % unstable_stable_eigenvectors
+
   %-----------------------------------------------------------------------%
   %%                         Setup Lin's Method                          %%
   %-----------------------------------------------------------------------%

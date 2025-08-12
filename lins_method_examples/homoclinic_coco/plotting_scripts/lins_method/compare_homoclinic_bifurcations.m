@@ -1,4 +1,4 @@
-function compare_homoclinic_bifurcations(run_names_in, save_figure)
+function compare_homoclinic_bifurcations(run_names_in)
   % Run names
   run_approx = run_names_in.continue_approx_homoclinics;
   run_lins   = run_names_in.lins_method.continue_homoclinics;
@@ -72,10 +72,4 @@ function compare_homoclinic_bifurcations(run_names_in, save_figure)
   % ax.GridLineWidth = 0.5;
   ax.GridColor = 'black';
   ax.GridAlpha = 0.25;
-
-  % Save figure
-  if save_figure == true
-    % exportgraphics(fig, './images/Region_II_bifurcations.png', Resolution=800);
-    exportgraphics(fig, './images/compared_approx_and_lins.pdf', ContentType='vector');
-  end
 end
