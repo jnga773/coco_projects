@@ -6,7 +6,7 @@ function prob_out = apply_boundary_conditions_PR(prob_in, data_in, bcs_funcs_in,
   % together, and also adds some user defined points. Also
   % applied some COCO settings to the continuation problem.
   %
-  % Input
+  % Parameters
   % ----------
   % prob_in : COCO problem structure
   %     Continuation problem structure.
@@ -21,10 +21,14 @@ function prob_out = apply_boundary_conditions_PR(prob_in, data_in, bcs_funcs_in,
   % par_isochron : boolean
   %     Flag to determine if isochron parameters should be recorded.
   %
-  % Output
-  % ----------
+  % Returns
+  % -------
   % prob_out : COCO problem structure
   %     Continuation problem structure.
+  %
+  % See Also
+  % --------
+  % coco_get_func_data, coco_add_glue, coco_add_func, coco_add_pars
 
   %-----------------------%
   %     Default Input     %
