@@ -22,42 +22,57 @@ function [data_in, y_out] = bcs_VAR(prob_in, data_in, u_in)
   %          * u_in(5)   - Eigenvalue (mu_s),
   %          * u_in(6)   - Norm of w (w_norm).
   %
-  % Output
-  % ----------
+  % Returns
+  % -------
   % y_out : array of vectors
   %     An array containing to the two boundary conditions.
   % data_in : structure
   %     Function data structure to give dimensions of parameter and state
   %     space.
 
-  % State space dimension
-  xdim = data_in.xdim;
-
-  %---------------%
-  %     Input     %
-  %---------------%
-  % Initial perpendicular vector
-  w0     = u_in(1 : xdim);
-
-  % Final perpendicular vector
-  w1     = u_in(xdim+1 : 2 * xdim);
-
-  % Eigenvector
-  mu_s   = u_in(end-1);
+  %============================================================================%
+  %                         READ FROM data_in STRUCTURE                        %
+  %============================================================================%
+  % These parameters are read from the data_in structure. This is defined as
+  % 'data_EP' in the 'apply_boundary_conditions_PR' function, and is the
+  % function data of the equilibrium point problem (ode_ep2ep).
   
-  % Norm of w
+  % Original vector field state-space dimension
+  xdim   = data_in.xdim;
+  % Original vector field parameter-space dimension
+  pdim   = data_in.pdim;
+  % Original vector field function
+  field  = data_in.fhan;
+
+  %============================================================================%
+  %                                    INPUT                                   %
+  %============================================================================%
+  %-------------------------------%
+  %     Adjoint-Space Vectors     %
+  %-------------------------------%
+  % Initial perpendicular vector
+  w_init  = u_in(1 : xdim);
+  % Final perpendicular vector
+  w_final = u_in(xdim+1 : 2 * xdim);
+
+  %--------------------%
+  %     Parameters     %
+  %--------------------%
+  % Stable eigenvalue
+  mu_s   = u_in(end-1);
+  % Norm of stable orthogonal eigenvector
   w_norm = u_in(end);
 
-  %--------------------------%
-  %     Calculate Things     %
-  %--------------------------%
+  %============================================================================%
+  %                         BOUNDARY CONDITION ENCODING                        %
+  %============================================================================%
   % Adjoint boundary conditions
-  bcs_adjt_1 = w1 - (mu_s * w0);
-  bcs_adjt_2 = (w0' * w0) - w_norm;
+  bcs_adjt_1 = w_final - (mu_s * w_init);
+  bcs_adjt_2 = (w_init' * w_init) - w_norm;
 
-  %----------------%
-  %     Output     %
-  %----------------%
+  %============================================================================%
+  %                                   OUTPUT                                   %
+  %============================================================================%
   y_out = [bcs_adjt_1;
            bcs_adjt_2];
 

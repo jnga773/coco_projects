@@ -9,8 +9,8 @@ function bcs_coco_out = bcs_VAR_symbolic()
   %                   w(1) = \mu_{f} w(0) ,                         (1)
   %                norm(w) = w_norm       .                         (2)
   %
-  % Output
-  % ----------
+  % Returns
+  % -------
   % bcs_coco_out : cell of function handles
   %     List of CoCo-ified symbolic functions for the boundary conditions
   %     Jacobian, and Hessian.
@@ -18,28 +18,28 @@ function bcs_coco_out = bcs_VAR_symbolic()
   %============================================================================%
   %                          CHANGE THESE PARAMETERS                           %
   %============================================================================%
-  % State-space dimension
-  xdim = 2;
+  % Original vector field state-space dimension
+  xdim  = 2;
 
   %============================================================================%
-  %                              INPUT PARAMETERS                              %
+  %                                    INPUT                                   %
   %============================================================================%
-  %--------------------------------------%
-  %     Input: Adjoint-Space Vectors     %
-  %--------------------------------------%
+  %-------------------------------%
+  %     Adjoint-Space Vectors     %
+  %-------------------------------%
   % Initial adjoint perpindicular vector
-  w_init = sym('w_init', [xdim, 1]);
+  w_init  = sym('w_init', [xdim, 1]);
   % Final adjoint perpindicular vector
   w_final = sym('w_final', [xdim, 1]);
 
-  %---------------------------%
-  %     Input: Parameters     %
-  %---------------------------%
+  %--------------------%
+  %     Parameters     %
+  %--------------------%
   % Adjoint parameters
   syms mu_s w_norm
 
   % Floquet parameters
-  p_flo   = [mu_s; w_norm];
+  p_flo = [mu_s; w_norm];
 
   %============================================================================%
   %                         BOUNDARY CONDITION ENCODING                        %

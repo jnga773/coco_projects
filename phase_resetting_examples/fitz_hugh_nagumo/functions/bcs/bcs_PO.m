@@ -7,7 +7,7 @@ function [data_in, y_out] = bcs_PO(prob_in, data_in, u_in)
   %                         e . F(x(0)) = 0,
   % that is, the first component of the vector field at t=0 is zero.
   %
-  % Input
+  % Parameters
   % ----------
   % prob_in : COCO problem structure
   %     Continuation problem structure.
@@ -22,38 +22,52 @@ function [data_in, y_out] = bcs_PO(prob_in, data_in, u_in)
   %     only utilises the following (as imposed by coco_add_func):
   %          * u_in(1:2) - Initial point of the periodic orbit,
   %          * u_in(3:4) - Final point of the periodic orbit,
-  %          * u_in(5:6) - Parameters.
+  %          * u_in(5:8) - Parameters.
   %
-  % Output
-  % ----------
+  % Returns
+  % -------
   % y_out : array of vectors
   %     An array containing to the two boundary conditions.
   % data_in : structure
   %     Function data structure to give dimensions of parameter and state
   %     space.
 
-  % Original vector field dimensions
-  xdim  = data_in.xdim;
-  pdim  = data_in.pdim;
-  % Vector field
-  field = data_in.fhan;
+  %============================================================================%
+  %                         READ FROM data_in STRUCTURE                        %
+  %============================================================================%
+  % These parameters are read from the data_in structure. This is defined as
+  % 'data_EP' in the 'apply_boundary_conditions_PR' function, and is the
+  % function data of the equilibrium point problem (ode_ep2ep).
+  
+  % Original vector field state-space dimension
+  xdim   = data_in.xdim;
+  % Original vector field parameter-space dimension
+  pdim   = data_in.pdim;
+  % Original vector field function
+  field  = data_in.fhan;
 
-  %---------------%
-  %     Input     %
-  %---------------%
+  %============================================================================%
+  %                                    INPUT                                   %
+  %============================================================================%
+  %-----------------------------%
+  %     State-Space Vectors     %
+  %-----------------------------%
   % Initial point of the periodic orbit
   x0         = u_in(1 : xdim);
   % Final point of the periodic orbit
   x1         = u_in(xdim+1 : 2*xdim);
+
+  %--------------------%
+  %     Parameters     %
+  %--------------------%
   % Parameters
   parameters = u_in(2*xdim+1 : end);
-
   % System parameters
-  p_system = parameters(1:pdim);
+  p_sys      = parameters(1:pdim);
 
-  %--------------------------%
-  %     Calculate Things     %
-  %--------------------------%
+  %============================================================================%
+  %                         BOUNDARY CONDITION ENCODING                        %
+  %============================================================================%
   % Identity matrix
   ones_matrix = eye(xdim);
   % First component unit vector
@@ -62,11 +76,11 @@ function [data_in, y_out] = bcs_PO(prob_in, data_in, u_in)
   % Periodic boundary conditions
   bcs1 = x0 - x1;
   % First component of the vector field is zero (phase condition)
-  bcs2 = e1 * field(x0, p_system);
+  bcs2 = e1 * field(x0, p_sys);
 
-  %----------------%
-  %     Output     %
-  %----------------%
+  %============================================================================%
+  %                                   OUTPUT                                   %
+  %============================================================================%
   y_out = [bcs1;
            bcs2];
 

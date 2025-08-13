@@ -28,10 +28,10 @@ function bcs_coco_out = bcs_isochron_symbolic()
   %            u_in(19:20) - w(1) of segment 2,
   %            u_in(21:22) - x(1) of segment 3,
   %            u_in(23:24) - x(1) of segment 4,
-  %            u_in(25:34) - Parameters.
+  %            u_in(25:33) - Parameters.
   %
-  % Output
-  % ----------
+  % Returns
+  % -------
   % bcs_coco_out : cell of function handles
   %     List of CoCo-ified symbolic functions for the boundary conditions
   %     Jacobian, and Hessian.
@@ -39,18 +39,19 @@ function bcs_coco_out = bcs_isochron_symbolic()
   %============================================================================%
   %                          CHANGE THESE PARAMETERS                           %
   %============================================================================%
-  % State-space dimension
-  xdim = 2;
-  pdim = 2;
-  % Symbolic vector field function
+  % Original vector field state-space dimension
+  xdim  = 2;
+  % Original vector field parameter-space dimension
+  pdim  = 2;
+  % Original vector field symbolic function
   field = @winfree_symbolic_field;
 
   %============================================================================%
-  %                              INPUT PARAMETERS                              %
+  %                                    INPUT                                   %
   %============================================================================%
-  %--------------------------------%
-  %     Input: Initial Vectors     %
-  %--------------------------------%
+  %-------------------------%
+  %     Initial Vectors     %
+  %-------------------------%
   % Segment 1 - x(0)
   x0_seg1 = sym('x0_seg1', [xdim, 1]);
   % Segment 1 - w(0)
@@ -64,9 +65,9 @@ function bcs_coco_out = bcs_isochron_symbolic()
   % Segment 4 - x(0)
   x0_seg4 = sym('x0_seg4', [xdim, 1]);
 
-  %------------------------------%
-  %     Input: Final Vectors     %
-  %------------------------------%
+  %-----------------------%
+  %     Final Vectors     %
+  %-----------------------%
   % Segment 1 - x(1)
   x1_seg1 = sym('x1_seg1', [xdim, 1]);
   % Segment 1 - w(1)
@@ -80,9 +81,9 @@ function bcs_coco_out = bcs_isochron_symbolic()
   % Segment 4 - x(1)
   x1_seg4 = sym('x1_seg4', [xdim, 1]);
 
-  %---------------------------%
-  %     Input: Parameters     %
-  %---------------------------%
+  %--------------------%
+  %     Parameters     %
+  %--------------------%
   % System parameters
   p_sys = sym('p', [pdim, 1]);
 
@@ -106,6 +107,7 @@ function bcs_coco_out = bcs_isochron_symbolic()
     % Perturbation vector
     d_vec = [d_x; d_y; d_z];
   end
+  
   %============================================================================%
   %                         BOUNDARY CONDITION ENCODING                        %
   %============================================================================%

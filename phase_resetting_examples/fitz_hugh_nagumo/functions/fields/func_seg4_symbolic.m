@@ -15,27 +15,28 @@ function F_coco_out = func_seg4_symbolic()
   %============================================================================%
   %                          CHANGE THESE PARAMETERS                           %
   %============================================================================%
-  % State space dimension
+  % Original vector field state-space dimension
   xdim  = 2;
+  % Original vector field parameter-space dimension
   pdim  = 4;
-  % Symbolic vector field function
+  % Original vector field symbolic function
   field = @fhn_symbolic_field;
 
   %============================================================================%
-  %                              INPUT PARAMETERS                              %
+  %                                    INPUT                                   %
   %============================================================================%
-  %--------------------------------------%
-  %     Input: State-Space Variables     %
-  %--------------------------------------%
+  %-------------------------------%
+  %     State-Space Variables     %
+  %-------------------------------%
   % State-space variables
   x_vec = sym('x', [xdim, 1]);
 
   % Adjoint equation variables
   wvec = sym('w', [xdim, 1]);
 
-  %---------------------------%
-  %     Input: Parameters     %
-  %---------------------------%
+  %--------------------%
+  %     Parameters     %
+  %--------------------%
   % System parameters
   p_sys = sym('p', [pdim, 1]);
 

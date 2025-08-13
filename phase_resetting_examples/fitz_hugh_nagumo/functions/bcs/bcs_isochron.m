@@ -17,7 +17,7 @@ function [data_in, y_out] = bcs_isochron(prob_in, data_in, u_in)
   % the displacement vector is defined by two separate component
   % parameters: d_{p} = (d_x, d_y).
   %
-  % Input
+  % Parameters
   % ----------
   % prob_in : COCO problem structure
   %     Continuation problem structure.
@@ -38,31 +38,36 @@ function [data_in, y_out] = bcs_isochron(prob_in, data_in, u_in)
   %            u_in(19:20) - w(1) of segment 2,
   %            u_in(21:22) - x(1) of segment 3,
   %            u_in(23:24) - x(1) of segment 4,
-  %            u_in(25:34) - Parameters.
+  %            u_in(25:35) - Parameters.
   %
-  % Output
-  % ----------
+  % Returns
+  % -------
   % y_out : array of vectors
   %     An array containing the boundary conditions.
   % data_in : structure
   %     Function data structure to give dimensions of parameter and state
   %     space.
 
-  % (defined in calc_PR_initial_conditions.m)
-  % Original vector space dimensions
+  %============================================================================%
+  %                         READ FROM data_in STRUCTURE                        %
+  %============================================================================%
+  % These parameters are read from the data_in structure. This is defined as
+  % 'data_EP' in the 'apply_boundary_conditions_PR' function, and is the
+  % function data of the equilibrium point problem (ode_ep2ep).
+  
+  % Original vector field state-space dimension
   xdim   = data_in.xdim;
+  % Original vector field parameter-space dimension
   pdim   = data_in.pdim;
-  % Parameter maps
-  p_maps = data_in.p_maps;
-  % Vector field
+  % Original vector field function
   field  = data_in.fhan;
 
   %============================================================================%
-  %                              INPUT PARAMETERS                              %
+  %                                    INPUT                                   %
   %============================================================================%
-  %--------------------------------%
-  %     Input: Initial Vectors     %
-  %--------------------------------%
+  %-------------------------%
+  %     Initial Vectors     %
+  %-------------------------%
   % Segment 1 - x(0)
   x0_seg1       = u_in(1 : xdim);
   % Segment 1 - w(0)
@@ -76,9 +81,9 @@ function [data_in, y_out] = bcs_isochron(prob_in, data_in, u_in)
   % Segment 4 - x(0)
   x0_seg4       = u_in(5*xdim+1 : 6*xdim);
 
-  %------------------------------%
-  %     Input: Final Vectors     %
-  %------------------------------%
+  %-----------------------%
+  %     Final Vectors     %
+  %-----------------------%
   % Segment 1 - x(1)
   x1_seg1       = u_in(6*xdim+1 : 7*xdim);
   % Segment 1 - w(1)
@@ -92,14 +97,14 @@ function [data_in, y_out] = bcs_isochron(prob_in, data_in, u_in)
   % Segment 4 - x(1)
   x1_seg4       = u_in(11*xdim+1 : 12*xdim);
 
-  %---------------------------%
-  %     Input: Parameters     %
-  %---------------------------%
+  %--------------------%
+  %     Parameters     %
+  %--------------------%
   % Parameters
   parameters    = u_in(12*xdim+1 : end);
 
   % System parameters
-  p_system     = parameters(1 : pdim);
+  p_sys         = parameters(1 : pdim);
   % Phase resetting parameters
   p_PR          = parameters(pdim+1 : end);
 

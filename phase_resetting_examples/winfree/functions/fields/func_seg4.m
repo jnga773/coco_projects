@@ -24,25 +24,25 @@ function y_out = func_seg4(x_in, p_in)
   %============================================================================%
   %                          CHANGE THESE PARAMETERS                           %
   %============================================================================%
-  % State space dimension
+  % Original vector field state-space dimension
   xdim       = 2;
+  % Original vector field parameter-space dimension
   pdim       = 2;
   % Original vector field function
   field      = @winfree;
-  field_DFDX = @winfree_DFDX;
 
   %============================================================================%
-  %                              INPUT PARAMETERS                              %
+  %                                    INPUT                                   %
   %============================================================================%
-  %--------------------------------------%
-  %     Input: State-Space Variables     %
-  %--------------------------------------%
+  %-------------------------------%
+  %     State-Space Variables     %
+  %-------------------------------%
   % Array of state-space variables
   x_vec         = x_in(1:xdim, :);
   
-  %---------------------------%
-  %     Input: Parameters     %
-  %---------------------------%
+  %--------------------%
+  %     Parameters     %
+  %--------------------%
   % System parameters
   p_sys         = p_in(1 : pdim, :);
   % Phase resetting parameters
@@ -50,9 +50,9 @@ function y_out = func_seg4(x_in, p_in)
 
   % Phase resetting parameters
   % Integer for period
-  k             = p_PR(1, :);
+  % k             = p_PR(1, :);
   % Phase where perturbation starts
-  % theta_old     = p_PR(2, :);
+  theta_old     = p_PR(2, :);
   % Phase where segment comes back to \Gamma
   % theta_new     = p_PR(3, :);
   % Stable Floquet eigenvalue

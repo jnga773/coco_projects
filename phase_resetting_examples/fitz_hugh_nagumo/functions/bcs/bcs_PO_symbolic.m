@@ -15,10 +15,10 @@ function bcs_coco_out = bcs_PO_symbolic()
   % u-vector components:
   %          * u_in(1:2) - Initial point of the periodic orbit,
   %          * u_in(3:4) - Final point of the periodic orbit,
-  %          * u_in(5L6) - Parameters.
+  %          * u_in(5:8) - Parameters.
   %
-  % Output
-  % ----------
+  % Returns
+  % -------
   % bcs_coco_out : cell of function handles
   %     List of CoCo-ified symbolic functions for the boundary conditions
   %     Jacobian, and Hessian.
@@ -26,26 +26,27 @@ function bcs_coco_out = bcs_PO_symbolic()
   %============================================================================%
   %                          CHANGE THESE PARAMETERS                           %
   %============================================================================%
-  % State-space dimension
-  xdim = 2;
-  pdim = 4;
-  % Symbolic vector field function
+  % Original vector field state-space dimension
+  xdim  = 2;
+  % Original vector field parameter-space dimension
+  pdim  = 4;
+  % Original vector field symbolic function
   field = @fhn_symbolic_field;
 
   %============================================================================%
-  %                              INPUT PARAMETERS                              %
+  %                                    INPUT                                   %
   %============================================================================%
-  %------------------------------------%
-  %     Input: State-Space Vectors     %
-  %------------------------------------%
+  %-----------------------------%
+  %     State-Space Vectors     %
+  %-----------------------------%
   % Initial point of the periodic orbit
   x_init = sym('x', [xdim, 1]);
   % Final point of the periodic orbit
   x_final = sym('x_final', [xdim, 1]);
 
-  %---------------------------%
-  %     Input: Parameters     %
-  %---------------------------%
+  %--------------------%
+  %     Parameters     %
+  %--------------------%
   % System parameters
   p_sys = sym('p', [pdim, 1]);
 

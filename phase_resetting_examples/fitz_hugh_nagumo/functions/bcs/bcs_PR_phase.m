@@ -1,12 +1,8 @@
-function [data_in, y_out] = bcs_VAR(prob_in, data_in, u_in)
-  % [data_in, y_out] = bcs_VAR(prob_in, data_in, u_in)
+function [data_in, y_out] = bcs_PR_phase(prob_in, data_in, u_in)
+  % [data_in, y_out] = bcs_PR_phase(prob_in, data_in, u_in)
   %
-  % Boundary conditions for the Floquet multipliers with the adjoint equation
-  %                  d/dt w = -J^{T} w    .
-  % The boundary conditions we require are the eigenvalue equations and that
-  % the norm of w is equal to 1:
-  %                   w(1) = \mu_{f} w(0) ,                         (1)
-  %                norm(w) = w_norm       .                         (2)
+  % Boundary conditions for the isochron phase, that is:
+  %            \theta_old - \theta_new = 0 .
   %
   % Parameters
   % ----------
@@ -16,11 +12,7 @@ function [data_in, y_out] = bcs_VAR(prob_in, data_in, u_in)
   %     Problem data structure contain with function data.
   % u_in : array (floats?)
   %     Total u-vector of the continuation problem. This function
-  %     only utilises the following (as imposed by coco_add_func):
-  %          * u_in(1:2) - Initial point of the perpendicular vector,
-  %          * u_in(3:4) - Final point of the perpendicular vector,
-  %          * u_in(5)   - Eigenvalue (mu_s),
-  %          * u_in(6)   - Norm of w (w_norm).
+  %     only utilises the parameters.
   %
   % Returns
   % -------
@@ -37,43 +29,59 @@ function [data_in, y_out] = bcs_VAR(prob_in, data_in, u_in)
   % 'data_EP' in the 'apply_boundary_conditions_PR' function, and is the
   % function data of the equilibrium point problem (ode_ep2ep).
   
-  % Original vector field state-space dimension
-  xdim   = data_in.xdim;
   % Original vector field parameter-space dimension
   pdim   = data_in.pdim;
-  % Original vector field function
-  field  = data_in.fhan;
 
   %============================================================================%
   %                                    INPUT                                   %
   %============================================================================%
-  %-------------------------------%
-  %     Adjoint-Space Vectors     %
-  %-------------------------------%
-  % Initial perpendicular vector
-  w_init  = u_in(1 : xdim);
-  % Final perpendicular vector
-  w_final = u_in(xdim+1 : 2 * xdim);
-
   %--------------------%
   %     Parameters     %
   %--------------------%
-  % Stable eigenvalue
-  mu_s   = u_in(end-1);
-  % Norm of stable orthogonal eigenvector
-  w_norm = u_in(end);
+  % System parameters
+  p_sys         = u_in(1 : pdim);
+  % Phase resetting parameters
+  p_PR          = u_in(pdim+1 : end);
+
+  % Phase resetting parameters
+  % Integer for period
+  k             = p_PR(1);
+  % Phase where perturbation starts
+  theta_old     = p_PR(2);
+  % Phase where segment comes back to \Gamma
+  theta_new     = p_PR(3);
+  % Stable Floquet eigenvalue
+  mu_s          = p_PR(4);
+  % Distance from pertured segment to \Gamma
+  eta           = p_PR(5);
+  % Perturbation vector components
+  d_x           = p_PR(6);
+  d_y           = p_PR(7);
+
+  % Perturbation vector
+  d_vec = [d_x; d_y];
+
+  % If xdim == 3, add another dimension to the perturbation vector
+  if xdim == 3
+    % Update parameter vector
+    d_z = p_PR(8);
+
+    % Perturbation vector
+    d_vec = [d_x; d_y; d_z];
+  end
 
   %============================================================================%
   %                         BOUNDARY CONDITION ENCODING                        %
   %============================================================================%
-  % Adjoint boundary conditions
-  bcs_adjt_1 = w_final - (mu_s * w_init);
-  bcs_adjt_2 = (w_init' * w_init) - w_norm;
+  %----------------------------------%
+  %     Phase Boundary Condition     %
+  %----------------------------------%
+  % Force the two phases to be equal
+  bcs_phase = theta_old - theta_new;
 
   %============================================================================%
   %                                   OUTPUT                                   %
   %============================================================================%
-  y_out = [bcs_adjt_1;
-           bcs_adjt_2];
+  y_out = bcs_phase;
 
 end

@@ -24,27 +24,29 @@ function y_out = func_seg1(x_in, p_in)
   %============================================================================%
   %                          CHANGE THESE PARAMETERS                           %
   %============================================================================%
-  % State space dimension
+  % Original vector field state-space dimension
   xdim       = 2;
+  % Original vector field parameter-space dimension
   pdim       = 4;
   % Original vector field function
   field      = @fhn;
+  % Original vector field state-space Jacobian
   field_DFDX = @fhn_DFDX;
 
   %============================================================================%
-  %                              INPUT PARAMETERS                              %
+  %                                    INPUT                                   %
   %============================================================================%
-  %--------------------------------------%
-  %     Input: State-Space Variables     %
-  %--------------------------------------%
+  %-------------------------------%
+  %     State-Space Variables     %
+  %-------------------------------%
   % State space variables
   x_vec         = x_in(1:xdim, :);
   % Perpendicular vectors
   w_vec         = x_in(xdim+1:2*xdim, :);
   
-  %---------------------------%
-  %     Input: Parameters     %
-  %---------------------------%
+  %--------------------%
+  %     Parameters     %
+  %--------------------%
   % System parameters
   p_sys         = p_in(1 : pdim, :);
   % Phase resetting parameters

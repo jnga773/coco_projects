@@ -22,27 +22,29 @@ function y_out = VAR(u_in, p_in)
   %============================================================================%
   %                          CHANGE THESE PARAMETERS                           %
   %============================================================================%
-  % State space dimension
+  % Original vector field state-space dimension
   xdim       = 2;
+  % Original vector field parameter-space dimension
   pdim       = 2;
   % Original vector field function
   field      = @winfree;
+  % Original vector field state-space Jacobian
   field_DFDX = @winfree_DFDX;
 
   %============================================================================%
-  %                              INPUT PARAMETERS                              %
+  %                                    INPUT                                   %
   %============================================================================%
-  %--------------------------------------%
-  %     Input: State-Space Variables     %
-  %--------------------------------------%
+  %-------------------------------%
+  %     State-Space Variables     %
+  %-------------------------------%
   % State vector
   x_vec = u_in(1 : xdim, :);
   % Adjoint perpendicular vector (I think)
   w_vec = u_in(xdim+1 : 2*xdim, :);
   
-  %---------------------------%
-  %     Input: Parameters     %
-  %---------------------------%
+  %--------------------%
+  %     Parameters     %
+  %--------------------%
   % System parameters
   p_sys = p_in(1:pdim, :);
 
