@@ -41,11 +41,6 @@ function bcs_coco_out = bcs_VAR_symbolic()
   % Floquet parameters
   p_flo   = [mu_s; w_norm];
 
-  % Combined vector
-  uvec    = [w_init;
-             w_final;
-             p_flo];
-
   %============================================================================%
   %                         BOUNDARY CONDITION ENCODING                        %
   %============================================================================%
@@ -60,7 +55,7 @@ function bcs_coco_out = bcs_VAR_symbolic()
   %     Total Vectors     %
   %-----------------------%
   % Combined vector
-  u_vec   = [w_init, w_final, p_flo];
+  u_vec   = [w_init; w_final; p_flo];
 
   % Boundary conditions vector
   bcs_vec = [bcs_adjt_1; bcs_adjt_2];

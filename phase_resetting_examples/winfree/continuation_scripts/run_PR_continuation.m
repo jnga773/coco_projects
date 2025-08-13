@@ -1,5 +1,5 @@
-function run_PR_continuation(run_new, run_old, label_old, data_PR, bcs_funcs, pcont, prange, options)
-  % run_PR_continuation(run_new, run_old, label_old, data_PR, bcs_funcs, options)
+function run_PR_continuation(run_new, run_old, label_old, bcs_funcs, pcont, prange, options)
+  % run_PR_continuation(run_new, run_old, label_old, bcs_funcs, options)
   %
   % Run the phase resetting continuation problem, from label_old solution in
   % run_old, and saves the results in run_new.
@@ -12,8 +12,6 @@ function run_PR_continuation(run_new, run_old, label_old, data_PR, bcs_funcs, pc
   %     The old run identifier for the sub continuation problem.
   % label_old : integer
   %     The label identifier for the previous continuation problem.
-  % data_PR : struct
-  %     Data structure containing the initial conditions for the trajectory segments.
   % bcs_funcs : list of functions
   %     Structure containing boundary condition functions.
   % pcont : cell
@@ -58,10 +56,9 @@ function run_PR_continuation(run_new, run_old, label_old, data_PR, bcs_funcs, pc
     run_new
     run_old char
     label_old double
-    data_PR struct
     bcs_funcs struct
-    pcont cell = {'theta_old', 'theta_new', 'eta', 'mu_s'};
-    prange cell = {[0.0, 2.0], [], [-1e-4, 1e-2], [0.99, 1.01]};
+    pcont cell
+    prange cell
 
     % Optional arguments
     options.SP_parameter string = ''
@@ -148,7 +145,7 @@ function run_PR_continuation(run_new, run_old, label_old, data_PR, bcs_funcs, pc
   % Apply all boundary conditions, glue parameters together, and
   % all that other good COCO stuff. Looking the function file
   % if you need to know more ;)
-  prob = apply_boundary_conditions_PR(prob, data_PR, bcs_funcs, ...
+  prob = apply_boundary_conditions_PR(prob, bcs_funcs, ...
                                       bcs_isochron=options.bcs_isochron, ...
                                       par_isochron=options.par_isochron);
 

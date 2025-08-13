@@ -9,6 +9,8 @@ There are three (or four) computation files in each folder:
 - `initial_periodic_orbit.m`: Computes the initial periodic orbit via numerical integration, then solves the variational adjoint problem.
 - `PTC.m`: Computes phase transition curves (PTCs) using the phase resetting problem structure.
 - `isochrons.m`: Computes isochrons of the periodic orbit using the phase resetting problem structure.
+  
+The boundary conditions and vector field encodings are written in regular Matlab, and also with SymCOCO, which allows for the symbolic encoding of the functions, Jacobians, and Hessians. Supply COCO with these files makes things much faster, and SymCOCO takes care of actually figuring out the Jacobians etc.
 
 ## Phase Resetting Method Outline
 Here is a very rough outline of the method used to calculate this phase resetting stuff.
@@ -23,10 +25,11 @@ Here is a very rough outline of the method used to calculate this phase resettin
 
 3. Step Three: Compute phase resetting stuff ("PTCs" or "Isochrons")
    
-   Using the final solution from the adjoint variational problem, we can compute the initial solution to the phase resetting problem (`calc_initial_solution_PR.m`). We split the four segments of the phase resetting problem into four separate `COLL` segments, with `ode_isol2coll`. 
+   Using the final solution from the adjoint variational problem, we can compute the initial solution to the phase resetting problem (`calc_initial_solution_PR.m`). We split the four segments of the phase resetting problem into four separate `COLL` segments, with `ode_isol2coll`. We also continue the equilibrium point which lives "inside" the periodic orbit with `ode_ep2ep`. This segment is also used in the boundary condition functions to determine the dimensions of the state-space `xdim`, parameter space `pdim`, and the base vector fields `fhan`.
 
 ## Code Structure
 The structure of each example folder is as follows:
+
 - `continuation_scripts`: Contains all the Matlab function files for different continuation steps. It contains the following functions:
   - `glue_parameters_PO.m` - Glues the parameters of the `PO` and `EP` toolbox calls in the "Initial Periodic Orbit" run.
   - `apply_boundary_conditions_PO.m` - Glues parameters between segments, and applied periodic orbit boundary conditions in the "Initial Periodic Orbit" runs.
@@ -39,3 +42,26 @@ The structure of each example folder is as follows:
   - `run_PR_continuation.m` - Once the first phase resetting run is set up (with the `ode_isol2coll` calls), the code block for each run is essentially the same. To tidy things up, I mushed it all into this one function.
 - `functions`: Contains all of the COCO compatible encodings of the boundary conditions (`bcs`), vector fields (`fields`), and the output files from SymCOCO (`symcoco`)
 - `plotting_scripts`: A collection of scripts used to plot and visualise some of the computations.
+
+
+## Things to Change for Other Systems
+This phase resetting code is written to be fairly generic. To make this work for your system, however, there are a few things you need to change in the code:
+
+- Symbolic boundary conditions in `functions/bcs/`:
+  - `xdim`: The state-space dimension of the original vector field,
+  - `pdim`: The parameter-space dimension of the original vector field,
+  - `field`: The symbolic encoding of the original vector field.
+- Hard-coded **and** symbolic vector fields in `functions/fields`:
+  - `xdim`: The state-space dimension of the original vector field,
+  - `pdim`: The parameter-space dimension of the original vector field,
+  - `field`: The symbolic or hard-coded encoding of the original vector field,
+  - `field_DFDX`: The hard-coded encoding of the original state-space Jacobian.
+- Obviously the hard-coded vector fields `XXX`, `XXX_DFDX`, and `XXX_DFDP`, e.g. `winfree_DFDX` or `fhn_DFDP`.
+- Also, the parameters, paramter names for the specific periodic orbit you're looking for in `initial_periodic_orbit.m`, and at the start of `PTC.m` and `isochron.m`.
+- The perturbation vector in`bcs_PR.m` and `bcs_PR_symbolic.m` is defined in polar co-ordinates: $d = (\cos(\theta), \sin(\theta)$ for 2D and $d = (\cos(\theta) \sin(\phi), \sin(\theta) \sin(\phi), \cos(\phi))$ for 3D. If you have a higher dimension, or want a specific arrangement, you will have to change this.
+  
+  This code is written to support up to 3-dimensional problems only. Anything more will require more components for $d$. These are defined in `continuation_scripts/calc_initial_solution_PR.m`, so you will have to adapt that file too.
+
+The order of the phase-resetting parameters is important, as that is how they are defined in all of the boundary condition functions. If you want to change them around, make sure the order is the same in `calc_initial_solution_PR.m` as well as the boundary conditions.
+
+There may be more, so look out for Matlab's error codes.

@@ -96,7 +96,7 @@ function bcs_coco_out = bcs_PR_segs_symbolic()
 
   % Perturbation vector
   d_vec = [cos(theta_perturb * (2 * pi));
-           sin(theta_perturb* (2 * pi))];
+           sin(theta_perturb * (2 * pi))];
 
   % If xdim == 3, add another dimension to the perturbation vector
   if xdim == 3

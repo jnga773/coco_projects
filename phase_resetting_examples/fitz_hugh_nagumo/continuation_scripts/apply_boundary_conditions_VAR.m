@@ -29,38 +29,36 @@ function prob_out = apply_boundary_conditions_VAR(prob_in, bcs_funcs_in)
   %     Read the Segment Data     %
   %-------------------------------%
   % Read function data and u-vector indices
-  [data, uidx] = coco_get_func_data(prob, 'adjoint.coll', 'data', 'uidx');
-  % Read index data equilibrium points
-  [data_x0, uidx_x0] = coco_get_func_data(prob, 'x0.ep',   'data', 'uidx');
+  [data_VAR, uidx_VAR] = coco_get_func_data(prob, 'adjoint.coll', 'data', 'uidx');
+  % Read function data for equilibrium point
+  [data_EP, uidx_EP]   = coco_get_func_data(prob, 'x0.ep', 'data', 'uidx');
 
   % Read index mappings from data
-  maps = data.coll_seg.maps;
-  % maps_var = data_var.coll_var;
-  maps_x0 = data_x0.ep_eqn;
-
-  % Dimensions of original structure
-  xdim = data_x0.xdim;
-  pdim = data_x0.pdim;
+  maps_VAR = data_VAR.coll_seg.maps;
+  maps_EP  = data_EP.ep_eqn;
 
   %-------------------------%
   %     Glue Parameters     %
   %-------------------------%
-  prob = coco_add_glue(prob, 'glue_p1', uidx(maps.p_idx(1:pdim)), uidx_x0(maps_x0.p_idx));
+  % Glue 'EP' and 'VAR' parameters together
+  prob = coco_add_glue(prob, 'glue_par_VAR_EP', ...
+                      uidx_VAR(maps_VAR.p_idx(1:data_EP.pdim)), ...
+                      uidx_EP(maps_EP.p_idx));
 
   %-----------------------------------%
   %     Apply Boundary Conditions     %
   %-----------------------------------%
   % Apply periodic orbit boundary conditions
-  prob = coco_add_func(prob, 'bcs_po', bcs_funcs_in.bcs_PO{:}, data_x0, 'zero', 'uidx', ...
-                       uidx([maps.x0_idx(1:xdim); ...
-                             maps.x1_idx(1:xdim); ...
-                             maps.p_idx(1:pdim)]));
+  prob = coco_add_func(prob, 'bcs_po', bcs_funcs_in.bcs_PO{:}, data_EP, 'zero', 'uidx', ...
+                       uidx_VAR([maps_VAR.x0_idx(1:data_EP.xdim); ...
+                                 maps_VAR.x1_idx(1:data_EP.xdim); ...
+                                 maps_VAR.p_idx(1:data_EP.pdim)]));
 
   % Apply adjoint boundary conditions
-  prob = coco_add_func(prob, 'bcs_adjoint', bcs_funcs_in.bcs_VAR{:}, data_x0, 'zero', 'uidx', ...
-                       uidx([maps.x0_idx(xdim+1:end); ...
-                             maps.x1_idx(xdim+1:end); ...
-                             maps.p_idx(end-1:end)]));
+  prob = coco_add_func(prob, 'bcs_VAR', bcs_funcs_in.bcs_VAR{:}, data_EP, 'zero', 'uidx', ...
+                       uidx_VAR([maps_VAR.x0_idx(data_EP.xdim+1:end); ...
+                                 maps_VAR.x1_idx(data_EP.xdim+1:end); ...
+                                 maps_VAR.p_idx(end-1:end)]));
 
   %----------------%
   %     Output     %

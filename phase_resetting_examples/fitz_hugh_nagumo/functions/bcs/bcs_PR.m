@@ -48,8 +48,6 @@ function [data_in, y_out] = bcs_PR(prob_in, data_in, u_in)
   % Original vector space dimensions
   xdim   = data_in.xdim;
   pdim   = data_in.pdim;
-  % Parameter maps
-  p_maps = data_in.p_maps;
   % Vector field
   field  = data_in.fhan;
 
@@ -99,28 +97,28 @@ function [data_in, y_out] = bcs_PR(prob_in, data_in, u_in)
 
   % Phase resetting parameters
   % Integer for period
-  % k             = parameters(p_maps.k);
+  % k             = parameters(pdim+1);
   % Phase where perturbation starts
-  % theta_old     = parameters(p_maps.theta_old);
+  % theta_old     = parameters(pdim+2);
   % Phase where segment comes back to \Gamma
-  % theta_new     = parameters(p_maps.theta_new);
+  % theta_new     = parameters(pdim+3);
   % Stable Floquet eigenvalue
-  mu_s          = parameters(p_maps.mu_s);
+  mu_s          = parameters(pdim+4);
   % Distance from pertured segment to \Gamma
-  eta           = parameters(p_maps.eta);
+  eta           = parameters(pdim+5);
   % Size of perturbation
-  A_perturb     = parameters(p_maps.A_perturb);
+  A_perturb     = parameters(pdim+6);
   % Angle of perturbation
-  theta_perturb = parameters(p_maps.theta_perturb);
+  theta_perturb = parameters(pdim+7);
 
   % Perturbation vector
   d_vec = [cos(theta_perturb * (2 * pi));
-           sin(theta_perturb* (2 * pi))];
+           sin(theta_perturb * (2 * pi))];
 
   % If xdim == 3, add another dimension to the perturbation vector
   if xdim == 3
     % Update parameter vector
-    phi_perturb = parameters(p_maps.phi_perturb);
+    phi_perturb = parameters(pdim+8);
 
     % Perturbation vector
     d_vec = [cos(theta_perturb* (2 * pi)) * sin(phi_perturb * pi);

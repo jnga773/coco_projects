@@ -57,8 +57,8 @@ function plot_PR_phase_space(run_in, label_in)
   %---------------------%
   %     Axis Limits     %
   %---------------------%
-  ax.XAxis.Limits = [-2, 2];
-  ax.YAxis.Limits = [-2, 2];
+  ax.XAxis.Limits = [-3, 3];
+  ax.YAxis.Limits = [-3, 3];
 
   %---------------------%
   %     Axis Labels     %

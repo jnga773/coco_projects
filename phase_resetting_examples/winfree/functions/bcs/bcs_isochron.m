@@ -52,8 +52,6 @@ function [data_in, y_out] = bcs_isochron(prob_in, data_in, u_in)
   % Original vector space dimensions
   xdim   = data_in.xdim;
   pdim   = data_in.pdim;
-  % Parameter maps
-  p_maps = data_in.p_maps;
   % Vector field
   field  = data_in.fhan;
 
@@ -103,18 +101,18 @@ function [data_in, y_out] = bcs_isochron(prob_in, data_in, u_in)
 
   % Phase resetting parameters
   % Integer for period
-  % k             = parameters(p_maps.k);
+  % k             = parameters(pdim+1);
   % Phase where perturbation starts
-  % theta_old     = parameters(p_maps.theta_old);
+  % theta_old     = parameters(pdim+2);
   % Phase where segment comes back to \Gamma
-  % theta_new     = parameters(p_maps.theta_new);
+  % theta_new     = parameters(pdim+3);
   % Stable Floquet eigenvalue
-  mu_s          = parameters(p_maps.mu_s);
+  mu_s          = parameters(pdim+4);
   % Distance from pertured segment to \Gamma
-  eta           = parameters(p_maps.eta);
+  eta           = parameters(pdim+5);
   % Perturbation vector components
-  d_x = parameters(p_maps.d_x);
-  d_y = parameters(p_maps.d_y);
+  d_x = parameters(pdim+6);
+  d_y = parameters(pdim+7);
 
   % Perturbation vector
   d_vec = [d_x; d_y];
@@ -122,7 +120,7 @@ function [data_in, y_out] = bcs_isochron(prob_in, data_in, u_in)
   % If xdim == 3, add another dimension to the perturbation vector
   if xdim == 3
     % Update parameter vector
-    d_z = parameters(p_maps.d_z);
+    d_z = parameters(pdim+8);
 
     % Perturbation vector
     d_vec = [d_x; d_y; d_z];

@@ -23,7 +23,7 @@ addpath('./functions/symcoco/');
 % Add continuation scripts
 addpath('./continuation_scripts/');
 % Add plotting scripts
-addpath('./plotting_scripts');
+addpath('./plotting_scripts/initial_PO/');
 
 %--------------------%
 %     Parameters     %

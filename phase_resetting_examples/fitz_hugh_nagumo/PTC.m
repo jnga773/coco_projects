@@ -23,7 +23,7 @@ addpath('./functions/symcoco/');
 % Add continuation scripts
 addpath('./continuation_scripts/');
 % Add plotting scripts
-addpath('./plotting_scripts');
+addpath('./plotting_scripts/PTC/');
 
 %--------------------%
 %     Parameters     %
@@ -566,7 +566,7 @@ prob = ode_ep2ep(prob, 'x0', run_old, label_old);
 % Apply all boundary conditions, glue parameters together, and
 % all that other good COCO stuff. Looking the function file
 % if you need to know more ;)
-prob = apply_boundary_conditions_PR(prob, data_PR, bcs_funcs);
+prob = apply_boundary_conditions_PR(prob, bcs_funcs);
 
 %-------------------------%
 %     Add COCO Events     %
@@ -641,7 +641,7 @@ prange = {[0.0, 2.0], [], ...
           [-1e-4, 1e-2], [0.99, 1.01]};
 
 % Run COCO continuation
-run_PR_continuation(run_new, run_old, label_old, data_PR, bcs_funcs, ...
+run_PR_continuation(run_new, run_old, label_old, bcs_funcs, ...
                     pcont, prange);
 
 %--------------------%
@@ -703,7 +703,7 @@ parfor (run = 1 : length(label_old), M)
             [-1e-4, 1e-2], [0.99, 1.01]};
 
   % Run COCO continuation
-  run_PR_continuation(run_new, run_old, label_old, data_PR, bcs_funcs, ...
+  run_PR_continuation(this_run_name, run_old, this_run_label, bcs_funcs, ...
                       pcont, prange);
 
 end
