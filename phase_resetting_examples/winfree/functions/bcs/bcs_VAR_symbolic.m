@@ -9,6 +9,14 @@ function bcs_coco_out = bcs_VAR_symbolic()
   %                   w(1) = \mu_{f} w(0) ,                         (1)
   %                norm(w) = w_norm       .                         (2)
   %
+  % For the hardcoded version, and the actual functions that
+  % will be coco_add_func call will include the following
+  % u-vector components:
+  %          * u_in(1:2) - Initial point of the perpendicular vector,
+  %          * u_in(3:4) - Final point of the perpendicular vector,
+  %          * u_in(5)   - Eigenvalue (mu_s),
+  %          * u_in(6)   - Norm of w (w_norm).
+  %
   % Returns
   % -------
   % bcs_coco_out : cell of function handles

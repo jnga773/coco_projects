@@ -53,9 +53,9 @@ function [data_in, y_out] = bcs_PO(prob_in, data_in, u_in)
   %     State-Space Vectors     %
   %-----------------------------%
   % Initial point of the periodic orbit
-  x0         = u_in(1 : xdim);
+  x_init     = u_in(1 : xdim);
   % Final point of the periodic orbit
-  x1         = u_in(xdim+1 : 2*xdim);
+  x_final    = u_in(xdim+1 : 2*xdim);
 
   %--------------------%
   %     Parameters     %
@@ -74,14 +74,13 @@ function [data_in, y_out] = bcs_PO(prob_in, data_in, u_in)
   e1 = ones_matrix(1, :);
 
   % Periodic boundary conditions
-  bcs1 = x0 - x1;
+  bcs1 = x_init - x_final;
   % First component of the vector field is zero (phase condition)
-  bcs2 = e1 * field(x0, p_sys);
+  bcs2 = e1 * field(x_init, p_sys);
 
   %============================================================================%
   %                                   OUTPUT                                   %
   %============================================================================%
-  y_out = [bcs1;
-           bcs2];
+  y_out = [bcs1; bcs2];
 
 end

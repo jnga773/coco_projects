@@ -39,36 +39,25 @@ function [data_in, y_out] = bcs_PR_phase(prob_in, data_in, u_in)
   %     Parameters     %
   %--------------------%
   % System parameters
-  p_sys         = u_in(1 : pdim);
+  % p_sys         = u_in(1 : pdim);
   % Phase resetting parameters
   p_PR          = u_in(pdim+1 : end);
 
   % Phase resetting parameters
   % Integer for period
-  k             = p_PR(1);
+  % k             = p_PR(1);
   % Phase where perturbation starts
   theta_old     = p_PR(2);
   % Phase where segment comes back to \Gamma
   theta_new     = p_PR(3);
   % Stable Floquet eigenvalue
-  mu_s          = p_PR(4);
+  % mu_s          = p_PR(4);
   % Distance from pertured segment to \Gamma
-  eta           = p_PR(5);
+  % eta           = p_PR(5);
   % Perturbation vector components
-  d_x           = p_PR(6);
-  d_y           = p_PR(7);
-
-  % Perturbation vector
-  d_vec = [d_x; d_y];
-
-  % If xdim == 3, add another dimension to the perturbation vector
-  if xdim == 3
-    % Update parameter vector
-    d_z = p_PR(8);
-
-    % Perturbation vector
-    d_vec = [d_x; d_y; d_z];
-  end
+  % d_x           = p_PR(6);
+  % d_y           = p_PR(7);
+  % d_z           = p_PR(8);
 
   %============================================================================%
   %                         BOUNDARY CONDITION ENCODING                        %

@@ -50,9 +50,9 @@ function y_out = func_seg4(x_in, p_in)
 
   % Phase resetting parameters
   % Integer for period
-  % k             = p_PR(1, :);
+  k             = p_PR(1, :);
   % Phase where perturbation starts
-  theta_old     = p_PR(2, :);
+  % theta_old     = p_PR(2, :);
   % Phase where segment comes back to \Gamma
   % theta_new     = p_PR(3, :);
   % Stable Floquet eigenvalue
