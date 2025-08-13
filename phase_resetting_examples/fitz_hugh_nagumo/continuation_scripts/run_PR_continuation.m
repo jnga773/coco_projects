@@ -1,14 +1,14 @@
 function run_PR_continuation(run_new, run_old, label_old, bcs_funcs, pcont, prange, options)
-  % run_PR_continuation(run_new, run_old, label_old, bcs_funcs, options)
+  % run_PR_continuation(run_new, run_old, label_old, bcs_funcs, pcont, prange, options)
   %
   % Run the phase resetting continuation problem, from label_old solution in
   % run_old, and saves the results in run_new.
   %
   % Parameters
   % ----------
-  % run_new : string
+  % run_new : string or cell of strings
   %     The new run identifier for the main continuation problem.
-  % run_old : string
+  % run_old : string or cell of strings
   %     The old run identifier for the sub continuation problem.
   % label_old : integer
   %     The label identifier for the previous continuation problem.
@@ -40,10 +40,6 @@ function run_PR_continuation(run_new, run_old, label_old, bcs_funcs, pcont, pran
   %     Maximum number of continuation steps. (default: 25)
   % NPR : integer
   %     Frequency of saved solutions. (default: 10)
-  % bcs_isochron : boolean
-  %     Flag to determine if the isochron phase condition should be added.
-  % par_isochron : boolean
-  %     Flag to determine if isochron parameters should be recorded.
   %
   % See Also
   % --------
@@ -54,11 +50,11 @@ function run_PR_continuation(run_new, run_old, label_old, bcs_funcs, pcont, pran
   %-------------------%
   arguments
     run_new
-    run_old char
+    run_old
     label_old double
     bcs_funcs struct
-    pcont cell
-    prange cell
+    pcont cell = {'theta_old', 'theta_new', 'eta', 'mu_s'};
+    prange cell = {[0.0, 2.0], [], [-1e-4, 1e-2], [0.99, 1.01]};
 
     % Optional arguments
     options.SP_parameter string = ''
@@ -74,9 +70,6 @@ function run_PR_continuation(run_new, run_old, label_old, bcs_funcs, pcont, pran
     options.MaxRes = 10;
     options.al_max = 25;
     options.NPR    = 10;
-
-    options.bcs_isochron logical = false;
-    options.par_isochron logical = false;
   end
 
   %----------------------------%
@@ -133,11 +126,11 @@ function run_PR_continuation(run_new, run_old, label_old, bcs_funcs, pcont, pran
   % Segment 4
   prob = ode_coll2coll(prob, 'seg4', run_old, label_old);
 
-  %-----------------------------------------%
-  %     Continue from Equilibrium Point     %
-  %-----------------------------------------%
-  % Add EP segment
-  prob = ode_ep2ep(prob, 'x0', run_old, label_old);
+  %------------------------------------%
+  %     Continue Equilibrium Point     %
+  %------------------------------------%
+  % Add equilibrium point for q inside periodic orbit
+  prob = ode_ep2ep(prob, 'xpos', run_old, label_old);
 
   %------------------------------------------------%
   %     Apply Boundary Conditions and Settings     %
@@ -145,9 +138,7 @@ function run_PR_continuation(run_new, run_old, label_old, bcs_funcs, pcont, pran
   % Apply all boundary conditions, glue parameters together, and
   % all that other good COCO stuff. Looking the function file
   % if you need to know more ;)
-  prob = apply_boundary_conditions_PR(prob, bcs_funcs, ...
-                                      bcs_isochron=options.bcs_isochron, ...
-                                      par_isochron=options.par_isochron);
+  prob = apply_boundary_conditions_PR(prob, bcs_funcs);
 
   %-------------------------%
   %     Add COCO Events     %
