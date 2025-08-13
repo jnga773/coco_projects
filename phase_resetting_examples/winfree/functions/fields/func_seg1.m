@@ -46,25 +46,25 @@ function y_out = func_seg1(x_in, p_in)
   %     Input: Parameters     %
   %---------------------------%
   % System parameters
-  p_sys         = p_in(1 : pdim);
+  p_sys         = p_in(1 : pdim, :);
   % Phase resetting parameters
-  p_PR          = p_in(pdim+1 : end);
+  p_PR          = p_in(pdim+1 : end, :);
 
   % Phase resetting parameters
   % Integer for period
-  % k             = p_PR(1);
+  % k             = p_PR(1, :);
   % Phase where perturbation starts
-  % theta_old     = p_PR(2);
+  % theta_old     = p_PR(2, :);
   % Phase where segment comes back to \Gamma
-  theta_new     = p_PR(3);
+  theta_new     = p_PR(3, :);
   % Stable Floquet eigenvalue
-  % mu_s          = p_PR(4);
+  % mu_s          = p_PR(4, :);
   % Distance from pertured segment to \Gamma
-  % eta           = p_PR(5);
+  % eta           = p_PR(5, :);
   % Size of perturbation
-  % A_perturb     = p_PR(6);
+  % A_perturb     = p_PR(6, :);
   % Angle of perturbation
-  % theta_perturb = p_PR(7);
+  % theta_perturb = p_PR(7, :);
 
   %============================================================================%
   %                           VECTOR FIELD ENCODING                            %
