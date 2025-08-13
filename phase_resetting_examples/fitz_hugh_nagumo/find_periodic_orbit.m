@@ -1,8 +1,28 @@
 %=========================================================================%
-%            FITZ-HUGH-NAGUMO (Phase Resetting Periodic Orbit)            %
+%                FITZ-HUGH-NAGUMO (FINDING PERIODIC ORBIT)                %
 %=========================================================================%
-% Doing an exmaple from this paper "A Continuation Approach to Calculating
+% Doing an example from this paper "A Continuation Approach to Calculating
 % Phase Resetting Curves" by Langfield et al.
+%
+% Here we compute a periodic orbit of the FitzHugh-Nagumo model via
+% continuation of Hopf bifurcations.
+%
+% We start from a known equilibrium point, and continue it in one
+% parameter until we find a Hopf bifurcation.
+%
+% We then continue the Hopf bifurcation in c until z = -0.8.
+%
+% From here, we compute a family of periodic orbits emanating from the
+% Hopf bifurcation, picking a solution were c = 1.0.
+%
+% We then rotate that periodic orbit such that the first point is the
+% maximum of the first state variable. We verify this solution using the
+% 'COLL' toolbox.
+%
+% Finally, we compute the adjoint variational problem, and find the
+% left eigenvector corresponding to the stable Floquet eigenvalue. We
+% continue in \mu_{s} until \mu_{s} = 1.0. We then switch branches to
+% grow the norm of the left eigenvector until wnorm = 1.0.
 
 % Clear plots
 close('all');

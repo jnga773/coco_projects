@@ -144,7 +144,7 @@ function [data_in, y_out] = bcs_isochron(prob_in, data_in, u_in)
   % Boundary Conditions - Segments 1 and 2
   bcs_seg12_1   = x0_seg1 - x1_seg2;
   bcs_seg12_2   = x1_seg1 - x0_seg2;
-  bcs_seg12_3   = e1 * field(x0_seg1, p_system);
+  bcs_seg12_3   = e1 * field(x0_seg1, p_sys);
 
   % Adjoint Boundary Conditions - Segments 1 and 2
   a_bcs_seg12_1 = w0_seg1 - w1_seg2;

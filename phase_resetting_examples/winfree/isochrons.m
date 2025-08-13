@@ -1,8 +1,55 @@
 %=========================================================================%
-%                        WINFREE MODEL (Isochron)                         %
+%                        WINFREE MODEL (ISOCHRONS)                        %
 %=========================================================================%
 % Doing an exmaple from this paper "A Continuation Approach to Calculating
 % Phase Resetting Curves" by Langfield et al.
+%
+% Initial Periodic Orbit
+% ----------------------
+% We first compute a periodic orbit for a set of parameters via numerical
+% integration with ode45. We set this as an initial solution to the 'PO'
+% toolbox to verify a periodic orbit.
+%
+% We then rotate that periodic orbit such that the first point is the
+% maximum of the first state variable. We verify this solution using the
+% 'COLL' toolbox.
+%
+% Floquet Bundle
+% --------------
+% We then compute the adjoint variational problem, and find the
+% left eigenvector corresponding to the stable Floquet eigenvalue. We
+% continue in the eigenvalue \mu_{s} until \mu_{s} = 1.0.
+% 
+% We then switch branches to grow the norm of the left eigenvector
+% until wnorm = 1.0.
+%
+% Isochrons
+% ---------
+% We then setup the phase resetting problem to calculate some isochrons.
+% The phase resetting problem is split into four segments and an equilibrium
+% point. The initial solution to each of these segments, as well as the
+% initial phase resetting parameters, are set in the
+% 'calc_initial_solution_PR' function. All of the boundary conditions
+% are applied in the 'apply_boundary_conditions_PR' function.
+%
+% The number of free parameters is set to four, however two of these
+% must always be eta and mu_s, i.e., the distance of the reset perturbed
+% orbit from \Gamma and the stable eigenvalue. That then leaves two other
+% parameters to continue in.
+%
+% In the first continuation, we start with a solution at the zero-phase
+% point along \Gamma. We then continue in the two phases theta_old and
+% theta_new. We save points along the periodic orbit to then compute
+% isochrons for these phases.
+
+% We then compute a single isochron. We fix the two phases so that
+% they remain the same, and free up two of the perturbation vector
+% components: d_x and d_y. This computes soltuions of the perturbed
+% orbit which all start along the isochron of the select phase.
+%
+% Finally, we compute a family of isochrons for each saved phase along
+% \Gamma. We make use of MATLAB's parallel computer parfor to
+% run these computations in parallel.
 
 % Clear plots
 close('all');

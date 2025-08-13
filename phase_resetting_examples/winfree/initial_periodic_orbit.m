@@ -1,8 +1,21 @@
 %=========================================================================%
-%                     WINFREE MODEL (Phase Resetting)                     %
+%              WINFREE MODEL (FINDING PERIODIC ORBIT ode45)               %
 %=========================================================================%
-% Doing an exmaple from this paper "A Continuation Approach to Calculating
+% Doing an example from this paper "A Continuation Approach to Calculating
 % Phase Resetting Curves" by Langfield et al.
+
+% Here we compute a periodic orbit of the Winfree model using ode45. We
+% set this as an initial solution to the 'PO' toolbox to find a periodic
+% orbit.
+%
+%  We then rotate that periodic orbit such that the first point is the
+% maximum of the first state variable. We verify this solution using the
+% 'COLL' toolbox.
+%
+% Finally, we compute the adjoint variational problem, and find the
+% left eigenvector corresponding to the stable Floquet eigenvalue. We
+% continue in \mu_{s} until \mu_{s} = 1.0. We then switch branches to
+% grow the norm of the left eigenvector until wnorm = 1.0.
 
 % Clear plots
 close('all');
