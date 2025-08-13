@@ -94,22 +94,24 @@ function [data_in, y_out] = bcs_PR(prob_in, data_in, u_in)
 
   % System parameters
   p_sys         = parameters(1 : pdim);
+  % Phase resetting parameters
+  p_PR          = parameters(pdim+1 : end);
 
   % Phase resetting parameters
   % Integer for period
-  % k             = parameters(pdim+1);
+  k             = p_PR(1);
   % Phase where perturbation starts
-  % theta_old     = parameters(pdim+2);
+  theta_old     = p_PR(2);
   % Phase where segment comes back to \Gamma
-  % theta_new     = parameters(pdim+3);
+  theta_new     = p_PR(3);
   % Stable Floquet eigenvalue
-  mu_s          = parameters(pdim+4);
+  mu_s          = p_PR(4);
   % Distance from pertured segment to \Gamma
-  eta           = parameters(pdim+5);
+  eta           = p_PR(5);
   % Size of perturbation
-  A_perturb     = parameters(pdim+6);
+  A_perturb     = p_PR(6);
   % Angle of perturbation
-  theta_perturb = parameters(pdim+7);
+  theta_perturb = p_PR(7);
 
   % Perturbation vector
   d_vec = [cos(theta_perturb * (2 * pi));
@@ -118,7 +120,7 @@ function [data_in, y_out] = bcs_PR(prob_in, data_in, u_in)
   % If xdim == 3, add another dimension to the perturbation vector
   if xdim == 3
     % Update parameter vector
-    phi_perturb = parameters(pdim+8);
+    phi_perturb = p_PR(8);
 
     % Perturbation vector
     d_vec = [cos(theta_perturb* (2 * pi)) * sin(phi_perturb * pi);
