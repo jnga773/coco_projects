@@ -29,7 +29,7 @@ function prob_out = apply_boundary_conditions_VAR(prob_in, bcs_funcs_in)
   %     Read the Segment Data     %
   %-------------------------------%
   % Read function data and u-vector indices
-  [data_VAR, uidx_VAR] = coco_get_func_data(prob, 'adjoint.coll', 'data', 'uidx');
+  [data_VAR, uidx_VAR] = coco_get_func_data(prob, 'VAR.coll', 'data', 'uidx');
   % Read function data for equilibrium point
   [data_EP, uidx_EP]   = coco_get_func_data(prob, 'x0.ep', 'data', 'uidx');
 

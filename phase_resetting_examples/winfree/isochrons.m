@@ -377,7 +377,9 @@ data_VAR = calc_initial_solution_VAR(run_old, label_old);
 prob = coco_prob();
 
 % Set step sizes
-prob = coco_set(prob, 'cont', 'h_min', 1e-2, 'h0', 1e-2, 'h_max', 1e-2);
+prob = coco_set(prob, 'cont', 'h_min', 1e-2);
+prob = coco_set(prob, 'cont', 'h0', 1e-2);
+prob = coco_set(prob, 'cont', 'h_max', 1e-2);
 
 % Set PtMX
 PTMX = 100;
@@ -393,7 +395,7 @@ prob = coco_set(prob, 'cont', 'NAdapt', 1);
 prob = coco_set(prob, 'coll', 'MXCL', 'off');
 
 % Add segment as initial solution
-prob = ode_isol2coll(prob, 'adjoint', funcs.VAR{:}, ...
+prob = ode_isol2coll(prob, 'VAR', funcs.VAR{:}, ...
                      data_VAR.tbp_init, data_VAR.xbp_init, ...
                      data_VAR.pnames, data_VAR.p0);
 
@@ -416,7 +418,7 @@ prob = coco_add_event(prob, 'mu=1', 'mu_s', 1.0);
 %     Run COCO     %
 %------------------%
 % Run COCO continuation
-coco(prob, run_new, [], 1, {'mu_s', 'w_norm'} , [0.0, 1.1]);
+coco(prob, run_new, [], 1, {'mu_s', 'w_norm'}, {[0.0, 1.1], []});
 
 %-------------------------------------------------------------------------%
 %%                  Grow Orthogonal Stable Eigenvector                   %%
@@ -462,8 +464,8 @@ prob = coco_prob();
 prob = coco_set(prob, 'cont', 'PtMX', 250);
 
 % Continue coll from previous branching point
-% prob = ode_BP2coll(prob, 'adjoint', run_old, label_old);
-prob = ode_coll2coll(prob, 'adjoint', run_old, label_old);
+% prob = ode_BP2coll(prob, 'VAR', run_old, label_old);
+prob = ode_coll2coll(prob, 'VAR', run_old, label_old);
 prob = coco_set(prob, 'cont', 'branch', 'switch');
 
 % Add equilibrium points for non trivial steady states
@@ -485,7 +487,7 @@ prob = coco_add_event(prob, 'NORM1', 'w_norm', 1.0);
 %     Run COCO     %
 %------------------%
 % Run COCO continuation
-coco(prob, run_new, [], 1, {'w_norm', 'mu_s', 'T'}, [0.0, 1.1]);
+coco(prob, run_new, [], 1, {'mu_s', 'w_norm'}, {[0.0, 1.1], [0.0, 1.1]});
 
 %=========================================================================%
 %%                          CALCULATE ISOCHRONS                          %%
