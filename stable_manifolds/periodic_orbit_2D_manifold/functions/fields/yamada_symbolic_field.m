@@ -1,7 +1,19 @@
 function F_out = yamada_symbolic_field(x_in, p_in)
-  % F_out = yamada_symbolic_field()
+  % F_out = yamada_symbolic_field(x_in, p_in)
   %
   % Symbolic notation of the Yamada vector field in the transformed axes.
+  %
+  % Parameters
+  % ----------
+  % x_in : array, float
+  %     State vector.
+  % p_in : array, float
+  %     Array of parameter values
+  %
+  % Returns
+  % -------
+  % F_out : array, float
+  %     Symbolic vector field.
   
   % Grab the state-space variables from x_in
   G     = x_in(1);

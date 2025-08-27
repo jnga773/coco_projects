@@ -3,7 +3,7 @@ function plot_solutions_scan(run_in)
   %     Read Data     %
   %-------------------%
   % Stable periodic orbit
-  [sol_s, ~] = coll_read_solution('PO_stable.po.orb', run_in, 1);
+  [sol_s, ~] = po_read_solution('PO_stable', run_in, 1);
   xbp_PO_s = sol_s.xbp;
 
   % Equilibrium points

@@ -2,6 +2,18 @@ function J_out = yamada_DFDX(x_in, p_in)
   % J_out = yamada_DFDX(x_in, p_in)
   % 
   % State-space Jacobian of the Yamada model set of equations.
+  %
+  % Parameters
+  % ----------
+  % x_in : array, float
+  %     State vector.
+  % p_in : array, float
+  %     Array of parameter values
+  %
+  % Returns
+  % -------
+  % J_out : array, float
+  %     Matrix of the state-space derivative Jacobian.
 
   %--------------------------%
   %     Input Parameters     %

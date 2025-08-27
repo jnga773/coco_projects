@@ -77,7 +77,7 @@ function data_out = calc_initial_solution_PR(run_in, label_in, k_in, theta_pertu
   %     Read Data: Periodic Orbit     %
   %-----------------------------------%
   % Read COCO solution
-  [sol, data] = coll_read_solution('adjoint', run_in, label_in);
+  [sol, data] = coll_read_solution('VAR', run_in, label_in);
 
   % State space solution
   xbp_read = sol.xbp;

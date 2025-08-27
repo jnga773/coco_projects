@@ -22,6 +22,10 @@ function run_PR_continuation(run_new, run_old, label_old, bcs_funcs, pcont, pran
   %     Parameter to save SP solutions for
   % SP_values : array
   %     Array of values of theta_old to save solutions with the 'SP' label.
+  % bcs_isochron : boolean
+  %     Flag to determine if the isochron phase condition should be added.
+  % par_isochron : boolean
+  %     Flag to determine if isochron parameters should be recorded.
   % TOL : double
   %     Tolerance for the continuation. (Default: 1e-6)
   % h_min : double
@@ -59,6 +63,10 @@ function run_PR_continuation(run_new, run_old, label_old, bcs_funcs, pcont, pran
     % Optional arguments
     options.SP_parameter string = ''
     options.SP_values double = []
+
+    % Optional settings for isochron computations
+    options.bcs_isochron logical = false;
+    options.par_isochron logical = false;
 
     % COCO Settings
     options.TOL    = 1e-6
@@ -130,7 +138,7 @@ function run_PR_continuation(run_new, run_old, label_old, bcs_funcs, pcont, pran
   %     Continue Equilibrium Point     %
   %------------------------------------%
   % Add equilibrium point for q inside periodic orbit
-  prob = ode_ep2ep(prob, 'xpos', run_old, label_old);
+  prob = ode_ep2ep(prob, 'x0', run_old, label_old);
 
   %------------------------------------------------%
   %     Apply Boundary Conditions and Settings     %
@@ -138,7 +146,9 @@ function run_PR_continuation(run_new, run_old, label_old, bcs_funcs, pcont, pran
   % Apply all boundary conditions, glue parameters together, and
   % all that other good COCO stuff. Looking the function file
   % if you need to know more ;)
-  prob = apply_boundary_conditions_PR(prob, bcs_funcs);
+  prob = apply_boundary_conditions_PR(prob, bcs_funcs, ...
+                                      bcs_isochron=options.bcs_isochron, ...
+                                      par_isochron=options.par_isochron);
 
   %-------------------------%
   %     Add COCO Events     %

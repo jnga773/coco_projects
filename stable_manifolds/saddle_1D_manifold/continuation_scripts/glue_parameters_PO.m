@@ -38,7 +38,7 @@ function prob_out = glue_parameters_PO(prob_in, floquet)
   %     Read Data     %
   %-------------------%
   % Read index data periodic orbit segment
-  [data, uidx] = coco_get_func_data(prob, 'po.orb.coll', 'data', 'uidx');
+  [data, uidx] = coco_get_func_data(prob, 'PO_stable.po.orb.coll', 'data', 'uidx');
 
   % Read index data equilibrium points
   [data1, uidx1] = coco_get_func_data(prob, 'xpos.ep', 'data', 'uidx');

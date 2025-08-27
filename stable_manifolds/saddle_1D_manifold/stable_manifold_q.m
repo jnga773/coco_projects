@@ -138,7 +138,7 @@ prob = coco_set(prob, 'cont', 'PtMX', PtMX);
 prob = coco_set(prob, 'cont', 'NPR', 10);
 
 % Set initial guess to 'coll'
-prob = ode_isol2po(prob, '', funcs.field{:}, ...
+prob = ode_isol2po(prob, 'PO_stable', funcs.field{:}, ...
                    data_ode45.t, data_ode45.x, pnames, p0);
 
 % Add equilibrium points for non trivial steady states
@@ -240,7 +240,7 @@ prob = coco_set(prob, 'cont', 'NPR', 10);
 %     Setup Continuation     %
 %----------------------------%
 % Continue periodic orbits
-prob = ode_po2po(prob, 'PO_stable', run_old, '', label_old);
+prob = ode_po2po(prob, 'PO_stable', run_old, label_old);
 
 % Add collocation trajectory segment for stable manifold
 prob = ode_isol2coll(prob, 'W1', funcs.field{:}, ...

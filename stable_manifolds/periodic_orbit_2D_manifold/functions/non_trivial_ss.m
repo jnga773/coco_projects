@@ -1,6 +1,28 @@
 function [x_pos_out, x_neg_out] = non_trivial_ss(p_in)
-  % NON_TRIVIAL_SS: Calculates the non-trivial intensity (I)
-  % steady state solutions, from analytic expressions.
+  % [x_pos_out, x_neg_out] = non_trivial_ss(p_in)
+  %
+  % Calculates the non-trivial intensity (I) steady state solutions,
+  % from analytic expressions.
+  %
+  % Parameters
+  % ----------
+  % p_in : vector
+  %     Input parameter vector containing:
+  %         - gamma : double
+  %             Decay time of gain.
+  %         - A : double
+  %             Pump current on the gain.
+  %         - B : double
+  %             Relative absorption.
+  %         - a : double
+  %             Parameter a.
+  %
+  % Returns
+  % -------
+  % x_pos_out : vector
+  %     Steady state values for the positive intensity solution.
+  % x_neg_out : vector
+  %     Steady state values for the negative intensity solution.
 
   %--------------------------%
   %     Input Parameters     %

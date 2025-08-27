@@ -2,6 +2,18 @@ function y_out = yamada(x_in, p_in)
   % y_out = yamada(x_in, p_in)
   % 
   % Vector field of the Yamada model set of equations
+  %
+  % Parameters
+  % ----------
+  % x_in : array, float
+  %     State vector.
+  % p_in : array, float
+  %     Array of parameter values
+  %
+  % Returns
+  % -------
+  % y_out : array, float
+  %     Array of the vector field of the Yamada model.
 
   %--------------------------%
   %     Input Parameters     %

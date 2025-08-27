@@ -4,6 +4,11 @@ function F_coco_out = yamada_symbolic()
   % Creates a CoCo-compatible function encoding of the
   % Yamada model vector field using MATLAB's 
   % Symbolic Toolbox.
+  %
+  % Returns
+  % -------
+  % F_coco_out : array, float
+  %     Cell of all of the functions and derivatives.
 
   %---------------%
   %     Input     %

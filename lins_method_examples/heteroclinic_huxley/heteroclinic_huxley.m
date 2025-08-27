@@ -517,9 +517,9 @@ prob = coco_set(prob, 'coll', 'NTST', 25);
 % Set NAdpat
 prob = coco_set(prob, 'cont', 'NAdapt', 1);
 
-% % Set Continuation steps
-% PtMX = 100;
-% prob = coco_set(prob, 'cont', 'PtMX', PtMX);
+% Set Continuation steps
+PtMX = 100;
+prob = coco_set(prob, 'cont', 'PtMX', [PtMX, 0]);
 
 % Construct first instance of 'coll' toolbox for unstable manifold
 prob = ode_coll2coll(prob, 'unstable', run_old, label_old);
@@ -566,7 +566,7 @@ coco(prob, run_new, [], 1, {'eps2', 'T1', 'T2', 'p1', 'seg_u'});
 label_plot = coco_bd_labs(coco_bd_read(run_new), 'EPS2');
 label_plot = label_plot(1);
 
-plot_homoclinic_manifold_run(run_new, label_plot, 5);
+plot_run_i(run_new, label_plot, 5);
 
 %-------------------------------------------------------------------------%
 %%                     Parametrise the Heteroclinic                      %%

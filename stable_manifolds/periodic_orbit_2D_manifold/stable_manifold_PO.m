@@ -1,9 +1,8 @@
 %=========================================================================%
-%                   YAMADA MODEL (Stable Manifold of q)                   %
+%                  YAMADA MODEL (Strong Stable Manifold)                  %
 %=========================================================================%
-% We compute the stable manifold of the stable periodic orbit in Region 7,
-% where there exists a stable/attracting periodic orbit. The Yamada mode
-% equations are
+% We compute the strong stable manifold of a periodic orbit in the Yamada
+% model:
 %                     G' = Gamma (A - G - G I) ,
 %                     Q' = Gamma (B - Q - a Q I) ,
 %                     I' = (G - Q - 1) I ,
@@ -463,7 +462,7 @@ prob = coco_set(prob, 'coll', 'MXCL', false);
 % prob = coco_set(prob, 'cont', 'h_max', 1e-1);
 
 % Set PtMX steps
-PtMX = 400;
+PtMX = 250;
 prob = coco_set(prob, 'cont', 'PtMX', [PtMX, 0]);
 
 % Set frequency of saved solutions
@@ -510,7 +509,7 @@ prob = apply_boundary_conditions_W_PO(prob, bcs_funcs, eps, vec_s, lam_s);
 %     Run COCO     %
 %------------------%
 % Run COCO continuation
-prange = {[1e-10, eps], [], []};
+prange = {[1e-10, eps+0.1], [], []};
 coco(prob, run_new, [], 1, {'eps', 'T1', 'T2'}, prange);
 
 %----------------------%
