@@ -41,12 +41,12 @@ function F_coco_out = func_seg3_symbolic()
   syms k theta_old theta_new
   syms mu_s eta
   % Peturbation vector
-  d_vec = sym('d', [xdim, 1]);
+  d_perturb = sym('d', [xdim, 1]);
   
   % All phase resetting parameters
   p_PR = [k; theta_old; theta_new;
           mu_s; eta;
-          d_vec];
+          d_perturb];
 
   %============================================================================%
   %                           VECTOR FIELD ENCODING                            %

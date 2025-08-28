@@ -64,7 +64,7 @@ function y_out = func_seg1(x_in, p_in)
   % Distance from pertured segment to \Gamma
   % eta           = p_PR(5, :);
   % Perturbation vector
-  % d_vec         = p_PR(6:end);
+  % d_perturb     = p_PR(6:end);
 
   %============================================================================%
   %                           VECTOR FIELD ENCODING                            %
