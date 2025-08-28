@@ -380,7 +380,7 @@ prob = coco_set(prob, 'cont', 'h0', 1e-2);
 prob = coco_set(prob, 'cont', 'h_max', 1e-2);
 
 % Set PtMX
-PTMX = 100;
+PtMX = 100;
 prob = coco_set(prob, 'cont', 'PtMX', [0, PtMX]);
 
 % Set NTST
