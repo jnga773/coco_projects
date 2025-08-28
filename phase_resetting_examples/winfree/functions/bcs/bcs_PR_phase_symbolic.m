@@ -28,23 +28,13 @@ function bcs_coco_out = bcs_isochron_phase_symbolic()
   % Phase resetting parameters
   syms k theta_old theta_new
   syms mu_s eta
-  syms d_x d_y
+  % Peturbation vector
+  d_vec = sym('d', [xdim, 1]);
+  
+  % All phase resetting parameters
   p_PR = [k; theta_old; theta_new;
           mu_s; eta;
-          d_x; d_y];
-
-  % Perturbation vector
-  d_vec = [d_x; d_y];
-
-  % If xdim == 3, add another dimension to the perturbation vector
-  if xdim == 3
-    % Update parameter vector
-    syms d_z
-    p_PR = [p_PR; d_z];
-
-    % Perturbation vector
-    d_vec = [d_x; d_y; d_z];
-  end
+          d_vec];
 
   %============================================================================%
   %                         BOUNDARY CONDITION ENCODING                        %

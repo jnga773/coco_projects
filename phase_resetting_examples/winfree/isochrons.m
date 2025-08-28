@@ -103,40 +103,40 @@ xdim = length(x0);
 %     Functions Lists     %
 %-------------------------%
 % Vector field: Functions
-% funcs.field = {@winfree, @winfree_DFDX, @winfree_DFDP};
-funcs.field = winfree_symbolic();
+funcs.field = {@winfree, @winfree_DFDX, @winfree_DFDP};
+% funcs.field = winfree_symbolic();
 
 % Adjoint equations: Functions (for floquet_mu and floquet_wnorm)
-% funcs.VAR = {@VAR};
-funcs.VAR = VAR_symbolic();
+funcs.VAR = {@VAR};
+% funcs.VAR = VAR_symbolic();
 
 % Phase Reset Segment 1: Functions
-% funcs.seg1 = {@func_seg1};
-funcs.seg1 = func_seg1_symbolic();
+funcs.seg1 = {@func_seg1};
+% funcs.seg1 = func_seg1_symbolic();
 
 % Phase Reset: Segment 2
-% funcs.seg2 = {@func_seg2};
-funcs.seg2 = func_seg2_symbolic();
+funcs.seg2 = {@func_seg2};
+% funcs.seg2 = func_seg2_symbolic();
 
 % Phase Reset: Segment 3
-% funcs.seg3 = {@func_seg3};
-funcs.seg3 = func_seg3_symbolic();
+funcs.seg3 = {@func_seg3};
+% funcs.seg3 = func_seg3_symbolic();
 
 % Phase Reset: Segment 4
-% funcs.seg4 = {@func_seg4};
-funcs.seg4 = func_seg4_symbolic();
+funcs.seg4 = {@func_seg4};
+% funcs.seg4 = func_seg4_symbolic();
 
 % Boundary conditions: Periodic orbit
-% bcs_funcs.bcs_PO = {@bcs_PO};
-bcs_funcs.bcs_PO = bcs_PO_symbolic();
+bcs_funcs.bcs_PO = {@bcs_PO};
+% bcs_funcs.bcs_PO = bcs_PO_symbolic();
 
 % Boundary conditions: Floquet multipliers
-% bcs_funcs.bcs_VAR = {@bcs_VAR};
-bcs_funcs.bcs_VAR = bcs_VAR_symbolic();
+bcs_funcs.bcs_VAR = {@bcs_VAR};
+% bcs_funcs.bcs_VAR = bcs_VAR_symbolic();
 
 % Boundary conditions: Phase-resetting segments
-% bcs_funcs.bcs_PR = {@bcs_isochron};
-bcs_funcs.bcs_PR = bcs_isochron_symbolic();
+bcs_funcs.bcs_PR = {@bcs_isochron};
+% bcs_funcs.bcs_PR = bcs_isochron_symbolic();
 
 % % Boundary conditions: Isochron phase
 % % bcs_funcs.bcs_iso_phase = {@bcs_isochron_phase};
@@ -744,7 +744,7 @@ parfor (run = 1 : length(label_old), M)
             'iso1', 'iso2'};
   prange = {[], [], ...
             [-1e-4, 1e-2], [0.99, 1.01], ...
-            [-1, 6], []};
+            [-3, 3], [-3, 3]};
 
   % Run COCO continuation
   run_PR_continuation(this_run_name, run_old, this_run_label, bcs_funcs, ...

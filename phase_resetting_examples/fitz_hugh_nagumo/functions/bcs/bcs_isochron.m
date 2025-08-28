@@ -119,21 +119,8 @@ function [data_in, y_out] = bcs_isochron(prob_in, data_in, u_in)
   mu_s          = p_PR(4);
   % Distance from pertured segment to \Gamma
   eta           = p_PR(5);
-  % Perturbation vector components
-  d_x           = p_PR(6);
-  d_y           = p_PR(7);
-
   % Perturbation vector
-  d_vec = [d_x; d_y];
-
-  % If xdim == 3, add another dimension to the perturbation vector
-  if xdim == 3
-    % Update parameter vector
-    d_z = p_PR(8);
-
-    % Perturbation vector
-    d_vec = [d_x; d_y; d_z];
-  end
+  d_vec         = p_PR(6:end);
 
   %============================================================================%
   %                         BOUNDARY CONDITION ENCODING                        %

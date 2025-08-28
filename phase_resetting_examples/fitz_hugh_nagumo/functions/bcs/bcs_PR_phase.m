@@ -54,10 +54,8 @@ function [data_in, y_out] = bcs_PR_phase(prob_in, data_in, u_in)
   % mu_s          = p_PR(4);
   % Distance from pertured segment to \Gamma
   % eta           = p_PR(5);
-  % Perturbation vector components
-  % d_x           = p_PR(6);
-  % d_y           = p_PR(7);
-  % d_z           = p_PR(8);
+  % Perturbation vector
+  % d_vec         = p_PR(6:end);
 
   %============================================================================%
   %                         BOUNDARY CONDITION ENCODING                        %

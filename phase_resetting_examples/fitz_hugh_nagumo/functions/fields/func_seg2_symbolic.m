@@ -42,17 +42,13 @@ function F_coco_out = func_seg2_symbolic()
   % Phase resetting parameters
   syms k theta_old theta_new
   syms mu_s eta
-  syms A_perturb theta_perturb
+  % Peturbation vector
+  d_vec = sym('d', [xdim, 1]);
+  
+  % All phase resetting parameters
   p_PR = [k; theta_old; theta_new;
           mu_s; eta;
-          A_perturb; theta_perturb];
-
-  % If xdim == 3, add another dimension to the perturbation vector
-  if xdim == 3
-    % Update parameter vector
-    syms phi_perturb
-    p_PR = [p_PR; phi_perturb];
-  end
+          d_vec];
 
   %============================================================================%
   %                           VECTOR FIELD ENCODING                            %
