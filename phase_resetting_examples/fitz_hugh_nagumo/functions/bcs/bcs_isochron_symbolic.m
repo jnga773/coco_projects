@@ -91,12 +91,12 @@ function bcs_coco_out = bcs_isochron_symbolic()
   syms k theta_old theta_new
   syms mu_s eta
   % Peturbation vector
-  d_vec = sym('d', [xdim, 1]);
-  
+  d_perturb = sym('d', [xdim, 1]);
+
   % All phase resetting parameters
   p_PR = [k; theta_old; theta_new;
           mu_s; eta;
-          d_vec];
+          d_perturb];
   
   %============================================================================%
   %                         BOUNDARY CONDITION ENCODING                        %
@@ -128,7 +128,7 @@ function bcs_coco_out = bcs_isochron_symbolic()
   %     Segment 4     %
   %-------------------%
   % Boundary Conditions - Segment 4
-  bcs_seg4_1 = x0_seg4 - x0_seg3 - d_vec;
+  bcs_seg4_1 = x0_seg4 - x0_seg3 - d_perturb;
   bcs_seg4_2 = dot(x1_seg4 - x0_seg2, w0_seg2);
 
   % The last boundary condition has a singularity in the Jacobian for the initial

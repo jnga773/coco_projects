@@ -120,7 +120,7 @@ function [data_in, y_out] = bcs_isochron(prob_in, data_in, u_in)
   % Distance from pertured segment to \Gamma
   eta           = p_PR(5);
   % Perturbation vector
-  d_vec         = p_PR(6:end);
+  d_perturb         = p_PR(6:end);
 
   %============================================================================%
   %                         BOUNDARY CONDITION ENCODING                        %
@@ -153,7 +153,7 @@ function [data_in, y_out] = bcs_isochron(prob_in, data_in, u_in)
   %     Segment 4     %
   %-------------------%
   % Boundary Conditions - Segment 4
-  bcs_seg4_1 = x0_seg4 - x0_seg3 - d_vec;
+  bcs_seg4_1 = x0_seg4 - x0_seg3 - d_perturb;
   bcs_seg4_2 = dot(x1_seg4 - x0_seg2, w0_seg2);
   bcs_seg4_3 = norm(x1_seg4 - x0_seg2) - eta;
   % bcs_seg4_3 = (norm(x1_seg4 - x0_seg2) ^ 2) - eta;
