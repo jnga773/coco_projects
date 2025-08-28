@@ -135,6 +135,9 @@ function [data_in, y_out] = bcs_PR(prob_in, data_in, u_in)
              cos(phi_perturb * pi)];
   end
 
+  % Multiply by perturbation amplitude
+  d_perturb = A_perturb * d_vec;
+
   %============================================================================%
   %                         BOUNDARY CONDITION ENCODING                        %
   %============================================================================%
@@ -166,7 +169,7 @@ function [data_in, y_out] = bcs_PR(prob_in, data_in, u_in)
   %     Segment 4     %
   %-------------------%
   % Boundary Conditions - Segment 4
-  bcs_seg4_1 = x0_seg4 - x0_seg3 - (A_perturb * d_vec);
+  bcs_seg4_1 = x0_seg4 - x0_seg3 - d_perturb;
   bcs_seg4_2 = dot(x1_seg4 - x0_seg2, w0_seg2);
   bcs_seg4_3 = norm(x1_seg4 - x0_seg2) - eta;
   % bcs_seg4_3 = (norm(x1_seg4 - x0_seg2) ^ 2) - eta;

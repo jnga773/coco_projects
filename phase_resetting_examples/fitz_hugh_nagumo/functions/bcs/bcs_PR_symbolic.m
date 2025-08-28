@@ -111,6 +111,9 @@ function bcs_coco_out = bcs_PR_segs_symbolic()
              cos(phi_perturb * pi)];
   end
 
+  % Multiply by perturbation amplitude
+  d_perturb = A_perturb * d_vec;
+
   %============================================================================%
   %                         BOUNDARY CONDITION ENCODING                        %
   %============================================================================%
@@ -141,7 +144,7 @@ function bcs_coco_out = bcs_PR_segs_symbolic()
   %     Segment 4     %
   %-------------------%
   % Boundary Conditions - Segment 4
-  bcs_seg4_1 = x0_seg4 - x0_seg3 - (A_perturb * d_vec);
+  bcs_seg4_1 = x0_seg4 - x0_seg3 - d_perturb;
   bcs_seg4_2 = dot(x1_seg4 - x0_seg2, w0_seg2);
 
   % The last boundary condition has a singularity in the Jacobian for the initial
