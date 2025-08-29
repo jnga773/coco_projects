@@ -31,9 +31,6 @@ function F_coco_out = func_seg4_symbolic()
   % State-space variables
   x_vec = sym('x', [xdim, 1]);
 
-  % Adjoint equation variables
-  wvec = sym('w', [xdim, 1]);
-
   %--------------------%
   %     Parameters     %
   %--------------------%
