@@ -133,6 +133,10 @@ bcs_funcs.bcs_PO = bcs_PO_symbolic();
 % bcs_funcs.bcs_VAR = {@bcs_VAR};
 bcs_funcs.bcs_VAR = bcs_VAR_symbolic();
 
+% Boundary conditions: Segment period
+% bcs_funcs.bcs_T = {@bcs_T};
+bcs_funcs.bcs_T = bcs_T_symbolic();
+
 % Boundary conditions: Phase-resetting segments
 % bcs_funcs.bcs_PR = {@bcs_PR};
 bcs_funcs.bcs_PR = bcs_PR_symbolic();
@@ -518,7 +522,7 @@ fprintf(' ---------------------------------------------------------------------\
 fprintf(' This run name           : %s\n', run_new);
 fprintf(' Previous run name       : %s\n', run_old);
 fprintf(' Previous solution label : %d\n', label_old);
-fprintf(' Continuation parameters : %s\n', 'A_perturb, theta_new, eta, mu_s');
+fprintf(' Continuation parameters : %s\n', 'A_perturb, theta_new, eta, mu_s, T_PO');
 fprintf(' =====================================================================\n');
 
 %-------------------%
@@ -634,9 +638,9 @@ prob = coco_add_event(prob, 'SP', 'A_perturb', SP_values);
 %------------------%
 % Set continuation parameters and parameter range
 pcont  = {'A_perturb', 'theta_new', ...
-          'eta', 'mu_s'};
+          'eta', 'mu_s', 'T_PO'};
 prange = {[-1e-4, max(SP_values)+0.1], [], ...
-          [-1e-4, 1e-2], [0.99, 1.01]};
+          [-1e-4, 1e-2], [0.99, 1.01], []};
 
 % Run COCO
 coco(prob, run_new, [], 1, pcont, prange);
@@ -681,7 +685,7 @@ fprintf(' ---------------------------------------------------------------------\
 fprintf(' This run name           : %s\n', run_new);
 fprintf(' Previous run name       : %s\n', run_old);
 fprintf(' Previous solution label : %d\n', label_old);
-fprintf(' Continuation parameters : %s\n', 'theta_old, theta_new, eta, mu_s');
+fprintf(' Continuation parameters : %s\n', 'theta_old, theta_new, eta, mu_s, T_PO');
 fprintf(' =====================================================================\n');
 
 %------------------%
@@ -689,9 +693,9 @@ fprintf(' =====================================================================\
 %------------------%
 % Set continuation parameters and parameter range
 pcont  = {'theta_old', 'theta_new', ...
-          'eta', 'mu_s'};
+          'eta', 'mu_s', 'T_PO'};
 prange = {[0.0, 2.0], [], ...
-          [-1e-4, 1e-2], [0.99, 1.01]};
+          [-1e-4, 1e-2], [0.99, 1.01], []};
 
 % Run COCO continuation
 run_PR_continuation(run_new, run_old, label_old, bcs_funcs, pcont, prange);
@@ -742,7 +746,7 @@ parfor (run = 1 : length(label_old), M)
   fprintf(' This run name           : {%s, %s}\n', this_run_name{1}, this_run_name{2});
   fprintf(' Previous run name       : %s\n', run_old);
   fprintf(' Previous solution label : %d\n', this_run_label);
-  fprintf(' Continuation parameters : %s\n', 'theta_old, theta_new, eta, mu_s');
+  fprintf(' Continuation parameters : %s\n', 'theta_old, theta_new, eta, mu_s, T_PO');
   fprintf(' =====================================================================\n');
   
   %------------------%
@@ -750,9 +754,9 @@ parfor (run = 1 : length(label_old), M)
   %------------------%
   % Set continuation parameters and parameter range
   pcont  = {'theta_old', 'theta_new', ...
-            'eta', 'mu_s'};
+            'eta', 'mu_s', 'T_PO'};
   prange = {[0.0, 2.0], [], ...
-            [-1e-4, 1e-2], [0.99, 1.01]};
+            [-1e-4, 1e-2], [0.99, 1.01], []};
 
   % Run COCO continuation
   run_PR_continuation(this_run_name, run_old, this_run_label, bcs_funcs, ...

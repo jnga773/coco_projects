@@ -32,16 +32,20 @@ function data_out = calc_initial_solution_Wsq(run_in, label_in)
   %     Read Data     %
   %-------------------%
   % x_pos solution
-  sol_xpos = ep_read_solution('xpos',  run_in, label_in);
-  xpos = sol_xpos.x;
+  [sol_EP, data_EP] = ep_read_solution('xpos',  run_in, label_in);
+  xpos = sol_EP.x;
   % Parameters
-  p    = sol_xpos.p;
+  p    = sol_EP.p;
+
+  % Functions
+  % Fhan    = data_EP.fhan;
+  DFDXhan = data_EP.dfdxhan;
 
   %------------------------------------------------%
   %     Calculate Eigenvectors and Eigenvalues     %
   %------------------------------------------------%
   % Calculate Jacobian of the equilibrium point
-  J = yamada_DFDX(xpos, p);
+  J = DFDXhan(xpos, p);
 
   % Calculate eigenvalues and eigenvectors
   [eigval, eigvec] = eig(J);

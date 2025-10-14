@@ -38,7 +38,7 @@ function [data_in, y_out] = bcs_isochron(prob_in, data_in, u_in)
   %            u_in(19:20) - w(1) of segment 2,
   %            u_in(21:22) - x(1) of segment 3,
   %            u_in(23:24) - x(1) of segment 4,
-  %            u_in(25:35) - Parameters.
+  %            u_in(25:33) - Parameters.
   %
   % Returns
   % -------
@@ -115,12 +115,14 @@ function [data_in, y_out] = bcs_isochron(prob_in, data_in, u_in)
   theta_old     = p_PR(2);
   % Phase where segment comes back to \Gamma
   theta_new     = p_PR(3);
+  % Periodic orbit period
+  T_PO          = p_PR(4);
   % Stable Floquet eigenvalue
-  mu_s          = p_PR(4);
+  mu_s          = p_PR(5);
   % Distance from pertured segment to \Gamma
-  eta           = p_PR(5);
+  eta           = p_PR(6);
   % Perturbation vector
-  d_perturb     = p_PR(6:end);
+  d_perturb     = p_PR(7:end);
 
   %============================================================================%
   %                         BOUNDARY CONDITION ENCODING                        %

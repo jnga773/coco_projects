@@ -111,14 +111,16 @@ function [data_in, y_out] = bcs_PR(prob_in, data_in, u_in)
   theta_old     = p_PR(2);
   % Phase where segment comes back to \Gamma
   theta_new     = p_PR(3);
+  % Periodic orbit period
+  T_PO          = p_PR(4);
   % Stable Floquet eigenvalue
-  mu_s          = p_PR(4);
+  mu_s          = p_PR(5);
   % Distance from pertured segment to \Gamma
-  eta           = p_PR(5);
+  eta           = p_PR(6);
   % Size of perturbation
-  A_perturb     = p_PR(6);
+  A_perturb     = p_PR(7);
   % Angle of perturbation
-  theta_perturb = p_PR(7);
+  theta_perturb = p_PR(8);
 
   % Perturbation vector
   d_vec = [cos(theta_perturb * (2 * pi));
@@ -127,11 +129,11 @@ function [data_in, y_out] = bcs_PR(prob_in, data_in, u_in)
   % If xdim == 3, add another dimension to the perturbation vector
   if xdim == 3
     % Update parameter vector
-    phi_perturb = p_PR(8);
+    phi_perturb = p_PR(9);
 
     % Perturbation vector
     d_vec = [cos(theta_perturb* (2 * pi)) * sin(phi_perturb * pi);
-             sin(theta_perturb* (2 * pi)) * sin(phi_perturb) * pi;
+             sin(theta_perturb* (2 * pi)) * sin(phi_perturb * pi);
              cos(phi_perturb * pi)];
   end
 

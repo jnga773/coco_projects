@@ -39,13 +39,13 @@ function F_coco_out = func_seg4_symbolic()
 
   % Phase resetting parameters
   syms k theta_old theta_new
-  syms mu_s eta
+  syms T_PO mu_s eta
   % Peturbation vector
   d_perturb = sym('d', [xdim, 1]);
   
   % All phase resetting parameters
   p_PR = [k; theta_old; theta_new;
-          mu_s; eta;
+          T_PO; mu_s; eta;
           d_perturb];
 
   %============================================================================%
@@ -58,7 +58,7 @@ function F_coco_out = func_seg4_symbolic()
   F_vec = field(x_vec, p_sys);
 
   % Vector field equations
-  vec_eqn = k * F_vec;
+  vec_eqn = T_PO * k * F_vec;
 
   %============================================================================%
   %                                   OUTPUT                                   %

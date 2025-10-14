@@ -130,6 +130,10 @@ bcs_funcs.bcs_PO = bcs_PO_symbolic();
 % bcs_funcs.bcs_VAR = {@bcs_VAR};
 bcs_funcs.bcs_VAR = bcs_VAR_symbolic();
 
+% Boundary conditions: Segment period
+% bcs_funcs.bcs_T = {@bcs_T};
+bcs_funcs.bcs_T = bcs_T_symbolic();
+
 % Boundary conditions: Phase-resetting segments
 % bcs_funcs.bcs_PR = {@bcs_isochron};
 bcs_funcs.bcs_PR = bcs_isochron_symbolic();

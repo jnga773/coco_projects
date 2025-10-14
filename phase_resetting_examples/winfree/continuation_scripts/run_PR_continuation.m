@@ -57,8 +57,8 @@ function run_PR_continuation(run_new, run_old, label_old, bcs_funcs, pcont, pran
     run_old
     label_old double
     bcs_funcs struct
-    pcont cell = {'theta_old', 'theta_new', 'eta', 'mu_s'};
-    prange cell = {[0.0, 2.0], [], [-1e-4, 1e-2], [0.99, 1.01]};
+    pcont cell = {'theta_old', 'theta_new', 'eta', 'mu_s', 'T'};
+    prange cell = {[0.0, 2.0], [], [-1e-4, 1e-2], [0.99, 1.01], []};
 
     % Optional arguments
     options.SP_parameter string = ''

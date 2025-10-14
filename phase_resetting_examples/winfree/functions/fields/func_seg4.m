@@ -55,12 +55,14 @@ function y_out = func_seg4(x_in, p_in)
   % theta_old     = p_PR(2, :);
   % Phase where segment comes back to \Gamma
   % theta_new     = p_PR(3, :);
+  % Periodic orbit period
+  T_PO          = p_PR(4, :);
   % Stable Floquet eigenvalue
-  % mu_s          = p_PR(4, :);
+  % mu_s          = p_PR(5, :);
   % Distance from pertured segment to \Gamma
-  % eta           = p_PR(5, :);
+  % eta           = p_PR(6, :);
   % Perturbation vector
-  % d_perturb     = p_PR(6:end);
+  % d_perturb     = p_PR(7:end);
 
   %============================================================================%
   %                           VECTOR FIELD ENCODING                            %
@@ -72,7 +74,7 @@ function y_out = func_seg4(x_in, p_in)
   vec_field = field(x_vec, p_sys);
   
   % Save to array
-  vec_eqn = k .* vec_field;
+  vec_eqn = T_PO .* k .* vec_field;
 
   %============================================================================%
   %                                   OUTPUT                                   %

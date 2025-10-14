@@ -89,13 +89,13 @@ function bcs_coco_out = bcs_isochron_symbolic()
 
   % Phase resetting parameters
   syms k theta_old theta_new
-  syms mu_s eta
+  syms T_PO mu_s eta
   % Peturbation vector
   d_perturb = sym('d', [xdim, 1]);
   
   % All phase resetting parameters
   p_PR = [k; theta_old; theta_new;
-          mu_s; eta;
+          T_PO; mu_s; eta;
           d_perturb];
   
   %============================================================================%

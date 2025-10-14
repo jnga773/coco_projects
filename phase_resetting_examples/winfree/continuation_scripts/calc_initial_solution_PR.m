@@ -112,15 +112,20 @@ function data_out = calc_initial_solution_PR(run_in, label_in, k_in, theta_pertu
   mu_s_read = p_read(end-1);
   mu_s_name = pnames_read{end-1};
 
+  % Periodic orbit period
+  T_PO_read = sol.T;
+
   %----------------------------%
   %     Initial Parameters     %
   %----------------------------%
-  % Integer for period
+  % Integer for periodicity
   k             = k_in;
   % \theta_old (where perturbation starts)
   theta_old     = 1.0;
   % \theta_new (where segment comes back to \Gamma)
   theta_new     = 1.0;
+  % Periodic orbit period
+  T_PO          = T_PO_read;
   % Stable Floquet eigenvalue (should be = 1)
   mu_s          = mu_s_read;
   % Distance from perturbed segment to \Gamma
@@ -146,19 +151,20 @@ function data_out = calc_initial_solution_PR(run_in, label_in, k_in, theta_pertu
   p_maps.k               = pdim + 1;
   p_maps.theta_old       = pdim + 2;
   p_maps.theta_new       = pdim + 3;
-  p_maps.mu_s            = pdim + 4;
-  p_maps.eta             = pdim + 5;
+  p_maps.T_PO            = pdim + 4;
+  p_maps.mu_s            = pdim + 5;
+  p_maps.eta             = pdim + 6;
   if ~options.isochron
-    p_maps.A_perturb     = pdim + 6;
-    p_maps.theta_perturb = pdim + 7;
+    p_maps.A_perturb     = pdim + 7;
+    p_maps.theta_perturb = pdim + 8;
     if xdim == 3
-      p_maps.phi_perturb   = pdim + 8;
+      p_maps.phi_perturb   = pdim + 9;
     end
   else
-    p_maps.d_x           = pdim + 6;
-    p_maps.d_y           = pdim + 7;
+    p_maps.d_x           = pdim + 7;
+    p_maps.d_y           = pdim + 8;
     if xdim == 3
-      p_maps.d_z           = pdim + 8;
+      p_maps.d_z           = pdim + 9;
     end
   end
 
@@ -172,6 +178,7 @@ function data_out = calc_initial_solution_PR(run_in, label_in, k_in, theta_pertu
   p0_out(p_maps.k)               = k;
   p0_out(p_maps.theta_old)       = theta_old;
   p0_out(p_maps.theta_new)       = theta_new;
+  p0_out(p_maps.T_PO)            = T_PO;
   p0_out(p_maps.mu_s)            = mu_s;
   p0_out(p_maps.eta)             = eta;
   if ~options.isochron
@@ -194,6 +201,7 @@ function data_out = calc_initial_solution_PR(run_in, label_in, k_in, theta_pertu
   % Parameter names
   pnames_PR                         = {pnames_system{1:pdim}};
   % Integer for period
+  pnames_PR{p_maps.T_PO}            = 'T_PO';
   pnames_PR{p_maps.k}               = 'k';
   pnames_PR{p_maps.theta_old}       = 'theta_old';
   pnames_PR{p_maps.theta_new}       = 'theta_new';
@@ -235,20 +243,25 @@ function data_out = calc_initial_solution_PR(run_in, label_in, k_in, theta_pertu
 
   % Normalise by k
   t_seg4 = t_seg4 / k;
+  % Normalise by period
+  t_seg4 = t_seg4 / T_PO;
 
   %-----------------------------------------------%
   %     Segment Initial Conditions: Easy Mode     %
   %-----------------------------------------------%
   % Segment 1
-  t_seg1 = tbp_read;
+  % t_seg1 = tbp_read;
+  t_seg1 = tbp_read / T_PO;
   x_seg1 = [gamma_read, wn_read];
   
   % Segment 2
-  t_seg2 = [0.0; max(tbp_read)];
+  % t_seg2 = [0.0; max(tbp_read)];
+  t_seg2 = [0.0; 1.0];
   x_seg2 = [[gamma_0'; gamma_0'], [wn_0'; wn_0']];
   
   % Segment 3
-  t_seg3 = [0.0; max(tbp_read)];
+  % t_seg3 = [0.0; max(tbp_read)];
+  t_seg3 = [0.0; 1.0];
   x_seg3 = [gamma_0'; gamma_0'];
 
   %----------------%

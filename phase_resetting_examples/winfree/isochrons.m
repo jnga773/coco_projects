@@ -103,40 +103,44 @@ xdim = length(x0);
 %     Functions Lists     %
 %-------------------------%
 % Vector field: Functions
-funcs.field = {@winfree, @winfree_DFDX, @winfree_DFDP};
-% funcs.field = winfree_symbolic();
+% funcs.field = {@winfree, @winfree_DFDX, @winfree_DFDP};
+funcs.field = winfree_symbolic();
 
 % Adjoint equations: Functions (for floquet_mu and floquet_wnorm)
-funcs.VAR = {@VAR};
-% funcs.VAR = VAR_symbolic();
+% funcs.VAR = {@VAR};
+funcs.VAR = VAR_symbolic();
 
 % Phase Reset Segment 1: Functions
-funcs.seg1 = {@func_seg1};
-% funcs.seg1 = func_seg1_symbolic();
+% funcs.seg1 = {@func_seg1};
+funcs.seg1 = func_seg1_symbolic();
 
 % Phase Reset: Segment 2
-funcs.seg2 = {@func_seg2};
-% funcs.seg2 = func_seg2_symbolic();
+% funcs.seg2 = {@func_seg2};
+funcs.seg2 = func_seg2_symbolic();
 
 % Phase Reset: Segment 3
-funcs.seg3 = {@func_seg3};
-% funcs.seg3 = func_seg3_symbolic();
+% funcs.seg3 = {@func_seg3};
+funcs.seg3 = func_seg3_symbolic();
 
 % Phase Reset: Segment 4
-funcs.seg4 = {@func_seg4};
-% funcs.seg4 = func_seg4_symbolic();
+% funcs.seg4 = {@func_seg4};
+funcs.seg4 = func_seg4_symbolic();
 
 % Boundary conditions: Periodic orbit
-bcs_funcs.bcs_PO = {@bcs_PO};
-% bcs_funcs.bcs_PO = bcs_PO_symbolic();
+% bcs_funcs.bcs_PO = {@bcs_PO};
+bcs_funcs.bcs_PO = bcs_PO_symbolic();
 
 % Boundary conditions: Floquet multipliers
-bcs_funcs.bcs_VAR = {@bcs_VAR};
-% bcs_funcs.bcs_VAR = bcs_VAR_symbolic();
+% bcs_funcs.bcs_VAR = {@bcs_VAR};
+bcs_funcs.bcs_VAR = bcs_VAR_symbolic();
+
+% Boundary conditions: Segment period
+% bcs_funcs.bcs_T = {@bcs_T};
+bcs_funcs.bcs_T = bcs_T_symbolic();
 
 % Boundary conditions: Phase-resetting segments
-bcs_funcs.bcs_PR = {@bcs_isochron};
-% bcs_funcs.bcs_PR = bcs_isochron_symbolic();
+% bcs_funcs.bcs_PR = {@bcs_isochron};
+bcs_funcs.bcs_PR = bcs_isochron_symbolic();
 
 % % Boundary conditions: Isochron phase
 % % bcs_funcs.bcs_iso_phase = {@bcs_isochron_phase};
@@ -525,7 +529,7 @@ fprintf(' ---------------------------------------------------------------------\
 fprintf(' This run name           : %s\n', run_new);
 fprintf(' Previous run name       : %s\n', run_old);
 fprintf(' Previous solution label : %d\n', label_old);
-fprintf(' Continuation parameters : %s\n', 'theta_old, theta_new, eta, mu_s');
+fprintf(' Continuation parameters : %s\n', 'theta_old, theta_new, eta, mu_s, T_PO');
 fprintf(' =====================================================================\n');
 
 %-------------------%
@@ -640,8 +644,10 @@ prob = coco_add_event(prob, 'SP', 'theta_old', SP_values);
 %     Run COCO     %
 %------------------%
 % Set continuation parameters and parameter range
-pcont  = {'theta_old', 'theta_new', 'eta', 'mu_s'};
-prange = {[1.0, 2.0], [0.0, 2.0], [-1e-4, 1e-2], [0.99, 1.01]};
+pcont  = {'theta_old', 'theta_new', ...
+          'eta', 'mu_s' 'T_PO',};
+prange = {[1.0, 2.0], [0.0, 2.0], ...
+          [-1e-4, 1e-2], [0.99, 1.01], []};
 
 % Run COCO
 coco(prob, run_new, [], 1, pcont, prange);
@@ -671,7 +677,7 @@ fprintf(' ---------------------------------------------------------------------\
 fprintf(' This run name           : %s\n', run_new);
 fprintf(' Previous run name       : %s\n', run_old);
 fprintf(' Previous solution label : %d\n', label_old);
-fprintf(' Continuation parameters : %s\n', 'd_x, d_y, eta, mu_s, iso1, iso2');
+fprintf(' Continuation parameters : %s\n', 'd_x, d_y, eta, mu_s, iso1, iso2, T_PO');
 fprintf(' =====================================================================\n');
 
 %------------------%
@@ -679,10 +685,10 @@ fprintf(' =====================================================================\
 %------------------%
 % Set continuation parameters and parameter range
 pcont  = {'d_x', 'd_y', ...
-          'eta', 'mu_s', ...
+          'eta', 'mu_s', 'T_PO', ...
           'iso1', 'iso2'};
 prange = {[], [], ...
-          [-1e-4, 1e-2], [0.99, 1.01], ...
+          [-1e-4, 1e-2], [0.99, 1.01], [], ...
           [-3, 3], [-3, 3]};
 
 % Run COCO continuation
@@ -735,15 +741,15 @@ parfor (run = 1 : length(label_old), M)
   fprintf(' This run name           : {%s, %s}\n', this_run_name{1}, this_run_name{2});
   fprintf(' Previous run name       : %s\n', run_old);
   fprintf(' Previous solution label : %d\n', this_run_label);
-  fprintf(' Continuation parameters : %s\n', 'd_x, d_y, eta, mu_s, iso1, iso2');
+  fprintf(' Continuation parameters : %s\n', 'd_x, d_y, eta, mu_s, iso1, iso2, T_PO');
   fprintf(' =====================================================================\n');
 
   % Set continuation parameters and parameter range
   pcont  = {'d_x', 'd_y', ...
-            'eta', 'mu_s', ...
+            'eta', 'mu_s', 'T_PO', ...
             'iso1', 'iso2'};
   prange = {[], [], ...
-            [-1e-4, 1e-2], [0.99, 1.01], ...
+            [-1e-4, 1e-2], [0.99, 1.01], [], ...
             [-3, 3], [-3, 3]};
 
   % Run COCO continuation

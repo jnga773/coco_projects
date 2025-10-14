@@ -28,7 +28,7 @@ function bcs_coco_out = bcs_PR_segs_symbolic()
   %            u_in(19:20) - w(1) of segment 2,
   %            u_in(21:22) - x(1) of segment 3,
   %            u_in(23:24) - x(1) of segment 4,
-  %            u_in(25:35) - Parameters.
+  %            u_in(25:33) - Parameters.
   %
   % Returns
   % -------
@@ -89,10 +89,10 @@ function bcs_coco_out = bcs_PR_segs_symbolic()
 
   % Phase resetting parameters
   syms k theta_old theta_new
-  syms mu_s eta
+  syms T_PO mu_s eta
   syms A_perturb theta_perturb
   p_PR = [k; theta_old; theta_new;
-          mu_s; eta;
+          T_PO; mu_s; eta;
           A_perturb; theta_perturb];
 
   % Perturbation vector
@@ -107,7 +107,7 @@ function bcs_coco_out = bcs_PR_segs_symbolic()
 
     % Perturbation vector
     d_vec = [cos(theta_perturb* (2 * pi)) * sin(phi_perturb * pi);
-             sin(theta_perturb* (2 * pi)) * sin(phi_perturb) * pi;
+             sin(theta_perturb* (2 * pi)) * sin(phi_perturb * pi);
              cos(phi_perturb * pi)];
   end
 
