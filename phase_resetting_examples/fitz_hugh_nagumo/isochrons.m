@@ -138,10 +138,6 @@ bcs_funcs.bcs_T = bcs_T_symbolic();
 % bcs_funcs.bcs_PR = {@bcs_isochron};
 bcs_funcs.bcs_PR = bcs_isochron_symbolic();
 
-% % Boundary conditions: Isochron phase
-% % bcs_funcs.bcs_iso_phase = {@bcs_isochron_phase};
-% bcs_funcs.bcs_iso_phase = bcs_isochron_phase_symbolic();
-
 %=========================================================================%
 %                    CALCULATE INITIAL PERIODIC ORBIT                     %
 %=========================================================================%
@@ -624,9 +620,7 @@ prob = ode_ep2ep(prob, 'x0', run_old, label_old);
 % Apply all boundary conditions, glue parameters together, and
 % all that other good COCO stuff. Looking the function file
 % if you need to know more ;)
-prob = apply_boundary_conditions_PR(prob, bcs_funcs, ...
-                                    par_isochron=true, ...
-                                    bcs_isochron=false);
+prob = apply_boundary_conditions_PR(prob, bcs_funcs);
 
 %-------------------------%
 %     Add COCO Events     %
@@ -690,8 +684,7 @@ prange = {[], [], ...
 run_PR_continuation(run_new, run_old, label_old, bcs_funcs, ...
                     pcont, prange, ...
                     h_min=1e-4, h0=1e-1, h_max=1e1, ...
-                    PtMX=750, NPR=25, ...
-                    bcs_isochron=false, par_isochron=true)
+                    PtMX=750, NPR=25)
 
 %--------------------%
 %     Test Plots     %
@@ -751,8 +744,7 @@ parfor (run = 1 : length(label_old), M)
   run_PR_continuation(this_run_name, run_old, this_run_label, bcs_funcs, ...
                       pcont, prange, ...
                       h_min=1e-4, h0=1e-1, h_max=1e1, ...
-                      PtMX=3000, NPR=100, ...
-                      bcs_isochron=false, par_isochron=true)
+                      PtMX=3000, NPR=100)
 
 end
 

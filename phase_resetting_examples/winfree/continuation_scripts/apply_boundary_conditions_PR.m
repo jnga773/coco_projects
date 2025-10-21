@@ -1,4 +1,4 @@
-function prob_out = apply_boundary_conditions_PR(prob_in, bcs_funcs_in, options)
+function prob_out = apply_boundary_conditions_PR(prob_in, bcs_funcs_in)
   % prob_out = apply_boundary_conditions_PR(prob_in)
   %
   % Applies the various boundary conditions, adds monitor functions
@@ -14,10 +14,6 @@ function prob_out = apply_boundary_conditions_PR(prob_in, bcs_funcs_in, options)
   % bcs_funcs_in : list of functions
   %     List of all of the boundary condition functions for each
   %     phase resetting segment.
-  % bcs_isochron : boolean
-  %     Flag to determine if the isochron phase condition should be added.
-  % par_isochron : boolean
-  %     Flag to determine if isochron parameters should be recorded.
   %
   % Returns
   % -------
@@ -34,10 +30,6 @@ function prob_out = apply_boundary_conditions_PR(prob_in, bcs_funcs_in, options)
   arguments
     prob_in struct
     bcs_funcs_in struct
-
-    % Optional arguments
-    options.bcs_isochron logical = false;
-    options.par_isochron logical = false;
   end
 
   %---------------%
@@ -89,7 +81,8 @@ function prob_out = apply_boundary_conditions_PR(prob_in, bcs_funcs_in, options)
   bcs_PR = bcs_funcs_in.bcs_PR;
 
   % Add boundary conditions for segment periods
-  prob = coco_add_func(prob, 'bcs_T', bcs_T{:}, [], 'zero', 'uidx', uidx1(maps1.T_idx));
+  prob = coco_add_func(prob, 'bcs_T', bcs_T{:}, [], 'zero', 'uidx', ...
+                       uidx1(maps1.T_idx));
 
   % Add boundary conditions for four segments
   prob = coco_add_func(prob, 'bcs_PR', bcs_PR{:}, data_EP, 'zero', 'uidx', ...
@@ -102,23 +95,19 @@ function prob_out = apply_boundary_conditions_PR(prob_in, bcs_funcs_in, options)
                         uidx3(maps3.x1_idx);
                         uidx4(maps4.x1_idx);
                         uidx1(maps1.p_idx)]);
-
-  % Add phase boundary condition
-  if options.bcs_isochron
-    bcs_iso_phase = bcs_funcs_in.bcs_iso_phase;
-    prob = coco_add_func(prob, 'bcs_iso_phase', bcs_iso_phase{:}, data_EP, 'zero', 'uidx', ...
-                          uidx1(maps1.p_idx));
-  end
                         
   %------------------------%
   %     Add Parameters     %
   %------------------------%
-  if options.par_isochron
-    % Add isochron parameters
-    prob = coco_add_pars(prob, 'pars_isochron', ...
-                        uidx4(maps4.x0_idx), {'iso1', 'iso2'}, ...
-                        'active');
+  % Set isochron parameter names
+  for idx = 1 : numel(maps4.x0_idx)
+    pname_isochron{idx} = sprintf('iso%d', idx);
   end
+
+  % Add isochron parameters
+  prob = coco_add_pars(prob, 'pars_isochron', ...
+                      uidx4(maps4.x0_idx), pname_isochron, ...
+                      'active');
 
   %----------------%
   %     Output     %

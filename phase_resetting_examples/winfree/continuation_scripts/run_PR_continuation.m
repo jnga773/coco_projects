@@ -10,17 +10,17 @@ function run_PR_continuation(run_new, run_old, label_old, bcs_funcs, pcont, pran
   %     The new run identifier for the main continuation problem.
   % run_old : string or cell of strings
   %     The old run identifier for the sub continuation problem.
-  % label_old : integer
+  % label_old : double
   %     The label identifier for the previous continuation problem.
-  % bcs_funcs : list of functions
+  % bcs_funcs : cell of functions
   %     Structure containing boundary condition functions.
-  % pcont : cell
+  % pcont : cell of characters
   %     Cell array containing additional parameters for the continuation.
-  % prange : cell
+  % prange : cell of double arrays
   %     Cell array containing the ranges for the continuation parameters.
-  % SP_parameter : array
+  % SP_parameter : character
   %     Parameter to save SP solutions for
-  % SP_values : array
+  % SP_values : double, array
   %     Array of values of theta_old to save solutions with the 'SP' label.
   % bcs_isochron : boolean
   %     Flag to determine if the isochron phase condition should be added.
@@ -34,20 +34,23 @@ function run_PR_continuation(run_new, run_old, label_old, bcs_funcs, pcont, pran
   %     Initial step size for the continuation. (default: 1e-1)
   % h_max : double
   %     Maximum step size for the continuation. (default: 1e0)
-  % NAdapt : integer
+  % NAdapt : double
   %     Number of adaptive mesh refinements. (default: 10)
-  % PtMX : integer
+  % PtMX : double
   %     Maximum number of points in the continuation. (default: 750)
-  % MaxRes : integer
+  % MaxRes : double
   %     Maximum number of residuals allowed. (default: 10)
-  % al_max : integer
+  % al_max : double
   %     Maximum number of continuation steps. (default: 25)
-  % NPR : integer
+  % NPR : double
   %     Frequency of saved solutions. (default: 10)
+  % FPAR : character
+  %     Active continuation parameter for fold detection (default: '')
   %
   % See Also
   % --------
-  % coco_prob, coco_set, ode_coll2coll, apply_PR_boundary_conditions, coco_add_event, coco
+  % coco_prob, coco_set, ode_coll2coll, apply_PR_boundary_conditions,
+  % coco_add_event, coco
 
   %-------------------%
   %     Arguments     %
@@ -57,27 +60,24 @@ function run_PR_continuation(run_new, run_old, label_old, bcs_funcs, pcont, pran
     run_old
     label_old double
     bcs_funcs struct
-    pcont cell = {'theta_old', 'theta_new', 'eta', 'mu_s', 'T'};
+    pcont cell  = {'theta_old', 'theta_new', 'eta', 'mu_s', 'T'};
     prange cell = {[0.0, 2.0], [], [-1e-4, 1e-2], [0.99, 1.01], []};
 
     % Optional arguments
     options.SP_parameter string = ''
-    options.SP_values double = []
-
-    % Optional settings for isochron computations
-    options.bcs_isochron logical = false;
-    options.par_isochron logical = false;
+    options.SP_values double    = []
 
     % COCO Settings
-    options.TOL    = 1e-6
-    options.h_min  = 1e-2;
-    options.h0     = 1e-1;
-    options.h_max  = 1e0;
-    options.NAdapt = 10;
-    options.PtMX   = 750;
-    options.MaxRes = 10;
-    options.al_max = 25;
-    options.NPR    = 10;
+    options.TOL double    = 1e-6
+    options.h_min double  = 1e-2;
+    options.h0 double     = 1e-1;
+    options.h_max double  = 1e0;
+    options.NAdapt double = 10;
+    options.PtMX double   = 750;
+    options.MaxRes double = 10;
+    options.al_max double = 25;
+    options.NPR double    = 10;
+    options.FPAR char     = '';
   end
 
   %----------------------------%
@@ -109,6 +109,9 @@ function run_PR_continuation(run_new, run_old, label_old, bcs_funcs, pcont, pran
 
   % Set frequency of saved solutions
   prob = coco_set(prob, 'cont', 'NPR', options.NPR);
+
+  % Set fold point parameter
+  prob = coco_set(prob, 'cont', 'fpar', options.FPAR);
 
   %-------------------%
   %     Set NTSTs     %
@@ -146,9 +149,7 @@ function run_PR_continuation(run_new, run_old, label_old, bcs_funcs, pcont, pran
   % Apply all boundary conditions, glue parameters together, and
   % all that other good COCO stuff. Looking the function file
   % if you need to know more ;)
-  prob = apply_boundary_conditions_PR(prob, bcs_funcs, ...
-                                      bcs_isochron=options.bcs_isochron, ...
-                                      par_isochron=options.par_isochron);
+  prob = apply_boundary_conditions_PR(prob, bcs_funcs);
 
   %-------------------------%
   %     Add COCO Events     %
