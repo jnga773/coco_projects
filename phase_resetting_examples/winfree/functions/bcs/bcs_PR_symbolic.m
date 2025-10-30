@@ -1,5 +1,5 @@
-function bcs_coco_out = bcs_PR_segs_symbolic()
-  % bcs_coco_out = bcs_PR_segs_symbolic()
+function bcs_coco_out = bcs_PR_symbolic()
+  % bcs_coco_out = bcs_PR_symbolic()
   %
   % Boundary conditions for the four segments of the phase-resetting problem:
   %                          x1(0) - x2(1) = 0 ,

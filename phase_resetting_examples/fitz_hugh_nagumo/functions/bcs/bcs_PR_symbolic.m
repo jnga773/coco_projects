@@ -1,5 +1,5 @@
-function bcs_coco_out = bcs_PR_segs_symbolic()
-  % bcs_coco_out = bcs_PR_segs_symbolic()
+function bcs_coco_out = bcs_PR_symbolic()
+  % bcs_coco_out = bcs_PR_symbolic()
   %
   % Boundary conditions for the four segments of the phase-resetting problem:
   %                          x1(0) - x2(1) = 0 ,
@@ -42,9 +42,9 @@ function bcs_coco_out = bcs_PR_segs_symbolic()
   % Original vector field state-space dimension
   xdim  = 2;
   % Original vector field parameter-space dimension
-  pdim  = 4;
+  pdim  = 2;
   % Original vector field symbolic function
-  field = @fhn_symbolic_field;
+  field = @winfree_symbolic_field;
 
   %============================================================================%
   %                                    INPUT                                   %

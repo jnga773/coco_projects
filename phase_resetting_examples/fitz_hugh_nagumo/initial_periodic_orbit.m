@@ -60,20 +60,23 @@ x0 = [10; 10];
 pdim = length(p0);
 xdim = length(x0);
 
-%-------------------------%
-%     Functions Lists     %
-%-------------------------%
+%----------------------------------------%
+%     Functions Lists: Vector Fields     %
+%----------------------------------------%
 % Vector field: Functions
 % funcs.field = {@fhn, @fhn_DFDX, @fhn_DFDP};
 funcs.field = fhn_symbolic();
 
-% Boundary conditions: Periodic orbit
-% bcs_funcs.bcs_PO = {@bcs_PO};
-bcs_funcs.bcs_PO = bcs_PO_symbolic();
-
 % Adjoint equations: Functions (for floquet_mu and floquet_wnorm)
 % funcs.VAR = {@VAR};
 funcs.VAR = VAR_symbolic();
+
+%----------------------------------------------%
+%     Functions Lists: Boundary Conditions     %
+%----------------------------------------------%
+% Boundary conditions: Periodic orbit
+% bcs_funcs.bcs_PO = {@bcs_PO};
+bcs_funcs.bcs_PO = bcs_PO_symbolic();
 
 % Boundary conditions: Floquet multipliers
 % bcs_funcs.bcs_VAR = {@bcs_VAR};

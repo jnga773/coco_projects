@@ -95,9 +95,9 @@ x0 = [10; 10];
 pdim = length(p0);
 xdim = length(x0);
 
-%-------------------------%
-%     Functions Lists     %
-%-------------------------%
+%----------------------------------------%
+%     Functions Lists: Vector Fields     %
+%----------------------------------------%
 % Vector field: Functions
 % funcs.field = {@fhn, @fhn_DFDX, @fhn_DFDP};
 funcs.field = fhn_symbolic();
@@ -122,6 +122,9 @@ funcs.seg3 = func_seg3_symbolic();
 % funcs.seg4 = {@func_seg4};
 funcs.seg4 = func_seg4_symbolic();
 
+%----------------------------------------------%
+%     Functions Lists: Boundary Conditions     %
+%----------------------------------------------%
 % Boundary conditions: Periodic orbit
 % bcs_funcs.bcs_PO = {@bcs_PO};
 bcs_funcs.bcs_PO = bcs_PO_symbolic();
@@ -135,8 +138,8 @@ bcs_funcs.bcs_VAR = bcs_VAR_symbolic();
 bcs_funcs.bcs_T = bcs_T_symbolic();
 
 % Boundary conditions: Phase-resetting segments
-% bcs_funcs.bcs_PR = {@bcs_isochron};
-bcs_funcs.bcs_PR = bcs_isochron_symbolic();
+% bcs_funcs.bcs_PR = {@bcs_PR_isochron};
+bcs_funcs.bcs_PR = bcs_PR_isochron_symbolic();
 
 %=========================================================================%
 %                    CALCULATE INITIAL PERIODIC ORBIT                     %

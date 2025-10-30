@@ -100,9 +100,9 @@ x0 = [10; 10];
 pdim = length(p0);
 xdim = length(x0);
 
-%-------------------------%
-%     Functions Lists     %
-%-------------------------%
+%----------------------------------------%
+%     Functions Lists: Vector Fields     %
+%----------------------------------------%
 % Vector field: Functions
 % funcs.field = {@fhn, @fhn_DFDX, @fhn_DFDP};
 funcs.field = fhn_symbolic();
@@ -127,6 +127,9 @@ funcs.seg3 = func_seg3_symbolic();
 % funcs.seg4 = {@func_seg4};
 funcs.seg4 = func_seg4_symbolic();
 
+%----------------------------------------------%
+%     Functions Lists: Boundary Conditions     %
+%----------------------------------------------%
 % Boundary conditions: Periodic orbit
 % bcs_funcs.bcs_PO = {@bcs_PO};
 bcs_funcs.bcs_PO = bcs_PO_symbolic();
