@@ -13,8 +13,12 @@ function bcs_coco_out = bcs_isochron_phase_symbolic()
   %============================================================================%
   %                          CHANGE THESE PARAMETERS                           %
   %============================================================================%
+  % Original vector field state-space dimension
+  % xdim  = 2;
   % Original vector field parameter-space dimension
   pdim  = 4;
+  % Original vector field symbolic function
+  % field = @fhn_symbolic_field;
 
   %============================================================================%
   %                                    INPUT                                   %

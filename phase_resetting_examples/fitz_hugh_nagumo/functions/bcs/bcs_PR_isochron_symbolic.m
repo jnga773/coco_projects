@@ -42,9 +42,9 @@ function bcs_coco_out = bcs_PR_isochron_symbolic()
   % Original vector field state-space dimension
   xdim  = 2;
   % Original vector field parameter-space dimension
-  pdim  = 2;
+  pdim  = 4;
   % Original vector field symbolic function
-  field = @winfree_symbolic_field;
+  field = @fhn_symbolic_field;
 
   %============================================================================%
   %                                    INPUT                                   %
