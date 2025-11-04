@@ -14,11 +14,11 @@ function bcs_coco_out = bcs_isochron_phase_symbolic()
   %                          CHANGE THESE PARAMETERS                           %
   %============================================================================%
   % Original vector field state-space dimension
-  % xdim  = 2;
+  xdim  = 2;
   % Original vector field parameter-space dimension
   pdim  = 4;
   % Original vector field symbolic function
-  % field = @fhn_symbolic_field;
+  field = @fhn_symbolic_field;
 
   %============================================================================%
   %                                    INPUT                                   %
@@ -31,13 +31,12 @@ function bcs_coco_out = bcs_isochron_phase_symbolic()
 
   % Phase resetting parameters
   syms k theta_old theta_new
-  syms mu_s eta
+  syms T_PO mu_s eta
   % Peturbation vector
   d_vec = sym('d', [xdim, 1]);
-  
   % All phase resetting parameters
   p_PR = [k; theta_old; theta_new;
-          mu_s; eta;
+          T_PO; mu_s; eta;
           d_vec];
 
   %============================================================================%
