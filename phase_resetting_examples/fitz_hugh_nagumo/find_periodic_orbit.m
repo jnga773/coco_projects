@@ -37,8 +37,6 @@ addpath('./functions/');
 addpath('./functions/fields/');
 % Add boundary condition functions to path
 addpath('./functions/bcs/');
-% Add SymCOCO files to path
-addpath('./functions/symcoco/');
 
 % Add continuation scripts
 addpath('./continuation_scripts/');

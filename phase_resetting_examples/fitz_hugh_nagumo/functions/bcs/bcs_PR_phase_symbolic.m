@@ -27,17 +27,21 @@ function bcs_coco_out = bcs_isochron_phase_symbolic()
   %     Parameters     %
   %--------------------%
   % System parameters
-  p_sys = sym('p', [pdim, 1]);
+  p_sys = sym('p', [pdim, 1], 'real');
 
   % Phase resetting parameters
   syms k theta_old theta_new
   syms T_PO mu_s eta
   % Peturbation vector
-  d_vec = sym('d', [xdim, 1]);
+  d_vec = sym('d', [xdim, 1], 'real');
+
   % All phase resetting parameters
   p_PR = [k; theta_old; theta_new;
           T_PO; mu_s; eta;
           d_vec];
+
+  % Assume real variables
+  assume(p_PR, 'real');
 
   %============================================================================%
   %                         BOUNDARY CONDITION ENCODING                        %
@@ -61,7 +65,7 @@ function bcs_coco_out = bcs_isochron_phase_symbolic()
   bcs =  [bcs_phase];
 
   % Filename for output functions
-  filename_out = './functions/symcoco/F_bcs_isochron_phase';
+  filename_out = './functions/symcoco_bcs_isochron_phase';
 
   % COCO Function encoding
   bcs_coco = sco_sym2funcs(bcs, {uvec}, {'u'}, 'filename', filename_out);

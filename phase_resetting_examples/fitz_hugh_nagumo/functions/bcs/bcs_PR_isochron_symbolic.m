@@ -53,50 +53,53 @@ function bcs_coco_out = bcs_PR_isochron_symbolic()
   %     Initial Vectors     %
   %-------------------------%
   % Segment 1 - x(0)
-  x0_seg1 = sym('x0_seg1', [xdim, 1]);
+  x0_seg1 = sym('x0_seg1', [xdim, 1]), 'real';
   % Segment 1 - w(0)
-  w0_seg1 = sym('w0_seg1', [xdim, 1]);
+  w0_seg1 = sym('w0_seg1', [xdim, 1]), 'real';
   % Segment 2 - x(0)
-  x0_seg2 = sym('x0_seg2', [xdim, 1]);
+  x0_seg2 = sym('x0_seg2', [xdim, 1]), 'real';
   % Segment 2 - w(0)
-  w0_seg2 = sym('w0_seg2', [xdim, 1]);
+  w0_seg2 = sym('w0_seg2', [xdim, 1]), 'real';
   % Segment 3 - x(0)
-  x0_seg3 = sym('x0_seg3', [xdim, 1]);
+  x0_seg3 = sym('x0_seg3', [xdim, 1]), 'real';
   % Segment 4 - x(0)
-  x0_seg4 = sym('x0_seg4', [xdim, 1]);
+  x0_seg4 = sym('x0_seg4', [xdim, 1]), 'real';
 
   %-----------------------%
   %     Final Vectors     %
   %-----------------------%
   % Segment 1 - x(1)
-  x1_seg1 = sym('x1_seg1', [xdim, 1]);
+  x1_seg1 = sym('x1_seg1', [xdim, 1], 'real');
   % Segment 1 - w(1)
-  w1_seg1 = sym('w1_seg1', [xdim, 1]);
+  w1_seg1 = sym('w1_seg1', [xdim, 1], 'real');
   % Segment 2 - x(1)
-  x1_seg2 = sym('x1_seg2', [xdim, 1]);
+  x1_seg2 = sym('x1_seg2', [xdim, 1], 'real');
   % Segment 2 - w(1)
-  w1_seg2 = sym('w1_seg2', [xdim, 1]);
+  w1_seg2 = sym('w1_seg2', [xdim, 1], 'real');
   % Segment 3 - x(1)
-  x1_seg3 = sym('x1_seg3', [xdim, 1]);
+  x1_seg3 = sym('x1_seg3', [xdim, 1], 'real');
   % Segment 4 - x(1)
-  x1_seg4 = sym('x1_seg4', [xdim, 1]);
+  x1_seg4 = sym('x1_seg4', [xdim, 1], 'real');
 
   %--------------------%
   %     Parameters     %
   %--------------------%
   % System parameters
-  p_sys = sym('p', [pdim, 1]);
+  p_sys = sym('p', [pdim, 1], 'real');
 
   % Phase resetting parameters
   syms k theta_old theta_new
   syms T_PO mu_s eta
   % Peturbation vector
-  d_perturb = sym('d', [xdim, 1]);
+  d_perturb = sym('d', [xdim, 1], 'real');
   
   % All phase resetting parameters
   p_PR = [k; theta_old; theta_new;
           T_PO; mu_s; eta;
           d_perturb];
+
+  % Assume real variables
+  assume(p_PR, 'real');
   
   %============================================================================%
   %                         BOUNDARY CONDITION ENCODING                        %
@@ -166,7 +169,7 @@ function bcs_coco_out = bcs_PR_isochron_symbolic()
   %     SymCOCO     %
   %-----------------%
   % Filename for output functions
-  filename_out = './functions/symcoco/F_bcs_isochron';
+  filename_out = './functions/symcoco_bcs_isochron';
 
   % COCO Function encoding
   bcs_coco = sco_sym2funcs(bcs_vec, {u_vec}, {'u'}, 'filename', filename_out);

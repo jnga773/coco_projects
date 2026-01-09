@@ -40,25 +40,25 @@ function bcs_coco_out = bcs_VAR_symbolic()
   %     Adjoint-Space Vectors     %
   %-------------------------------%
   % Initial adjoint perpindicular vector
-  w_init  = sym('w_init', [xdim, 1]);
+  w_init  = sym('w_init', [xdim, 1], 'real');
   % Final adjoint perpindicular vector
-  w_final = sym('w_final', [xdim, 1]);
+  w_final = sym('w_final', [xdim, 1], 'real');
 
   %--------------------%
   %     Parameters     %
   %--------------------%
   % Adjoint parameters
-  syms mu_s w_norm
+  syms mu_s w_norm real
 
   % Floquet parameters
-  p_flo = [mu_s; w_norm];
+  p_VAR = [mu_s; w_norm];
 
   %============================================================================%
   %                         BOUNDARY CONDITION ENCODING                        %
   %============================================================================%
   % Adjoint boundary conditions
-  bcs_adjt_1 = w_final - (mu_s * w_init);
-  bcs_adjt_2 = (w_init' * w_init) - w_norm;
+  bcs_VAR_1 = w_final - (mu_s * w_init);
+  bcs_VAR_2 = (w_init' * w_init) - w_norm;
 
   %============================================================================%
   %                                   OUTPUT                                   %
@@ -67,16 +67,16 @@ function bcs_coco_out = bcs_VAR_symbolic()
   %     Total Vectors     %
   %-----------------------%
   % Combined vector
-  u_vec   = [w_init; w_final; p_flo];
+  u_vec   = [w_init; w_final; p_VAR];
 
   % Boundary conditions vector
-  bcs_vec = [bcs_adjt_1; bcs_adjt_2];
+  bcs_vec = [bcs_VAR_1; bcs_VAR_2];
 
   %-----------------%
   %     SymCOCO     %
   %-----------------%
   % Filename for output functions
-  filename_out = './functions/symcoco/F_bcs_VAR';
+  filename_out = './functions/symcoco_bcs_VAR';
 
   % COCO Function encoding
   bcs_coco = sco_sym2funcs(bcs_vec, {u_vec}, {'u'}, 'filename', filename_out);

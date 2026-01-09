@@ -19,6 +19,10 @@ function F_coco_out = fhn_symbolic()
   % Variable arrays
   x_vec = [x1; x2];
   p_vec = [c; a; b; z];
+
+  % Assume real variables
+  assume(x_vec, 'real');
+  assume(p_vec, 'real');
   
   % Symbolic vector field
   F_vec = fhn_symbolic_field(x_vec, p_vec);
@@ -27,7 +31,7 @@ function F_coco_out = fhn_symbolic()
   %     SymCOCO     %
   %-----------------%
   % Filename for output functions
-  filename_out = './functions/symcoco/F_fhn';
+  filename_out = './functions/symcoco_fhn';
 
   % COCO Function encoding
   F_coco = sco_sym2funcs(F_vec, {x_vec, p_vec}, {'x', 'p'}, 'filename', filename_out);

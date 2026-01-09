@@ -20,6 +20,10 @@ function F_coco_out = yamada_symbolic()
   % Variable arrays
   xvec = [G; Q; I];
   pvec = [gam; A; B; a];
+
+  % Assume real variables
+  assume(xvec, 'real');
+  assume(pvec, 'real');
   
   % Symbolic vector field
   F_vec = yamada_symbolic_field(xvec, pvec);
@@ -28,7 +32,7 @@ function F_coco_out = yamada_symbolic()
   %     SymCOCO     %
   %-----------------%
   % Filename for output functions
-  filename_out = './functions/symcoco/F_yamada';
+  filename_out = './functions/symcoco_yamada';
 
   % COCO Function encoding
   F_coco = sco_sym2funcs(F_vec, {xvec, pvec}, {'x', 'p'}, 'filename', filename_out);

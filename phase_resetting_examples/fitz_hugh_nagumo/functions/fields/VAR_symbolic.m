@@ -27,18 +27,18 @@ function F_coco_out = VAR_symbolic()
   %     State-Space Variables     %
   %-------------------------------%
   % State-space variables
-  x_vec = sym('x', [xdim, 1]);
+  x_vec = sym('x', [xdim, 1], 'real');
   % Adjoint equation variables
-  w_vec = sym('w', [xdim, 1]);
+  w_vec = sym('w', [xdim, 1], 'real');
 
   %--------------------%
   %     Parameters     %
   %--------------------%
   % System parameters
-  p_sys = sym('p', [pdim, 1]);
+  p_sys = sym('p', [pdim, 1], 'real');
 
   % Phase resetting parameters
-  syms mu_s w_norm
+  syms mu_s w_norm real
 
   %============================================================================%
   %                           VECTOR FIELD ENCODING                            %
@@ -78,7 +78,7 @@ function F_coco_out = VAR_symbolic()
   %     SymCOCO     %
   %-----------------%
   % Filename for output functions
-  filename_out = './functions/symcoco/F_VAR';
+  filename_out = './functions/symcoco_VAR';
 
   % COCO Function encoding
   F_coco = sco_sym2funcs(F_seg, {u_vec, p_vec}, {'x', 'p'}, 'filename', filename_out);

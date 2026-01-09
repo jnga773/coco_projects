@@ -13,7 +13,7 @@ function bcs_coco_out = bcs_T_symbolic()
   %     Input     %
   %---------------%
   % Period of the segment
-  syms T
+  syms T real
 
   % Combined vector
   uvec = [T];
@@ -28,7 +28,7 @@ function bcs_coco_out = bcs_T_symbolic()
   %     SymCOCO     %
   %-----------------%
   % Filename for output functions
-  filename_out = './functions/symcoco/F_bcs_T';
+  filename_out = './functions/symcoco_bcs_T';
 
   % COCO Function encoding
   bcs_coco = sco_sym2funcs(bcs, {uvec}, {'u'}, 'filename', filename_out);

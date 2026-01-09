@@ -40,15 +40,15 @@ function bcs_coco_out = bcs_PO_symbolic()
   %     State-Space Vectors     %
   %-----------------------------%
   % Initial point of the periodic orbit
-  x_init = sym('x', [xdim, 1]);
+  x_init = sym('x', [xdim, 1], 'real');
   % Final point of the periodic orbit
-  x_final = sym('x_final', [xdim, 1]);
+  x_final = sym('x_final', [xdim, 1], 'real');
 
   %--------------------%
   %     Parameters     %
   %--------------------%
   % System parameters
-  p_sys = sym('p', [pdim, 1]);
+  p_sys = sym('p', [pdim, 1], 'real');
 
   %============================================================================%
   %                         BOUNDARY CONDITION ENCODING                        %
@@ -77,7 +77,7 @@ function bcs_coco_out = bcs_PO_symbolic()
   %     SymCOCO     %
   %-----------------%
   % Filename for output functions
-  filename_out = './functions/symcoco/F_bcs_PO';
+  filename_out = './functions/symcoco_bcs_PO';
 
   % COCO Function encoding
   bcs_coco = sco_sym2funcs(bcs_vec, {u_vec}, {'u'}, 'filename', filename_out);

@@ -29,24 +29,27 @@ function F_coco_out = func_seg4_symbolic()
   %     State-Space Variables     %
   %-------------------------------%
   % State-space variables
-  x_vec = sym('x', [xdim, 1]);
+  x_vec = sym('x', [xdim, 1], 'real');
 
   %--------------------%
   %     Parameters     %
   %--------------------%
   % System parameters
-  p_sys = sym('p', [pdim, 1]);
+  p_sys = sym('p', [pdim, 1], 'real');
 
   % Phase resetting parameters
   syms k theta_old theta_new
   syms T_PO mu_s eta
   % Peturbation vector
-  d_perturb = sym('d', [xdim, 1]);
+  d_perturb = sym('d', [xdim, 1], 'real');
   
   % All phase resetting parameters
   p_PR = [k; theta_old; theta_new;
           T_PO; mu_s; eta;
           d_perturb];
+
+  % Assume real variables
+  assume(p_PR, 'real');
 
   %============================================================================%
   %                           VECTOR FIELD ENCODING                            %
@@ -77,7 +80,7 @@ function F_coco_out = func_seg4_symbolic()
   %     SymCOCO     %
   %-----------------%
   % Filename for output functions
-  filename_out = './functions/symcoco/F_seg4';
+  filename_out = './functions/symcoco_seg4';
 
   % COCO Function encoding
   F_coco = sco_sym2funcs(F_seg, {u_vec, p_vec}, {'x', 'p'}, 'filename', filename_out);
