@@ -53,17 +53,17 @@ function bcs_coco_out = bcs_PR_isochron_symbolic()
   %     Initial Vectors     %
   %-------------------------%
   % Segment 1 - x(0)
-  x0_seg1 = sym('x0_seg1', [xdim, 1]), 'real';
+  x0_seg1 = sym('x0_seg1', [xdim, 1], 'real');
   % Segment 1 - w(0)
-  w0_seg1 = sym('w0_seg1', [xdim, 1]), 'real';
+  w0_seg1 = sym('w0_seg1', [xdim, 1], 'real');
   % Segment 2 - x(0)
-  x0_seg2 = sym('x0_seg2', [xdim, 1]), 'real';
+  x0_seg2 = sym('x0_seg2', [xdim, 1], 'real');
   % Segment 2 - w(0)
-  w0_seg2 = sym('w0_seg2', [xdim, 1]), 'real';
+  w0_seg2 = sym('w0_seg2', [xdim, 1], 'real');
   % Segment 3 - x(0)
-  x0_seg3 = sym('x0_seg3', [xdim, 1]), 'real';
+  x0_seg3 = sym('x0_seg3', [xdim, 1], 'real');
   % Segment 4 - x(0)
-  x0_seg4 = sym('x0_seg4', [xdim, 1]), 'real';
+  x0_seg4 = sym('x0_seg4', [xdim, 1], 'real');
 
   %-----------------------%
   %     Final Vectors     %
